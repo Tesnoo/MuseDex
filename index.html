@@ -89,6 +89,22 @@
       color: #fff;
     }
 
+    .toggle-all-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-sub);
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .toggle-all-btn:hover {
+      color: #fff;
+      border-color: #3b4252;
+    }
+
     .photo-count {
       font-size: 0.85rem;
       color: var(--text-sub);
@@ -103,39 +119,77 @@
       margin: 0 auto 80px;
     }
 
+    /* アコーディオン・人物セクション */
     .person-section {
-      margin-bottom: 36px;
+      margin-bottom: 28px;
+      background: #14171f;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
     }
 
     .person-header {
       display: flex;
       align-items: center;
-      gap: 10px;
-      margin-bottom: 14px;
-      padding-bottom: 8px;
-      border-bottom: 1px dashed var(--border-color);
+      justify-content: space-between;
+      padding: 16px 20px;
+      cursor: pointer;
+      user-select: none;
+      background: var(--card-bg);
+      transition: background 0.2s;
+    }
+
+    .person-header:hover {
+      background: #20242e;
+    }
+
+    .person-header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .accordion-icon {
+      font-size: 0.8rem;
+      color: var(--text-sub);
+      transition: transform 0.25s ease;
+      display: inline-block;
+    }
+
+    .person-section.collapsed .accordion-icon {
+      transform: rotate(-90deg);
     }
 
     .person-name {
-      font-size: 1.25rem;
+      font-size: 1.2rem;
       font-weight: 600;
     }
 
     .person-count {
       font-size: 0.8rem;
       color: var(--text-sub);
-      background: #232832;
-      padding: 2px 8px;
+      background: #282e3c;
+      padding: 3px 10px;
       border-radius: 12px;
     }
 
+    .person-body {
+      padding: 20px;
+      display: block;
+    }
+
+    .person-section.collapsed .person-body {
+      display: none;
+    }
+
+    /* グリッドレイアウト */
     .gallery-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
       gap: 16px;
     }
 
-    .image-card {
+    .media-card {
       background-color: var(--card-bg);
       border-radius: 10px;
       overflow: hidden;
@@ -146,16 +200,34 @@
       transition: transform 0.2s ease, border-color 0.2s ease;
     }
 
-    .image-card:hover {
+    .media-card:hover {
       transform: translateY(-2px);
       border-color: #3b4252;
     }
 
-    .image-card img {
+    .media-card img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: block;
+    }
+
+    /* 動画バッジ */
+    .video-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      color: #fff;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      pointer-events: none;
     }
 
     .card-tags {
@@ -178,6 +250,7 @@
       color: #e5e7eb;
     }
 
+    /* 右下FAB */
     .fab-button {
       position: fixed;
       bottom: 32px;
@@ -203,6 +276,7 @@
       background-color: var(--accent-hover);
     }
 
+    /* ドロップオーバーレイ */
     .drop-overlay {
       display: none;
       position: fixed;
@@ -225,6 +299,7 @@
       border: 1px solid var(--accent);
     }
 
+    /* アップロードモーダル */
     .modal {
       display: none;
       position: fixed;
@@ -243,7 +318,7 @@
       background: var(--card-bg);
       border: 1px solid var(--border-color);
       border-radius: 12px;
-      max-width: 500px;
+      max-width: 540px;
       width: 100%;
       padding: 24px;
       display: flex;
@@ -253,21 +328,46 @@
 
     .modal-content h3 { font-size: 1.2rem; font-weight: 600; }
 
-    .preview-box {
-      width: 100%;
-      height: 220px;
+    /* アップロード対象サムネイル一覧 */
+    .upload-queue-container {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 8px;
       background: #11141a;
       border-radius: 8px;
+      min-height: 110px;
+      align-items: center;
+    }
+
+    .upload-queue-item {
+      position: relative;
+      width: 80px;
+      height: 80px;
+      border-radius: 6px;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: #232832;
+      border: 1px solid var(--border-color);
       display: flex;
       justify-content: center;
       align-items: center;
-      overflow: hidden;
     }
 
-    .preview-box img {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
+    .upload-queue-item img, .upload-queue-item video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .upload-queue-item .type-icon {
+      position: absolute;
+      bottom: 2px;
+      right: 4px;
+      font-size: 10px;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 1px 4px;
+      border-radius: 4px;
     }
 
     .form-group {
@@ -295,6 +395,35 @@
       border-color: var(--accent);
     }
 
+    /* プログレスバー */
+    .progress-bar-container {
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 8px;
+      background: #11141a;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      transition: width 0.2s ease;
+    }
+
+    .progress-text {
+      font-size: 0.8rem;
+      color: var(--text-sub);
+      text-align: right;
+    }
+
     .modal-actions {
       display: flex;
       justify-content: flex-end;
@@ -318,31 +447,52 @@
     .btn-submit:hover { background: var(--accent-hover); }
     .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
 
+    /* 拡大ライトボックス */
     .lightbox {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.9);
+      background: rgba(0, 0, 0, 0.92);
       z-index: 150;
       justify-content: center;
       align-items: center;
-      padding: 20px;
+      padding: 24px;
     }
+
     .lightbox.active { display: flex; }
-    .lightbox img {
+
+    .lightbox-content {
       max-width: 90vw;
-      max-height: 90vh;
+      max-height: 85vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .lightbox-content img {
+      max-width: 100%;
+      max-height: 85vh;
       border-radius: 6px;
       object-fit: contain;
     }
+
+    .lightbox-content iframe {
+      width: 80vw;
+      height: 80vh;
+      border: none;
+      border-radius: 8px;
+    }
+
     .lightbox-close {
       position: absolute;
       top: 20px;
       right: 24px;
       font-size: 32px;
-      color: #fff;
+      color: #9ca3af;
       cursor: pointer;
     }
+
+    .lightbox-close:hover { color: #fff; }
 
     .status-msg {
       text-align: center;
@@ -355,7 +505,7 @@
 <body>
 
   <div id="drop-overlay" class="drop-overlay">
-    <div class="drop-box-text">ここに画像をドロップしてアップロード</div>
+    <div class="drop-box-text">ここに画像・動画をドロップして追加</div>
   </div>
 
   <header>
@@ -369,51 +519,66 @@
         <button id="btn-group-view" class="view-btn active" onclick="switchView('group')">人物別</button>
         <button id="btn-all-view" class="view-btn" onclick="switchView('all')">すべて</button>
       </div>
-      <span id="photo-count" class="photo-count">0 photos</span>
+      <button id="toggle-accordion-btn" class="toggle-all-btn" onclick="toggleAllAccordions()">すべて閉じる</button>
+      <span id="photo-count" class="photo-count">0 items</span>
     </div>
   </header>
 
-  <div id="status" class="status-msg">写真を読み込み中...</div>
+  <div id="status" class="status-msg">メディアを読み込み中...</div>
   <main id="main-container"></main>
 
-  <button id="fab-btn" class="fab-button" title="画像を追加">+</button>
-  <input type="file" id="file-input" accept="image/*" style="display: none;">
+  <button id="fab-btn" class="fab-button" title="画像・動画を追加">+</button>
+  <!-- multiple 属性で複数選択可能に -->
+  <input type="file" id="file-input" accept="image/*,video/*" multiple style="display: none;">
 
+  <!-- アップロードモーダル -->
   <div id="upload-modal" class="modal">
     <div class="modal-content">
-      <h3>新しい画像を登録</h3>
-      <div class="preview-box">
-        <img id="upload-preview" src="" alt="アップロードプレビュー">
-      </div>
+      <h3 id="modal-title">新しいメディアを登録</h3>
+      
+      <div id="upload-queue" class="upload-queue-container"></div>
+
       <div class="form-group">
         <label for="input-person">人物名（同じ名前で1つにまとまります）</label>
-        <input type="text" id="input-person" placeholder="例: 佐藤、Alice、風景 など" list="person-list">
+        <input type="text" id="input-person" placeholder="例: 佐藤、Alice など" list="person-list">
         <datalist id="person-list"></datalist>
       </div>
       <div class="form-group">
         <label for="input-tags">タグ（カンマ区切り）</label>
-        <input type="text" id="input-tags" placeholder="例: 記念撮影, 旅行, ポートレート">
+        <input type="text" id="input-tags" placeholder="例: 記念, 旅行, 動画">
       </div>
+
+      <div id="progress-container" class="progress-bar-container">
+        <div class="progress-bar-bg">
+          <div id="progress-fill" class="progress-bar-fill"></div>
+        </div>
+        <span id="progress-text" class="progress-text">0 / 0</span>
+      </div>
+
       <div class="modal-actions">
-        <button class="btn btn-cancel" onclick="closeUploadModal()">キャンセル</button>
-        <button id="submit-upload-btn" class="btn btn-submit" onclick="executeUpload()">アップロード</button>
+        <button id="cancel-upload-btn" class="btn btn-cancel" onclick="closeUploadModal()">キャンセル</button>
+        <button id="submit-upload-btn" class="btn btn-submit" onclick="executeBatchUpload()">アップロード</button>
       </div>
     </div>
   </div>
 
+  <!-- 拡大ライトボックス -->
   <div id="lightbox" class="lightbox" onclick="closeLightbox()">
     <span class="lightbox-close">&times;</span>
-    <img id="lightbox-img" src="" alt="Expanded View" onclick="event.stopPropagation()">
+    <div class="lightbox-content" id="lightbox-content" onclick="event.stopPropagation()"></div>
   </div>
 
   <script>
     const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbx0F2NKIoBvHS6IhWbMiiAfs-9YEdeu1RJBJFl413_y_K4JCdU1wGtqwqGTteSjwsRr/exec';
 
-    let photos = [];
+    let mediaItems = [];
     let currentView = 'group';
-    let pendingFileBlob = null;
-    let pendingFileName = '';
+    let pendingFiles = []; // 一括アップロード用キュー
+    let isAllExpanded = true;
 
+    // ==========================================
+    // 1. 読み込み & 描画
+    // ==========================================
     async function loadGallery() {
       const status = document.getElementById('status');
       const countLabel = document.getElementById('photo-count');
@@ -424,12 +589,12 @@
 
         if (res.status !== 'success') throw new Error(res.message);
 
-        photos = res.data;
-        countLabel.textContent = `${photos.length} photos`;
+        mediaItems = res.data;
+        countLabel.textContent = `${mediaItems.length} items`;
 
-        if (photos.length === 0) {
+        if (mediaItems.length === 0) {
           status.style.display = 'block';
-          status.textContent = '写真がまだありません。右下の「＋」またはドラッグ＆ドロップで追加してください。';
+          status.textContent = 'メディアがまだありません。右下の「＋」またはドラッグ＆ドロップで追加してください。';
           document.getElementById('main-container').innerHTML = '';
           return;
         }
@@ -446,7 +611,7 @@
     function updatePersonDatalist() {
       const datalist = document.getElementById('person-list');
       datalist.innerHTML = '';
-      const uniquePersons = [...new Set(photos.map(p => p.person).filter(p => p && p !== '未分類'))];
+      const uniquePersons = [...new Set(mediaItems.map(p => p.person).filter(p => p && p !== '未分類'))];
       uniquePersons.forEach(person => {
         const opt = document.createElement('option');
         opt.value = person;
@@ -456,16 +621,19 @@
 
     function renderGallery() {
       const container = document.getElementById('main-container');
+      const toggleBtn = document.getElementById('toggle-accordion-btn');
       container.innerHTML = '';
 
       if (currentView === 'all') {
+        toggleBtn.style.display = 'none';
         const grid = document.createElement('div');
         grid.className = 'gallery-grid';
-        photos.forEach(item => grid.appendChild(createImageCard(item)));
+        mediaItems.forEach(item => grid.appendChild(createMediaCard(item)));
         container.appendChild(grid);
       } else {
+        toggleBtn.style.display = 'inline-block';
         const groups = {};
-        photos.forEach(item => {
+        mediaItems.forEach(item => {
           const person = item.person || '未分類';
           if (!groups[person]) groups[person] = [];
           groups[person].push(item);
@@ -481,34 +649,53 @@
           const sec = document.createElement('section');
           sec.className = 'person-section';
 
-          const head = document.createElement('div');
-          head.className = 'person-header';
-          head.innerHTML = `
-            <span class="person-name">${escapeHtml(person)}</span>
-            <span class="person-count">${groups[person].length}枚</span>
+          // アコーディオンヘッダー
+          const header = document.createElement('div');
+          header.className = 'person-header';
+          header.onclick = () => sec.classList.toggle('collapsed');
+
+          header.innerHTML = `
+            <div class="person-header-left">
+              <span class="accordion-icon">▼</span>
+              <span class="person-name">${escapeHtml(person)}</span>
+              <span class="person-count">${groups[person].length}件</span>
+            </div>
           `;
-          sec.appendChild(head);
+          sec.appendChild(header);
+
+          // セクション本体
+          const body = document.createElement('div');
+          body.className = 'person-body';
 
           const grid = document.createElement('div');
           grid.className = 'gallery-grid';
-          groups[person].forEach(item => grid.appendChild(createImageCard(item)));
-          sec.appendChild(grid);
+          groups[person].forEach(item => grid.appendChild(createMediaCard(item)));
+          body.appendChild(grid);
 
+          sec.appendChild(body);
           container.appendChild(sec);
         });
       }
     }
 
-    function createImageCard(item) {
+    function createMediaCard(item) {
       const card = document.createElement('div');
-      card.className = 'image-card';
-      card.onclick = () => openLightbox(item.previewUrl);
+      card.className = 'media-card';
+      card.onclick = () => openLightbox(item);
 
       const img = document.createElement('img');
       img.src = item.thumbnailUrl;
       img.alt = item.name;
       img.loading = 'lazy';
       card.appendChild(img);
+
+      // 動画バッジ
+      if (item.type === 'video') {
+        const badge = document.createElement('div');
+        badge.className = 'video-badge';
+        badge.innerHTML = '▶ 動画';
+        card.appendChild(badge);
+      }
 
       if (item.tags && item.tags.length > 0) {
         const tagsContainer = document.createElement('div');
@@ -532,6 +719,20 @@
       renderGallery();
     }
 
+    function toggleAllAccordions() {
+      const sections = document.querySelectorAll('.person-section');
+      const toggleBtn = document.getElementById('toggle-accordion-btn');
+      isAllExpanded = !isAllExpanded;
+
+      sections.forEach(sec => {
+        sec.classList.toggle('collapsed', !isAllExpanded);
+      });
+      toggleBtn.textContent = isAllExpanded ? 'すべて閉じる' : 'すべて開く';
+    }
+
+    // ==========================================
+    // 2. 複数ファイル一括アップロード
+    // ==========================================
     const fabBtn = document.getElementById('fab-btn');
     const fileInput = document.getElementById('file-input');
     const dropOverlay = document.getElementById('drop-overlay');
@@ -540,7 +741,7 @@
 
     fileInput.onchange = (e) => {
       if (e.target.files.length > 0) {
-        handleSelectedFile(e.target.files[0]);
+        handleSelectedFiles(Array.from(e.target.files));
       }
     };
 
@@ -550,57 +751,159 @@
     });
 
     window.addEventListener('dragleave', (e) => {
-      if (e.relatedTarget === null) {
-        dropOverlay.classList.remove('active');
-      }
+      if (e.relatedTarget === null) dropOverlay.classList.remove('active');
     });
 
     window.addEventListener('drop', (e) => {
       e.preventDefault();
       dropOverlay.classList.remove('active');
       if (e.dataTransfer.files.length > 0) {
-        const file = e.dataTransfer.files[0];
-        if (file.type.startsWith('image/')) {
-          handleSelectedFile(file);
-        } else {
-          alert('画像ファイルを選択してください');
-        }
+        handleSelectedFiles(Array.from(e.dataTransfer.files));
       }
     });
 
-    function handleSelectedFile(file) {
-      pendingFileName = file.name;
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const img = new Image();
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          let width = img.width;
-          let height = img.height;
-          const maxDim = 2048;
+    async function handleSelectedFiles(files) {
+      pendingFiles = [];
+      const queueContainer = document.getElementById('upload-queue');
+      queueContainer.innerHTML = '';
 
-          if (width > maxDim || height > maxDim) {
-            if (width > height) {
-              height = Math.round((height * maxDim) / width);
-              width = maxDim;
-            } else {
-              width = Math.round((width * maxDim) / height);
-              height = maxDim;
-            }
+      const validFiles = files.filter(f => f.type.startsWith('image/') || f.type.startsWith('video/'));
+      if (validFiles.length === 0) {
+        alert('画像または動画ファイルを選択してください');
+        return;
+      }
+
+      document.getElementById('modal-title').textContent = `${validFiles.length}件のメディアを登録`;
+
+      for (const file of validFiles) {
+        const itemBox = document.createElement('div');
+        itemBox.className = 'upload-queue-item';
+
+        const isVideo = file.type.startsWith('video/');
+        if (isVideo) {
+          // 動画はGASの制限上25MB目安の警告
+          if (file.size > 25 * 1024 * 1024) {
+            alert(`「${file.name}」は約25MBを超えているため、GAS経由でのアップロードに失敗する可能性があります。`);
           }
+          itemBox.innerHTML = `
+            <span style="font-size:24px;">🎬</span>
+            <span class="type-icon">VIDEO</span>
+          `;
+        } else {
+          const img = document.createElement('img');
+          img.src = URL.createObjectURL(file);
+          itemBox.appendChild(img);
+        }
+        queueContainer.appendChild(itemBox);
 
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, width, height);
+        // ファイルデータを準備
+        const base64Data = await convertFileToBase64(file);
+        pendingFiles.push({
+          name: file.name,
+          mimeType: file.type || (isVideo ? 'video/mp4' : 'image/jpeg'),
+          base64: base64Data
+        });
+      }
 
-          pendingFileBlob = canvas.toDataURL('image/jpeg', 0.88);
-          document.getElementById('upload-preview').src = pendingFileBlob;
-          document.getElementById('upload-modal').classList.add('active');
+      document.getElementById('upload-modal').classList.add('active');
+    }
+
+    // 画像はCanvasで2048pxに最適化、動画は直接Base64化
+    function convertFileToBase64(file) {
+      return new Promise((resolve) => {
+        if (file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+              const canvas = document.createElement('canvas');
+              let width = img.width;
+              let height = img.height;
+              const maxDim = 2048;
+
+              if (width > maxDim || height > maxDim) {
+                if (width > height) {
+                  height = Math.round((height * maxDim) / width);
+                  width = maxDim;
+                } else {
+                  width = Math.round((width * maxDim) / height);
+                  height = maxDim;
+                }
+              }
+              canvas.width = width;
+              canvas.height = height;
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(img, 0, 0, width, height);
+              resolve(canvas.toDataURL('image/jpeg', 0.88));
+            };
+            img.src = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        } else {
+          // 動画はそのままBase64
+          const reader = new FileReader();
+          reader.onload = (e) => resolve(e.target.result);
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+
+    // 順次一括アップロードの実行
+    async function executeBatchUpload() {
+      if (pendingFiles.length === 0) return;
+
+      const submitBtn = document.getElementById('submit-upload-btn');
+      const cancelBtn = document.getElementById('cancel-upload-btn');
+      const progressContainer = document.getElementById('progress-container');
+      const progressFill = document.getElementById('progress-fill');
+      const progressText = document.getElementById('progress-text');
+
+      submitBtn.disabled = true;
+      cancelBtn.disabled = true;
+      progressContainer.style.display = 'flex';
+
+      const person = document.getElementById('input-person').value.trim() || '未分類';
+      const rawTags = document.getElementById('input-tags').value;
+      const tags = rawTags.split(/[,、\s]+/).filter(t => t.trim() !== '');
+
+      const total = pendingFiles.length;
+      let successCount = 0;
+
+      for (let i = 0; i < total; i++) {
+        const item = pendingFiles[i];
+        progressText.textContent = `送信中... (${i + 1} / ${total}) - ${item.name}`;
+        progressFill.style.width = `${Math.round(((i) / total) * 100)}%`;
+
+        const payload = {
+          fileName: item.name,
+          mimeType: item.mimeType,
+          base64: item.base64,
+          person: person,
+          tags: tags
         };
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
+
+        try {
+          const response = await fetch(GAS_ENDPOINT, {
+            method: 'POST',
+            body: JSON.stringify(payload),
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+          });
+          const res = await response.json();
+          if (res.status === 'success') successCount++;
+        } catch (err) {
+          console.error(`Upload error for ${item.name}:`, err);
+        }
+      }
+
+      progressFill.style.width = '100%';
+      progressText.textContent = `完了 (${successCount} / ${total} 件)`;
+
+      setTimeout(async () => {
+        closeUploadModal();
+        document.getElementById('status').style.display = 'block';
+        document.getElementById('status').textContent = '最新データを読み込み中...';
+        await loadGallery();
+      }, 800);
     }
 
     function closeUploadModal() {
@@ -608,59 +911,39 @@
       document.getElementById('input-person').value = '';
       document.getElementById('input-tags').value = '';
       document.getElementById('file-input').value = '';
-      pendingFileBlob = null;
+      document.getElementById('progress-container').style.display = 'none';
+      document.getElementById('submit-upload-btn').disabled = false;
+      document.getElementById('cancel-upload-btn').disabled = false;
+      pendingFiles = [];
     }
 
-    async function executeUpload() {
-      if (!pendingFileBlob) return;
+    // ==========================================
+    // 3. ライトボックス（画像＆動画プレイヤー）
+    // ==========================================
+    function openLightbox(item) {
+      const container = document.getElementById('lightbox-content');
+      container.innerHTML = '';
 
-      const submitBtn = document.getElementById('submit-upload-btn');
-      submitBtn.disabled = true;
-      submitBtn.textContent = '保存中...';
-
-      const person = document.getElementById('input-person').value.trim() || '未分類';
-      const rawTags = document.getElementById('input-tags').value;
-      const tags = rawTags.split(/[,、\s]+/).filter(t => t.trim() !== '');
-
-      const payload = {
-        fileName: pendingFileName,
-        mimeType: 'image/jpeg',
-        base64: pendingFileBlob,
-        person: person,
-        tags: tags
-      };
-
-      try {
-        const response = await fetch(GAS_ENDPOINT, {
-          method: 'POST',
-          body: JSON.stringify(payload),
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' }
-        });
-
-        const res = await response.json();
-        if (res.status !== 'success') throw new Error(res.message);
-
-        closeUploadModal();
-        document.getElementById('status').style.display = 'block';
-        document.getElementById('status').textContent = '新しい写真を反映中...';
-        await loadGallery();
-
-      } catch (err) {
-        alert(`アップロードに失敗しました: ${err.message}`);
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'アップロード';
+      if (item.type === 'video') {
+        const iframe = document.createElement('iframe');
+        iframe.src = item.previewUrl;
+        iframe.allow = 'autoplay';
+        iframe.allowFullscreen = true;
+        container.appendChild(iframe);
+      } else {
+        const img = document.createElement('img');
+        img.src = item.previewUrl;
+        img.alt = item.name;
+        container.appendChild(img);
       }
-    }
 
-    function openLightbox(url) {
-      document.getElementById('lightbox-img').src = url;
       document.getElementById('lightbox').classList.add('active');
     }
 
     function closeLightbox() {
       document.getElementById('lightbox').classList.remove('active');
-      document.getElementById('lightbox-img').src = '';
+      // 動画の音声が裏で鳴り続けないよう中身をクリア
+      document.getElementById('lightbox-content').innerHTML = '';
     }
 
     function escapeHtml(str) {

@@ -4,45 +4,45 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MuseDex</title>
-  
-  <!-- ファビコン設定 -->
   <link rel="icon" type="image/png" href="./MuseDex_logo.png">
 
   <style>
     :root {
       --bg-color: #0f1115;
       --card-bg: #1a1d24;
-      --text-color: #f3f4f6;
-      --sub-text: #9ca3af;
+      --border-color: #272c36;
+      --text-main: #f3f4f6;
+      --text-sub: #9ca3af;
       --accent: #3b82f6;
+      --accent-hover: #2563eb;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       background-color: var(--bg-color);
-      color: var(--text-color);
+      color: var(--text-main);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       padding: 24px;
       min-height: 100vh;
+      position: relative;
     }
 
-    /* ヘッダー周り */
     header {
       max-width: 1400px;
-      margin: 0 auto 32px;
+      margin: 0 auto 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding-bottom: 16px;
-      border-bottom: 1px solid #2d333f;
+      border-bottom: 1px solid var(--border-color);
+      flex-wrap: wrap;
+      gap: 16px;
     }
 
     .brand {
       display: flex;
       align-items: center;
       gap: 12px;
-      text-decoration: none;
-      color: inherit;
     }
 
     .brand-logo {
@@ -58,20 +58,80 @@
       letter-spacing: -0.02em;
     }
 
-    .photo-count {
-      font-size: 0.9rem;
-      color: var(--sub-text);
-      background: #232730;
-      padding: 4px 12px;
-      border-radius: 20px;
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
-    /* ギャラリー一覧 */
-    .gallery-grid {
+    .view-toggle {
+      display: flex;
+      background: var(--card-bg);
+      padding: 4px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+
+    .view-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-sub);
+      padding: 6px 14px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .view-btn.active {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .photo-count {
+      font-size: 0.85rem;
+      color: var(--text-sub);
+      background: var(--card-bg);
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--border-color);
+    }
+
+    main {
       max-width: 1400px;
-      margin: 0 auto;
+      margin: 0 auto 80px;
+    }
+
+    .person-section {
+      margin-bottom: 36px;
+    }
+
+    .person-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed var(--border-color);
+    }
+
+    .person-name {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .person-count {
+      font-size: 0.8rem;
+      color: var(--text-sub);
+      background: #232832;
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
+
+    .gallery-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
       gap: 16px;
     }
 
@@ -82,7 +142,7 @@
       aspect-ratio: 1 / 1;
       cursor: pointer;
       position: relative;
-      border: 1px solid #232730;
+      border: 1px solid var(--border-color);
       transition: transform 0.2s ease, border-color 0.2s ease;
     }
 
@@ -98,142 +158,525 @@
       display: block;
     }
 
-    /* 拡大モーダル */
+    .card-tags {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      right: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      pointer-events: none;
+    }
+
+    .tag-badge {
+      font-size: 0.7rem;
+      background: rgba(15, 17, 21, 0.75);
+      backdrop-filter: blur(4px);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #e5e7eb;
+    }
+
+    .fab-button {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      width: 58px;
+      height: 58px;
+      background-color: var(--accent);
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 32px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+      cursor: pointer;
+      border: none;
+      z-index: 90;
+      transition: transform 0.2s, background-color 0.2s;
+    }
+
+    .fab-button:hover {
+      transform: scale(1.08);
+      background-color: var(--accent-hover);
+    }
+
+    .drop-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(59, 130, 246, 0.15);
+      border: 3px dashed var(--accent);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    .drop-overlay.active { display: flex; }
+    .drop-box-text {
+      background: rgba(15, 17, 21, 0.95);
+      padding: 20px 40px;
+      border-radius: 12px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      border: 1px solid var(--accent);
+    }
+
     .modal {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.88);
-      z-index: 100;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 120;
       justify-content: center;
       align-items: center;
-      padding: 24px;
-      backdrop-filter: blur(4px);
+      padding: 20px;
+      backdrop-filter: blur(6px);
     }
 
     .modal.active { display: flex; }
 
-    .modal img {
+    .modal-content {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      max-width: 500px;
+      width: 100%;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .modal-content h3 { font-size: 1.2rem; font-weight: 600; }
+
+    .preview-box {
+      width: 100%;
+      height: 220px;
+      background: #11141a;
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .preview-box img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 0.85rem;
+      color: var(--text-sub);
+    }
+
+    .form-group input {
+      background: #11141a;
+      border: 1px solid var(--border-color);
+      padding: 10px 12px;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 0.9rem;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .btn {
+      padding: 9px 18px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: background 0.2s;
+    }
+
+    .btn-cancel { background: #282e3a; color: #fff; }
+    .btn-cancel:hover { background: #353c4b; }
+    .btn-submit { background: var(--accent); color: #fff; }
+    .btn-submit:hover { background: var(--accent-hover); }
+    .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 150;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .lightbox.active { display: flex; }
+    .lightbox img {
       max-width: 90vw;
       max-height: 90vh;
       border-radius: 6px;
       object-fit: contain;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
     }
-
-    .modal-close {
+    .lightbox-close {
       position: absolute;
       top: 20px;
       right: 24px;
       font-size: 32px;
-      color: #9ca3af;
+      color: #fff;
       cursor: pointer;
-      line-height: 1;
     }
-
-    .modal-close:hover { color: #fff; }
 
     .status-msg {
       text-align: center;
-      padding: 60px 20px;
+      padding: 80px 20px;
       font-size: 15px;
-      color: var(--sub-text);
-      max-width: 600px;
-      margin: 0 auto;
-      line-height: 1.6;
+      color: var(--text-sub);
     }
   </style>
 </head>
 <body>
+
+  <div id="drop-overlay" class="drop-overlay">
+    <div class="drop-box-text">ここに画像をドロップしてアップロード</div>
+  </div>
 
   <header>
     <div class="brand">
       <img src="./MuseDex_logo.png" alt="MuseDex Logo" class="brand-logo">
       <h1 class="brand-title">MuseDex</h1>
     </div>
-    <span id="photo-count" class="photo-count">0 photos</span>
+
+    <div class="header-controls">
+      <div class="view-toggle">
+        <button id="btn-group-view" class="view-btn active" onclick="switchView('group')">人物別</button>
+        <button id="btn-all-view" class="view-btn" onclick="switchView('all')">すべて</button>
+      </div>
+      <span id="photo-count" class="photo-count">0 photos</span>
+    </div>
   </header>
 
   <div id="status" class="status-msg">写真を読み込み中...</div>
-  <main class="gallery-grid" id="gallery"></main>
+  <main id="main-container"></main>
 
-  <!-- 拡大モーダル -->
-  <div class="modal" id="modal" onclick="closeModal()">
-    <span class="modal-close">&times;</span>
-    <img id="modal-img" src="" alt="Expanded View" onclick="event.stopPropagation()">
+  <button id="fab-btn" class="fab-button" title="画像を追加">+</button>
+  <input type="file" id="file-input" accept="image/*" style="display: none;">
+
+  <div id="upload-modal" class="modal">
+    <div class="modal-content">
+      <h3>新しい画像を登録</h3>
+      <div class="preview-box">
+        <img id="upload-preview" src="" alt="アップロードプレビュー">
+      </div>
+      <div class="form-group">
+        <label for="input-person">人物名（同じ名前で1つにまとまります）</label>
+        <input type="text" id="input-person" placeholder="例: 佐藤、Alice、風景 など" list="person-list">
+        <datalist id="person-list"></datalist>
+      </div>
+      <div class="form-group">
+        <label for="input-tags">タグ（カンマ区切り）</label>
+        <input type="text" id="input-tags" placeholder="例: 記念撮影, 旅行, ポートレート">
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-cancel" onclick="closeUploadModal()">キャンセル</button>
+        <button id="submit-upload-btn" class="btn btn-submit" onclick="executeUpload()">アップロード</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+    <span class="lightbox-close">&times;</span>
+    <img id="lightbox-img" src="" alt="Expanded View" onclick="event.stopPropagation()">
   </div>
 
   <script>
-    // ★ 発行されたGASの本番ウェブアプリURL（末尾が /exec のもの）を貼り付けてください
     const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbx0F2NKIoBvHS6IhWbMiiAfs-9YEdeu1RJBJFl413_y_K4JCdU1wGtqwqGTteSjwsRr/exec';
 
-    async function initGallery() {
-      const gallery = document.getElementById('gallery');
+    let photos = [];
+    let currentView = 'group';
+    let pendingFileBlob = null;
+    let pendingFileName = '';
+
+    async function loadGallery() {
       const status = document.getElementById('status');
       const countLabel = document.getElementById('photo-count');
 
       try {
         const response = await fetch(GAS_ENDPOINT);
-        if (!response.ok) {
-          throw new Error(`HTTPエラー (${response.status})`);
-        }
-
         const res = await response.json();
 
-        if (res.status !== 'success') {
-          throw new Error(res.message || '写真データの取得に失敗しました');
-        }
+        if (res.status !== 'success') throw new Error(res.message);
 
-        status.style.display = 'none';
-        countLabel.textContent = `${res.count} photos`;
+        photos = res.data;
+        countLabel.textContent = `${photos.length} photos`;
 
-        if (res.data.length === 0) {
+        if (photos.length === 0) {
           status.style.display = 'block';
-          status.textContent = '対象フォルダに画像が見つかりませんでした。';
+          status.textContent = '写真がまだありません。右下の「＋」またはドラッグ＆ドロップで追加してください。';
+          document.getElementById('main-container').innerHTML = '';
           return;
         }
 
-        res.data.forEach(item => {
-          const card = document.createElement('div');
-          card.className = 'image-card';
-          
-          const img = document.createElement('img');
-          img.src = item.thumbnailUrl;
-          img.alt = item.name;
-          img.loading = 'lazy';
-          
-          card.onclick = () => openModal(item.previewUrl);
-          card.appendChild(img);
-          gallery.appendChild(card);
-        });
+        status.style.display = 'none';
+        updatePersonDatalist();
+        renderGallery();
 
-      } catch (error) {
-        status.innerHTML = `
-          <strong>読み込みエラー:</strong> ${error.message}<br><br>
-          <small>※GASのデプロイ設定（アクセス権: 全員）やURLが正しいか確認してください。<br>F12の開発者ツール（Console）にも詳細が出力されます。</small>
-        `;
-        console.error('Gallery Fetch Error:', error);
+      } catch (err) {
+        status.textContent = `読み込みエラー: ${err.message}`;
       }
     }
 
-    function openModal(previewUrl) {
-      const modal = document.getElementById('modal');
-      const modalImg = document.getElementById('modal-img');
-      modalImg.src = previewUrl;
-      modal.classList.add('active');
+    function updatePersonDatalist() {
+      const datalist = document.getElementById('person-list');
+      datalist.innerHTML = '';
+      const uniquePersons = [...new Set(photos.map(p => p.person).filter(p => p && p !== '未分類'))];
+      uniquePersons.forEach(person => {
+        const opt = document.createElement('option');
+        opt.value = person;
+        datalist.appendChild(opt);
+      });
     }
 
-    function closeModal() {
-      const modal = document.getElementById('modal');
-      modal.classList.remove('active');
-      document.getElementById('modal-img').src = '';
+    function renderGallery() {
+      const container = document.getElementById('main-container');
+      container.innerHTML = '';
+
+      if (currentView === 'all') {
+        const grid = document.createElement('div');
+        grid.className = 'gallery-grid';
+        photos.forEach(item => grid.appendChild(createImageCard(item)));
+        container.appendChild(grid);
+      } else {
+        const groups = {};
+        photos.forEach(item => {
+          const person = item.person || '未分類';
+          if (!groups[person]) groups[person] = [];
+          groups[person].push(item);
+        });
+
+        const personKeys = Object.keys(groups).sort((a, b) => {
+          if (a === '未分類') return 1;
+          if (b === '未分類') return -1;
+          return a.localeCompare(b, 'ja');
+        });
+
+        personKeys.forEach(person => {
+          const sec = document.createElement('section');
+          sec.className = 'person-section';
+
+          const head = document.createElement('div');
+          head.className = 'person-header';
+          head.innerHTML = `
+            <span class="person-name">${escapeHtml(person)}</span>
+            <span class="person-count">${groups[person].length}枚</span>
+          `;
+          sec.appendChild(head);
+
+          const grid = document.createElement('div');
+          grid.className = 'gallery-grid';
+          groups[person].forEach(item => grid.appendChild(createImageCard(item)));
+          sec.appendChild(grid);
+
+          container.appendChild(sec);
+        });
+      }
+    }
+
+    function createImageCard(item) {
+      const card = document.createElement('div');
+      card.className = 'image-card';
+      card.onclick = () => openLightbox(item.previewUrl);
+
+      const img = document.createElement('img');
+      img.src = item.thumbnailUrl;
+      img.alt = item.name;
+      img.loading = 'lazy';
+      card.appendChild(img);
+
+      if (item.tags && item.tags.length > 0) {
+        const tagsContainer = document.createElement('div');
+        tagsContainer.className = 'card-tags';
+        item.tags.forEach(t => {
+          const badge = document.createElement('span');
+          badge.className = 'tag-badge';
+          badge.textContent = `#${t}`;
+          tagsContainer.appendChild(badge);
+        });
+        card.appendChild(tagsContainer);
+      }
+
+      return card;
+    }
+
+    function switchView(view) {
+      currentView = view;
+      document.getElementById('btn-group-view').classList.toggle('active', view === 'group');
+      document.getElementById('btn-all-view').classList.toggle('active', view === 'all');
+      renderGallery();
+    }
+
+    const fabBtn = document.getElementById('fab-btn');
+    const fileInput = document.getElementById('file-input');
+    const dropOverlay = document.getElementById('drop-overlay');
+
+    fabBtn.onclick = () => fileInput.click();
+
+    fileInput.onchange = (e) => {
+      if (e.target.files.length > 0) {
+        handleSelectedFile(e.target.files[0]);
+      }
+    };
+
+    window.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropOverlay.classList.add('active');
+    });
+
+    window.addEventListener('dragleave', (e) => {
+      if (e.relatedTarget === null) {
+        dropOverlay.classList.remove('active');
+      }
+    });
+
+    window.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropOverlay.classList.remove('active');
+      if (e.dataTransfer.files.length > 0) {
+        const file = e.dataTransfer.files[0];
+        if (file.type.startsWith('image/')) {
+          handleSelectedFile(file);
+        } else {
+          alert('画像ファイルを選択してください');
+        }
+      }
+    });
+
+    function handleSelectedFile(file) {
+      pendingFileName = file.name;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          const maxDim = 2048;
+
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          pendingFileBlob = canvas.toDataURL('image/jpeg', 0.88);
+          document.getElementById('upload-preview').src = pendingFileBlob;
+          document.getElementById('upload-modal').classList.add('active');
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function closeUploadModal() {
+      document.getElementById('upload-modal').classList.remove('active');
+      document.getElementById('input-person').value = '';
+      document.getElementById('input-tags').value = '';
+      document.getElementById('file-input').value = '';
+      pendingFileBlob = null;
+    }
+
+    async function executeUpload() {
+      if (!pendingFileBlob) return;
+
+      const submitBtn = document.getElementById('submit-upload-btn');
+      submitBtn.disabled = true;
+      submitBtn.textContent = '保存中...';
+
+      const person = document.getElementById('input-person').value.trim() || '未分類';
+      const rawTags = document.getElementById('input-tags').value;
+      const tags = rawTags.split(/[,、\s]+/).filter(t => t.trim() !== '');
+
+      const payload = {
+        fileName: pendingFileName,
+        mimeType: 'image/jpeg',
+        base64: pendingFileBlob,
+        person: person,
+        tags: tags
+      };
+
+      try {
+        const response = await fetch(GAS_ENDPOINT, {
+          method: 'POST',
+          body: JSON.stringify(payload),
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+        });
+
+        const res = await response.json();
+        if (res.status !== 'success') throw new Error(res.message);
+
+        closeUploadModal();
+        document.getElementById('status').style.display = 'block';
+        document.getElementById('status').textContent = '新しい写真を反映中...';
+        await loadGallery();
+
+      } catch (err) {
+        alert(`アップロードに失敗しました: ${err.message}`);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'アップロード';
+      }
+    }
+
+    function openLightbox(url) {
+      document.getElementById('lightbox-img').src = url;
+      document.getElementById('lightbox').classList.add('active');
+    }
+
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('active');
+      document.getElementById('lightbox-img').src = '';
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/[&<>'"]/g, tag => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+      }[tag] || tag));
     }
 
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeModal();
+      if (e.key === 'Escape') {
+        closeLightbox();
+        closeUploadModal();
+      }
     });
 
-    initGallery();
+    loadGallery();
   </script>
 </body>
 </html>

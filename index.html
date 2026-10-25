@@ -119,7 +119,7 @@
       margin: 0 auto 80px;
     }
 
-    /* アコーディオン・人物セクション */
+    /* アコーディオン・セクション */
     .person-section {
       margin-bottom: 28px;
       background: #14171f;
@@ -212,7 +212,6 @@
       display: block;
     }
 
-    /* 動画バッジ */
     .video-badge {
       position: absolute;
       top: 10px;
@@ -299,7 +298,7 @@
       border: 1px solid var(--accent);
     }
 
-    /* アップロードモーダル */
+    /* モーダル共通 */
     .modal {
       display: none;
       position: fixed;
@@ -318,7 +317,7 @@
       background: var(--card-bg);
       border: 1px solid var(--border-color);
       border-radius: 12px;
-      max-width: 540px;
+      max-width: 520px;
       width: 100%;
       padding: 24px;
       display: flex;
@@ -328,7 +327,6 @@
 
     .modal-content h3 { font-size: 1.2rem; font-weight: 600; }
 
-    /* アップロード対象サムネイル一覧 */
     .upload-queue-container {
       display: flex;
       gap: 10px;
@@ -354,7 +352,7 @@
       align-items: center;
     }
 
-    .upload-queue-item img, .upload-queue-item video {
+    .upload-queue-item img {
       width: 100%;
       height: 100%;
       object-fit: cover;
@@ -395,7 +393,6 @@
       border-color: var(--accent);
     }
 
-    /* プログレスバー */
     .progress-bar-container {
       display: none;
       flex-direction: column;
@@ -447,52 +444,163 @@
     .btn-submit:hover { background: var(--accent-hover); }
     .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    /* 拡大ライトボックス */
+    /* ==========================================
+       スライド式ライトボックス
+       ========================================== */
     .lightbox {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.92);
+      background: rgba(0, 0, 0, 0.94);
       z-index: 150;
-      justify-content: center;
+      flex-direction: column;
+      justify-content: space-between;
       align-items: center;
-      padding: 24px;
+      padding: 16px 20px 24px;
+      touch-action: pan-y;
     }
 
     .lightbox.active { display: flex; }
 
+    /* 上部バー */
+    .lightbox-topbar {
+      width: 100%;
+      max-width: 1400px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .lightbox-counter {
+      font-size: 0.9rem;
+      color: var(--text-sub);
+    }
+
+    .lightbox-close {
+      font-size: 32px;
+      color: #9ca3af;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .lightbox-close:hover { color: #fff; }
+
+    /* メディア中央エリア & 前後ナビボタン */
+    .lightbox-main-area {
+      position: relative;
+      width: 100%;
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 0;
+    }
+
     .lightbox-content {
-      max-width: 90vw;
-      max-height: 85vh;
+      width: 100%;
+      height: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
     }
 
     .lightbox-content img {
-      max-width: 100%;
-      max-height: 85vh;
+      max-width: 90vw;
+      max-height: 72vh;
       border-radius: 6px;
       object-fit: contain;
+      user-select: none;
     }
 
     .lightbox-content iframe {
-      width: 80vw;
-      height: 80vh;
+      width: 82vw;
+      height: 72vh;
       border: none;
       border-radius: 8px;
     }
 
-    .lightbox-close {
+    .nav-arrow {
       position: absolute;
-      top: 20px;
-      right: 24px;
-      font-size: 32px;
-      color: #9ca3af;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(25, 28, 35, 0.7);
+      border: 1px solid var(--border-color);
+      color: #fff;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 22px;
       cursor: pointer;
+      user-select: none;
+      transition: background 0.2s, transform 0.2s;
+      z-index: 20;
     }
 
-    .lightbox-close:hover { color: #fff; }
+    .nav-arrow:hover {
+      background: var(--accent);
+      transform: translateY(-50%) scale(1.08);
+    }
+
+    .nav-prev { left: 16px; }
+    .nav-next { right: 16px; }
+
+    /* 下部メタバー（タグ・人物・編集ボタン） */
+    .lightbox-bottombar {
+      width: 100%;
+      max-width: 900px;
+      background: rgba(26, 29, 36, 0.85);
+      border: 1px solid var(--border-color);
+      backdrop-filter: blur(8px);
+      padding: 12px 20px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      z-index: 10;
+    }
+
+    .lightbox-meta-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .lightbox-person {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #fff;
+    }
+
+    .lightbox-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .btn-edit-meta {
+      background: #282e3c;
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+
+    .btn-edit-meta:hover {
+      background: var(--accent);
+      color: #fff;
+    }
 
     .status-msg {
       text-align: center;
@@ -528,16 +636,13 @@
   <main id="main-container"></main>
 
   <button id="fab-btn" class="fab-button" title="画像・動画を追加">+</button>
-  <!-- multiple 属性で複数選択可能に -->
   <input type="file" id="file-input" accept="image/*,video/*" multiple style="display: none;">
 
-  <!-- アップロードモーダル -->
+  <!-- 新規アップロードモーダル -->
   <div id="upload-modal" class="modal">
     <div class="modal-content">
       <h3 id="modal-title">新しいメディアを登録</h3>
-      
       <div id="upload-queue" class="upload-queue-container"></div>
-
       <div class="form-group">
         <label for="input-person">人物名（同じ名前で1つにまとまります）</label>
         <input type="text" id="input-person" placeholder="例: 佐藤、Alice など" list="person-list">
@@ -545,16 +650,14 @@
       </div>
       <div class="form-group">
         <label for="input-tags">タグ（カンマ区切り）</label>
-        <input type="text" id="input-tags" placeholder="例: 記念, 旅行, 動画">
+        <input type="text" id="input-tags" placeholder="例: 記念, 旅行, ポートレート">
       </div>
-
       <div id="progress-container" class="progress-bar-container">
         <div class="progress-bar-bg">
           <div id="progress-fill" class="progress-bar-fill"></div>
         </div>
         <span id="progress-text" class="progress-text">0 / 0</span>
       </div>
-
       <div class="modal-actions">
         <button id="cancel-upload-btn" class="btn btn-cancel" onclick="closeUploadModal()">キャンセル</button>
         <button id="submit-upload-btn" class="btn btn-submit" onclick="executeBatchUpload()">アップロード</button>
@@ -562,10 +665,48 @@
     </div>
   </div>
 
-  <!-- 拡大ライトボックス -->
-  <div id="lightbox" class="lightbox" onclick="closeLightbox()">
-    <span class="lightbox-close">&times;</span>
-    <div class="lightbox-content" id="lightbox-content" onclick="event.stopPropagation()"></div>
+  <!-- タグ・人物名 編集用モーダル -->
+  <div id="edit-modal" class="modal" style="z-index: 200;">
+    <div class="modal-content">
+      <h3>タグ・人物名の編集</h3>
+      <input type="hidden" id="edit-file-id">
+      <div class="form-group">
+        <label for="edit-person">人物名</label>
+        <input type="text" id="edit-person" list="person-list">
+      </div>
+      <div class="form-group">
+        <label for="edit-tags">タグ（カンマ区切りで追加・変更）</label>
+        <input type="text" id="edit-tags" placeholder="例: 旅行, 水着, 笑顔">
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-cancel" onclick="closeEditModal()">キャンセル</button>
+        <button id="submit-edit-btn" class="btn btn-submit" onclick="executeMetaUpdate()">保存する</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- スライド式ライトボックス -->
+  <div id="lightbox" class="lightbox">
+    <div class="lightbox-topbar">
+      <span id="lightbox-counter" class="lightbox-counter">1 / 1</span>
+      <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+    </div>
+
+    <div class="lightbox-main-area">
+      <button class="nav-arrow nav-prev" onclick="prevSlide(event)">❮</button>
+      <div class="lightbox-content" id="lightbox-content"></div>
+      <button class="nav-arrow nav-next" onclick="nextSlide(event)">❯</button>
+    </div>
+
+    <div class="lightbox-bottombar">
+      <div class="lightbox-meta-info">
+        <span id="lightbox-person" class="lightbox-person">人物名</span>
+        <div id="lightbox-tags" class="lightbox-tags"></div>
+      </div>
+      <button class="btn-edit-meta" onclick="openEditModal()">
+        ✏️ タグを編集
+      </button>
+    </div>
   </div>
 
   <script>
@@ -573,8 +714,12 @@
 
     let mediaItems = [];
     let currentView = 'group';
-    let pendingFiles = []; // 一括アップロード用キュー
+    let pendingFiles = [];
     let isAllExpanded = true;
+
+    // スライダー状態管理
+    let currentSliderList = []; // 現在めくっている対象のメディア配列
+    let currentSliderIndex = 0;  // 現在表示中のインデックス
 
     // ==========================================
     // 1. 読み込み & 描画
@@ -628,7 +773,9 @@
         toggleBtn.style.display = 'none';
         const grid = document.createElement('div');
         grid.className = 'gallery-grid';
-        mediaItems.forEach(item => grid.appendChild(createMediaCard(item)));
+        mediaItems.forEach((item, idx) => {
+          grid.appendChild(createMediaCard(item, mediaItems, idx));
+        });
         container.appendChild(grid);
       } else {
         toggleBtn.style.display = 'inline-block';
@@ -646,10 +793,10 @@
         });
 
         personKeys.forEach(person => {
+          const groupList = groups[person];
           const sec = document.createElement('section');
           sec.className = 'person-section';
 
-          // アコーディオンヘッダー
           const header = document.createElement('div');
           header.className = 'person-header';
           header.onclick = () => sec.classList.toggle('collapsed');
@@ -658,18 +805,19 @@
             <div class="person-header-left">
               <span class="accordion-icon">▼</span>
               <span class="person-name">${escapeHtml(person)}</span>
-              <span class="person-count">${groups[person].length}件</span>
+              <span class="person-count">${groupList.length}件</span>
             </div>
           `;
           sec.appendChild(header);
 
-          // セクション本体
           const body = document.createElement('div');
           body.className = 'person-body';
 
           const grid = document.createElement('div');
           grid.className = 'gallery-grid';
-          groups[person].forEach(item => grid.appendChild(createMediaCard(item)));
+          groupList.forEach((item, idx) => {
+            grid.appendChild(createMediaCard(item, groupList, idx));
+          });
           body.appendChild(grid);
 
           sec.appendChild(body);
@@ -678,10 +826,11 @@
       }
     }
 
-    function createMediaCard(item) {
+    function createMediaCard(item, currentList, index) {
       const card = document.createElement('div');
       card.className = 'media-card';
-      card.onclick = () => openLightbox(item);
+      // クリック時にそのグループ（または全体）のリストと現在番号を渡してスライダーを開く
+      card.onclick = () => openLightbox(currentList, index);
 
       const img = document.createElement('img');
       img.src = item.thumbnailUrl;
@@ -689,7 +838,6 @@
       img.loading = 'lazy';
       card.appendChild(img);
 
-      // 動画バッジ
       if (item.type === 'video') {
         const badge = document.createElement('div');
         badge.className = 'video-badge';
@@ -724,14 +872,185 @@
       const toggleBtn = document.getElementById('toggle-accordion-btn');
       isAllExpanded = !isAllExpanded;
 
-      sections.forEach(sec => {
-        sec.classList.toggle('collapsed', !isAllExpanded);
-      });
+      sections.forEach(sec => sec.classList.toggle('collapsed', !isAllExpanded));
       toggleBtn.textContent = isAllExpanded ? 'すべて閉じる' : 'すべて開く';
     }
 
     // ==========================================
-    // 2. 複数ファイル一括アップロード
+    // 2. スライド式ライトボックス制御
+    // ==========================================
+    function openLightbox(list, index) {
+      currentSliderList = list;
+      currentSliderIndex = index;
+      renderCurrentSlide();
+      document.getElementById('lightbox').classList.add('active');
+    }
+
+    function renderCurrentSlide() {
+      const item = currentSliderList[currentSliderIndex];
+      if (!item) return;
+
+      const container = document.getElementById('lightbox-content');
+      container.innerHTML = '';
+
+      if (item.type === 'video') {
+        const iframe = document.createElement('iframe');
+        iframe.src = item.previewUrl;
+        iframe.allow = 'autoplay';
+        iframe.allowFullscreen = true;
+        container.appendChild(iframe);
+      } else {
+        const img = document.createElement('img');
+        img.src = item.previewUrl;
+        img.alt = item.name;
+        container.appendChild(img);
+      }
+
+      // カウンター
+      document.getElementById('lightbox-counter').textContent = `${currentSliderIndex + 1} / ${currentSliderList.length}`;
+
+      // 下部メタ情報
+      document.getElementById('lightbox-person').textContent = item.person || '未分類';
+      const tagsBox = document.getElementById('lightbox-tags');
+      tagsBox.innerHTML = '';
+      if (item.tags && item.tags.length > 0) {
+        item.tags.forEach(t => {
+          const badge = document.createElement('span');
+          badge.className = 'tag-badge';
+          badge.textContent = `#${t}`;
+          tagsBox.appendChild(badge);
+        });
+      }
+    }
+
+    function prevSlide(e) {
+      if (e) e.stopPropagation();
+      if (currentSliderList.length <= 1) return;
+      currentSliderIndex = (currentSliderIndex - 1 + currentSliderList.length) % currentSliderList.length;
+      renderCurrentSlide();
+    }
+
+    function nextSlide(e) {
+      if (e) e.stopPropagation();
+      if (currentSliderList.length <= 1) return;
+      currentSliderIndex = (currentSliderIndex + 1) % currentSliderList.length;
+      renderCurrentSlide();
+    }
+
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('active');
+      document.getElementById('lightbox-content').innerHTML = '';
+    }
+
+    // キーボード操作（← → でスライド、ESC で閉じる）
+    document.addEventListener('keydown', (e) => {
+      const lightbox = document.getElementById('lightbox');
+      const editModal = document.getElementById('edit-modal');
+      const uploadModal = document.getElementById('upload-modal');
+
+      if (editModal.classList.contains('active') || uploadModal.classList.contains('active')) {
+        if (e.key === 'Escape') {
+          closeEditModal();
+          closeUploadModal();
+        }
+        return;
+      }
+
+      if (lightbox.classList.contains('active')) {
+        if (e.key === 'ArrowLeft') prevSlide();
+        if (e.key === 'ArrowRight') nextSlide();
+        if (e.key === 'Escape') closeLightbox();
+      }
+    });
+
+    // スマホ向け左右スワイプ対応
+    let touchStartX = 0;
+    let touchEndX = 0;
+    const lightboxElem = document.getElementById('lightbox');
+
+    lightboxElem.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    lightboxElem.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    }, { passive: true });
+
+    function handleSwipe() {
+      const diff = touchEndX - touchStartX;
+      if (Math.abs(diff) > 50) {
+        if (diff > 0) prevSlide(); // 右スワイプで前へ
+        else nextSlide();          // 左スワイプで次へ
+      }
+    }
+
+    // ==========================================
+    // 3. タグ・人物名の後から編集機能
+    // ==========================================
+    function openEditModal() {
+      const item = currentSliderList[currentSliderIndex];
+      if (!item) return;
+
+      document.getElementById('edit-file-id').value = item.id;
+      document.getElementById('edit-person').value = item.person || '';
+      document.getElementById('edit-tags').value = (item.tags || []).join(', ');
+      document.getElementById('edit-modal').classList.add('active');
+    }
+
+    function closeEditModal() {
+      document.getElementById('edit-modal').classList.remove('active');
+    }
+
+    async function executeMetaUpdate() {
+      const fileId = document.getElementById('edit-file-id').value;
+      const person = document.getElementById('edit-person').value.trim() || '未分類';
+      const rawTags = document.getElementById('edit-tags').value;
+      const tags = rawTags.split(/[,、\s]+/).filter(t => t.trim() !== '');
+
+      const submitBtn = document.getElementById('submit-edit-btn');
+      submitBtn.disabled = true;
+      submitBtn.textContent = '保存中...';
+
+      const payload = {
+        action: 'updateMeta',
+        fileId: fileId,
+        person: person,
+        tags: tags
+      };
+
+      try {
+        const response = await fetch(GAS_ENDPOINT, {
+          method: 'POST',
+          body: JSON.stringify(payload),
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+        });
+
+        const res = await response.json();
+        if (res.status !== 'success') throw new Error(res.message);
+
+        // クライアント内のデータを即座に更新
+        const target = mediaItems.find(m => m.id === fileId);
+        if (target) {
+          target.person = person;
+          target.tags = tags;
+        }
+
+        closeEditModal();
+        renderCurrentSlide();   // 現在のスライドのタグ表示を更新
+        updatePersonDatalist();
+        renderGallery();        // 背景の一覧も更新
+
+      } catch (err) {
+        alert(`更新に失敗しました: ${err.message}`);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = '保存する';
+      }
+    }
+
+    // ==========================================
+    // 4. アップロード処理
     // ==========================================
     const fabBtn = document.getElementById('fab-btn');
     const fileInput = document.getElementById('file-input');
@@ -740,9 +1059,7 @@
     fabBtn.onclick = () => fileInput.click();
 
     fileInput.onchange = (e) => {
-      if (e.target.files.length > 0) {
-        handleSelectedFiles(Array.from(e.target.files));
-      }
+      if (e.target.files.length > 0) handleSelectedFiles(Array.from(e.target.files));
     };
 
     window.addEventListener('dragover', (e) => {
@@ -781,10 +1098,6 @@
 
         const isVideo = file.type.startsWith('video/');
         if (isVideo) {
-          // 動画はGASの制限上25MB目安の警告
-          if (file.size > 25 * 1024 * 1024) {
-            alert(`「${file.name}」は約25MBを超えているため、GAS経由でのアップロードに失敗する可能性があります。`);
-          }
           itemBox.innerHTML = `
             <span style="font-size:24px;">🎬</span>
             <span class="type-icon">VIDEO</span>
@@ -796,7 +1109,6 @@
         }
         queueContainer.appendChild(itemBox);
 
-        // ファイルデータを準備
         const base64Data = await convertFileToBase64(file);
         pendingFiles.push({
           name: file.name,
@@ -808,7 +1120,6 @@
       document.getElementById('upload-modal').classList.add('active');
     }
 
-    // 画像はCanvasで2048pxに最適化、動画は直接Base64化
     function convertFileToBase64(file) {
       return new Promise((resolve) => {
         if (file.type.startsWith('image/')) {
@@ -840,7 +1151,6 @@
           };
           reader.readAsDataURL(file);
         } else {
-          // 動画はそのままBase64
           const reader = new FileReader();
           reader.onload = (e) => resolve(e.target.result);
           reader.readAsDataURL(file);
@@ -848,7 +1158,6 @@
       });
     }
 
-    // 順次一括アップロードの実行
     async function executeBatchUpload() {
       if (pendingFiles.length === 0) return;
 
@@ -891,7 +1200,7 @@
           const res = await response.json();
           if (res.status === 'success') successCount++;
         } catch (err) {
-          console.error(`Upload error for ${item.name}:`, err);
+          console.error(`Upload error:`, err);
         }
       }
 
@@ -917,47 +1226,11 @@
       pendingFiles = [];
     }
 
-    // ==========================================
-    // 3. ライトボックス（画像＆動画プレイヤー）
-    // ==========================================
-    function openLightbox(item) {
-      const container = document.getElementById('lightbox-content');
-      container.innerHTML = '';
-
-      if (item.type === 'video') {
-        const iframe = document.createElement('iframe');
-        iframe.src = item.previewUrl;
-        iframe.allow = 'autoplay';
-        iframe.allowFullscreen = true;
-        container.appendChild(iframe);
-      } else {
-        const img = document.createElement('img');
-        img.src = item.previewUrl;
-        img.alt = item.name;
-        container.appendChild(img);
-      }
-
-      document.getElementById('lightbox').classList.add('active');
-    }
-
-    function closeLightbox() {
-      document.getElementById('lightbox').classList.remove('active');
-      // 動画の音声が裏で鳴り続けないよう中身をクリア
-      document.getElementById('lightbox-content').innerHTML = '';
-    }
-
     function escapeHtml(str) {
       return str.replace(/[&<>'"]/g, tag => ({
         '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
       }[tag] || tag));
     }
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        closeLightbox();
-        closeUploadModal();
-      }
-    });
 
     loadGallery();
   </script>

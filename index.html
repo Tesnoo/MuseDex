@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Photo Gallery</title>
+  <style>
+    :root {
+      --bg-color: #0f1115;
+      --card-bg: #1a1d24;
+      --text-color: #f3f4f6;
+      --accent: #3b82f6;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      padding: 24px;
+    }
+
+    header {
+      max-width: 1400px;
+      margin: 0 auto 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .gallery-grid {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .image-card {
+      background-color: var(--card-bg);
+      border-radius: 8px;
+      overflow: hidden;
+      aspect-ratio: 1 / 1;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .image-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.25s ease;
+      display: block;
+    }
+
+    .image-card:hover img {
+      transform: scale(1.04);
+    }
+
+    /* 拡大モーダル */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .modal.active { display: flex; }
+
+    .modal img {
+      max-width: 90vw;
+      max-height: 90vh;
+      border-radius: 4px;
+      object-fit: contain;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 24px;
+      font-size: 32px;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .loader {
+      text-align: center;
+      padding: 40px;
+      font-size: 14px;
+      color: #9ca3af;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Drive Gallery</h1>
+    <span id="photo-count">0 photos</span>
+  </header>
+
+  <div id="loader" class="loader">Loading photos...</div>
+  <main class="gallery-grid" id="gallery"></main>
+
+  <!-- 拡大モーダル -->
+  <div class="modal" id="modal" onclick="closeModal()">
+    <span class="modal-close">&times;</span>
+    <img id="modal-img" src="" alt="Expanded View" onclick="event.stopPropagation()">
+  </div>
+
+  <script>
+    // 先ほど作成したGASのウェブアプリURLを指定
+    const GAS_ENDPOINT = 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec';
+
+    async function initGallery() {
+      const gallery = document.getElementById('gallery');
+      const loader = document.getElementById('loader');
+      const countLabel = document.getElementById('photo-count');
+
+      try {
+        const response = await fetch(GAS_ENDPOINT);
+        const res = await response.json();
+
+        if (res.status !== 'success') throw new Error(res.message);
+
+        loader.style.display = 'none';
+        countLabel.textContent = `${res.count} photos`;
+
+        res.data.forEach(item => {
+          const card = document.createElement('div');
+          card.className = 'image-card';
+          
+          const img = document.createElement('img');
+          img.src = item.thumbnailUrl;
+          img.alt = item.name;
+          img.loading = 'lazy'; // スクロール時にオンデマンド読み込み
+          
+          card.onclick = () => openModal(item.previewUrl);
+          card.appendChild(img);
+          gallery.appendChild(card);
+        });
+
+      } catch (error) {
+        loader.textContent = `読み込みエラー: ${error.message}`;
+      }
+    }
+
+    function openModal(previewUrl) {
+      const modal = document.getElementById('modal');
+      const modalImg = document.getElementById('modal-img');
+      modalImg.src = previewUrl;
+      modal.classList.add('active');
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('modal');
+      modal.classList.remove('active');
+      document.getElementById('modal-img').src = '';
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    initGallery();
+  </script>
+</body>
+</html>

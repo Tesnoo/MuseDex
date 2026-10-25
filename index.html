@@ -3,12 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Photo Gallery</title>
+  <title>MuseDex</title>
+  
+  <!-- ファビコン設定 -->
+  <link rel="icon" type="image/png" href="./MuseDex_logo.png">
+
   <style>
     :root {
       --bg-color: #0f1115;
       --card-bg: #1a1d24;
       --text-color: #f3f4f6;
+      --sub-text: #9ca3af;
       --accent: #3b82f6;
     }
 
@@ -18,43 +23,79 @@
       color: var(--text-color);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       padding: 24px;
+      min-height: 100vh;
     }
 
+    /* ヘッダー周り */
     header {
       max-width: 1400px;
-      margin: 0 auto 24px;
+      margin: 0 auto 32px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #2d333f;
     }
 
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+      border-radius: 6px;
+    }
+
+    .brand-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .photo-count {
+      font-size: 0.9rem;
+      color: var(--sub-text);
+      background: #232730;
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+
+    /* ギャラリー一覧 */
     .gallery-grid {
       max-width: 1400px;
       margin: 0 auto;
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 16px;
     }
 
     .image-card {
       background-color: var(--card-bg);
-      border-radius: 8px;
+      border-radius: 10px;
       overflow: hidden;
       aspect-ratio: 1 / 1;
       cursor: pointer;
       position: relative;
+      border: 1px solid #232730;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .image-card:hover {
+      transform: translateY(-2px);
+      border-color: #3b4252;
     }
 
     .image-card img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.25s ease;
       display: block;
-    }
-
-    .image-card:hover img {
-      transform: scale(1.04);
     }
 
     /* 拡大モーダル */
@@ -62,11 +103,12 @@
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.85);
+      background: rgba(0, 0, 0, 0.88);
       z-index: 100;
       justify-content: center;
       align-items: center;
-      padding: 20px;
+      padding: 24px;
+      backdrop-filter: blur(4px);
     }
 
     .modal.active { display: flex; }
@@ -74,8 +116,9 @@
     .modal img {
       max-width: 90vw;
       max-height: 90vh;
-      border-radius: 4px;
+      border-radius: 6px;
       object-fit: contain;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
     }
 
     .modal-close {
@@ -83,26 +126,35 @@
       top: 20px;
       right: 24px;
       font-size: 32px;
-      color: #fff;
+      color: #9ca3af;
       cursor: pointer;
+      line-height: 1;
     }
 
-    .loader {
+    .modal-close:hover { color: #fff; }
+
+    .status-msg {
       text-align: center;
-      padding: 40px;
-      font-size: 14px;
-      color: #9ca3af;
+      padding: 60px 20px;
+      font-size: 15px;
+      color: var(--sub-text);
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
     }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>Drive Gallery</h1>
-    <span id="photo-count">0 photos</span>
+    <div class="brand">
+      <img src="./MuseDex_logo.png" alt="MuseDex Logo" class="brand-logo">
+      <h1 class="brand-title">MuseDex</h1>
+    </div>
+    <span id="photo-count" class="photo-count">0 photos</span>
   </header>
 
-  <div id="loader" class="loader">Loading photos...</div>
+  <div id="status" class="status-msg">写真を読み込み中...</div>
   <main class="gallery-grid" id="gallery"></main>
 
   <!-- 拡大モーダル -->
@@ -112,22 +164,34 @@
   </div>
 
   <script>
-    // 先ほど作成したGASのウェブアプリURLを指定
-    const GAS_ENDPOINT = 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec';
+    // ★ 発行されたGASの本番ウェブアプリURL（末尾が /exec のもの）を貼り付けてください
+    const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbx0F2NKIoBvHS6IhWbMiiAfs-9YEdeu1RJBJFl413_y_K4JCdU1wGtqwqGTteSjwsRr/exec';
 
     async function initGallery() {
       const gallery = document.getElementById('gallery');
-      const loader = document.getElementById('loader');
+      const status = document.getElementById('status');
       const countLabel = document.getElementById('photo-count');
 
       try {
         const response = await fetch(GAS_ENDPOINT);
+        if (!response.ok) {
+          throw new Error(`HTTPエラー (${response.status})`);
+        }
+
         const res = await response.json();
 
-        if (res.status !== 'success') throw new Error(res.message);
+        if (res.status !== 'success') {
+          throw new Error(res.message || '写真データの取得に失敗しました');
+        }
 
-        loader.style.display = 'none';
+        status.style.display = 'none';
         countLabel.textContent = `${res.count} photos`;
+
+        if (res.data.length === 0) {
+          status.style.display = 'block';
+          status.textContent = '対象フォルダに画像が見つかりませんでした。';
+          return;
+        }
 
         res.data.forEach(item => {
           const card = document.createElement('div');
@@ -136,7 +200,7 @@
           const img = document.createElement('img');
           img.src = item.thumbnailUrl;
           img.alt = item.name;
-          img.loading = 'lazy'; // スクロール時にオンデマンド読み込み
+          img.loading = 'lazy';
           
           card.onclick = () => openModal(item.previewUrl);
           card.appendChild(img);
@@ -144,7 +208,11 @@
         });
 
       } catch (error) {
-        loader.textContent = `読み込みエラー: ${error.message}`;
+        status.innerHTML = `
+          <strong>読み込みエラー:</strong> ${error.message}<br><br>
+          <small>※GASのデプロイ設定（アクセス権: 全員）やURLが正しいか確認してください。<br>F12の開発者ツール（Console）にも詳細が出力されます。</small>
+        `;
+        console.error('Gallery Fetch Error:', error);
       }
     }
 

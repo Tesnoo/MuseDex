@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MuseDex</title>
+  <title>MuseDex 3D</title>
   <link rel="icon" type="image/png" href="./MuseDex_logo.png">
 
   <style>
@@ -17,8 +17,13 @@
       --accent: #3b82f6;
       --accent-hover: #2563eb;
       --r18-color: #ec4899;
-      --r18-bg: rgba(236, 72, 153, 0.15);
       --cosplay-color: #a855f7;
+      --danger: #e11d48;
+    }
+
+    body.theme-2d {
+      --accent: #8b5cf6;
+      --accent-hover: #7c3aed;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -49,7 +54,7 @@
     .header-left {
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 16px;
       flex-wrap: wrap;
     }
 
@@ -72,38 +77,48 @@
       font-size: 1.5rem;
       font-weight: 800;
       letter-spacing: -0.02em;
-    }
-
-    /* 2D / 3D 切り替えタブ */
-    .dim-tabs {
       display: flex;
-      background: var(--card-bg);
-      padding: 4px;
-      border-radius: 10px;
-      border: 1px solid var(--border-color);
+      align-items: center;
+      gap: 8px;
     }
 
-    .dim-tab-btn {
-      background: transparent;
-      border: none;
-      color: var(--text-sub);
-      padding: 6px 16px;
-      font-size: 0.85rem;
-      font-weight: 700;
-      cursor: pointer;
-      border-radius: 7px;
-      transition: all 0.2s;
-    }
-
-    .dim-tab-btn.active {
+    .page-dim-pill {
+      font-size: 0.78rem;
+      padding: 3px 9px;
+      border-radius: 6px;
       background: var(--accent);
       color: #fff;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+    }
+
+    /* 別ページ（MuseDex 3D ⇔ MuseDex 2D）移動リンクボタン */
+    .sibling-page-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--card-bg);
+      color: var(--text-main);
+      text-decoration: none;
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      border: 1px solid var(--border-color);
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .sibling-page-link:hover {
+      border-color: var(--accent);
+      background: #232834;
+      transform: translateY(-1px);
     }
 
     .header-controls {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: wrap;
     }
 
@@ -117,6 +132,7 @@
       border-radius: 20px;
       border: 1px solid var(--border-color);
       user-select: none;
+      cursor: pointer;
     }
 
     .r18-switch-label {
@@ -135,7 +151,6 @@
       height: 24px;
       background: #2d3340;
       border-radius: 12px;
-      cursor: pointer;
       transition: background 0.25s;
     }
 
@@ -158,26 +173,34 @@
       transform: translateX(20px);
     }
 
-    /* Tronoches リンクボタン */
+    /* Tronoches リンクボタン（アイコン画像付き） */
     .tronoches-link {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      background: linear-gradient(135deg, #6366f1, #a855f7);
+      gap: 8px;
+      background: linear-gradient(135deg, #312e81, #581c87);
       color: #fff;
       text-decoration: none;
-      padding: 7px 14px;
+      padding: 5px 13px 5px 8px;
       border-radius: 8px;
       font-size: 0.82rem;
       font-weight: 700;
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(168, 85, 247, 0.4);
       transition: transform 0.2s, opacity 0.2s;
-      box-shadow: 0 2px 10px rgba(168, 85, 247, 0.25);
+      box-shadow: 0 2px 10px rgba(88, 28, 135, 0.35);
     }
 
     .tronoches-link:hover {
       transform: translateY(-1px);
       opacity: 0.92;
+    }
+
+    .tronoches-logo {
+      width: 24px;
+      height: 24px;
+      border-radius: 5px;
+      object-fit: contain;
+      background: #0f1115;
     }
 
     .view-toggle {
@@ -205,20 +228,30 @@
       color: #fff;
     }
 
-    .toggle-all-btn {
+    .tool-btn {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
       color: var(--text-sub);
       padding: 6px 12px;
       font-size: 0.8rem;
-      border-radius: 6px;
+      font-weight: 600;
+      border-radius: 7px;
       cursor: pointer;
       transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
     }
 
-    .toggle-all-btn:hover {
+    .tool-btn:hover {
       color: #fff;
-      border-color: #3b4252;
+      border-color: #4b5563;
+    }
+
+    .tool-btn.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
     }
 
     .photo-count {
@@ -257,7 +290,7 @@
       color: var(--text-sub);
       white-space: nowrap;
       padding-top: 4px;
-      min-width: 90px;
+      min-width: 95px;
     }
 
     .filter-chips {
@@ -293,7 +326,7 @@
 
     main {
       max-width: 1440px;
-      margin: 0 auto 90px;
+      margin: 0 auto 110px;
     }
 
     /* ==========================================
@@ -352,6 +385,12 @@
       border-radius: 12px;
     }
 
+    .person-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
     .person-page-jump-btn {
       background: #252b38;
       color: var(--text-main);
@@ -367,6 +406,24 @@
     .person-page-jump-btn:hover {
       background: var(--accent);
       border-color: var(--accent);
+      color: #fff;
+    }
+
+    .person-sec-del-btn {
+      background: rgba(225, 29, 72, 0.14);
+      color: #fda4af;
+      border: 1px solid rgba(225, 29, 72, 0.35);
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 0.76rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .person-sec-del-btn:hover {
+      background: var(--danger);
+      border-color: var(--danger);
       color: #fff;
     }
 
@@ -390,20 +447,10 @@
       scrollbar-color: #374151 #14171f;
     }
 
-    .horizontal-scroll-lane::-webkit-scrollbar {
-      height: 8px;
-    }
-    .horizontal-scroll-lane::-webkit-scrollbar-track {
-      background: #14171f;
-      border-radius: 4px;
-    }
-    .horizontal-scroll-lane::-webkit-scrollbar-thumb {
-      background: #374151;
-      border-radius: 4px;
-    }
-    .horizontal-scroll-lane::-webkit-scrollbar-thumb:hover {
-      background: #4b5563;
-    }
+    .horizontal-scroll-lane::-webkit-scrollbar { height: 8px; }
+    .horizontal-scroll-lane::-webkit-scrollbar-track { background: #14171f; border-radius: 4px; }
+    .horizontal-scroll-lane::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
+    .horizontal-scroll-lane::-webkit-scrollbar-thumb:hover { background: #4b5563; }
 
     .horizontal-scroll-lane .media-card {
       flex: 0 0 220px;
@@ -436,20 +483,9 @@
       transform: translateY(-2px);
     }
 
-    .more-card-icon {
-      font-size: 1.6rem;
-      color: var(--accent);
-    }
-
-    .more-card-text {
-      font-size: 0.95rem;
-      font-weight: 700;
-    }
-
-    .more-card-sub {
-      font-size: 0.78rem;
-      color: var(--text-sub);
-    }
+    .more-card-icon { font-size: 1.6rem; color: var(--accent); }
+    .more-card-text { font-size: 0.95rem; font-weight: 700; }
+    .more-card-sub { font-size: 0.78rem; color: var(--text-sub); }
 
     /* ==========================================
        個別ページ（Person Detail Page）UI
@@ -468,29 +504,48 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .detail-hero {
-      background: linear-gradient(135deg, #1a1f2c, #12151e);
+    .detail-hero-card {
+      background: #14171f;
       border: 1px solid var(--border-color);
-      border-radius: 14px;
-      padding: 24px;
+      border-radius: 16px;
+      overflow: hidden;
       margin-bottom: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
+    }
+
+    /* カバー写真バナー */
+    .detail-cover-banner {
+      position: relative;
+      width: 100%;
+      height: 240px;
+      background: linear-gradient(135deg, #1e2536, #11141d);
+      background-size: cover;
+      background-position: center;
+    }
+
+    .detail-cover-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(15,17,21,0.35) 0%, rgba(20,23,31,0.92) 100%);
     }
 
     .detail-top-bar {
+      position: absolute;
+      top: 16px;
+      left: 20px;
+      right: 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
       gap: 12px;
+      z-index: 5;
     }
 
     .back-btn {
-      background: #262b38;
+      background: rgba(20, 23, 31, 0.85);
+      backdrop-filter: blur(8px);
       color: #fff;
-      border: 1px solid var(--border-color);
+      border: 1px solid rgba(255,255,255,0.15);
       padding: 8px 16px;
       border-radius: 8px;
       font-size: 0.85rem;
@@ -503,44 +558,92 @@
     }
 
     .back-btn:hover {
-      background: #32394a;
+      background: #2d3446;
+    }
+
+    .detail-body-content {
+      position: relative;
+      padding: 0 24px 22px;
+      margin-top: -46px;
+      z-index: 6;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
     }
 
     .detail-profile-row {
       display: flex;
-      align-items: center;
+      align-items: flex-end;
+      justify-content: space-between;
       gap: 20px;
       flex-wrap: wrap;
     }
 
+    .detail-profile-left {
+      display: flex;
+      align-items: flex-end;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
     .detail-avatar {
-      width: 76px;
-      height: 76px;
+      width: 92px;
+      height: 92px;
       border-radius: 50%;
       object-fit: cover;
-      border: 2px solid var(--accent);
+      border: 3px solid var(--accent);
       background: #0f1115;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.5);
     }
 
     .detail-info h2 {
-      font-size: 1.7rem;
+      font-size: 1.75rem;
       font-weight: 800;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
 
     .detail-stats {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       flex-wrap: wrap;
     }
 
     .stat-pill {
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       background: #232836;
       color: var(--text-sub);
-      padding: 4px 12px;
+      padding: 4px 11px;
       border-radius: 16px;
       border: 1px solid var(--border-color);
+    }
+
+    /* SNSリンク一覧 */
+    .detail-sns-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .sns-link-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #1e2330;
+      color: #f3f4f6;
+      text-decoration: none;
+      padding: 6px 13px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border: 1px solid #32394a;
+      transition: all 0.2s;
+    }
+
+    .sns-link-pill:hover {
+      border-color: var(--accent);
+      background: #262d3d;
+      transform: translateY(-1px);
     }
 
     /* ==========================================
@@ -559,13 +662,19 @@
       aspect-ratio: 1 / 1;
       cursor: pointer;
       position: relative;
-      border: 1px solid var(--border-color);
+      border: 2px solid var(--border-color);
       transition: transform 0.2s ease, border-color 0.2s ease;
+      user-select: none;
     }
 
     .media-card:hover {
       transform: translateY(-2px);
       border-color: #4b5563;
+    }
+
+    .media-card.selected {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent);
     }
 
     .media-card img {
@@ -608,13 +717,41 @@
       justify-content: space-between;
       align-items: flex-start;
       pointer-events: none;
-      z-index: 5;
+      z-index: 6;
     }
 
     .left-badges {
       display: flex;
       gap: 4px;
       flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .right-badges {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+      pointer-events: auto;
+    }
+
+    /* 一括選択チェックボックス */
+    .select-checkbox-badge {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      background: rgba(15, 17, 21, 0.85);
+      border: 2px solid #9ca3af;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .media-card.selected .select-checkbox-badge {
+      background: var(--accent);
+      border-color: var(--accent);
     }
 
     .r18-badge {
@@ -628,10 +765,9 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.4);
     }
 
-    .dim-badge {
-      background: rgba(15, 17, 21, 0.78);
-      color: #93c5fd;
-      border: 1px solid rgba(59, 130, 246, 0.4);
+    .icloud-badge {
+      background: rgba(14, 165, 233, 0.85);
+      color: #fff;
       font-size: 0.68rem;
       font-weight: 700;
       padding: 2px 6px;
@@ -646,6 +782,36 @@
       border-radius: 6px;
       font-size: 0.72rem;
       font-weight: 600;
+    }
+
+    /* カード上のクイック削除・編集ボタン */
+    .card-quick-btn {
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      background: rgba(15, 17, 21, 0.78);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #e5e7eb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 12px;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.15s, background 0.15s;
+    }
+
+    .media-card:hover .card-quick-btn {
+      opacity: 1;
+    }
+
+    .card-quick-btn:hover {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    .card-quick-btn.edit-btn:hover {
+      background: var(--accent);
     }
 
     .card-bottom-info {
@@ -687,6 +853,39 @@
       padding: 2px 6px;
       border-radius: 4px;
       color: #e5e7eb;
+    }
+
+    /* ==========================================
+       一括選択アクションバー（下部フローティング）
+       ========================================== */
+    .batch-action-bar {
+      display: none;
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(22, 26, 35, 0.96);
+      border: 1px solid var(--accent);
+      backdrop-filter: blur(10px);
+      padding: 12px 20px;
+      border-radius: 14px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.65);
+      z-index: 110;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      max-width: 94vw;
+    }
+
+    .batch-action-bar.active {
+      display: flex;
+    }
+
+    .batch-count-text {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #fff;
+      margin-right: 6px;
     }
 
     /* ==========================================
@@ -740,14 +939,14 @@
     }
 
     /* ==========================================
-       モーダル共通（アップロード・編集・類似確認）
+       モーダル共通
        ========================================== */
     .modal {
       display: none;
       position: fixed;
       inset: 0;
       background: rgba(0, 0, 0, 0.85);
-      z-index: 120;
+      z-index: 130;
       justify-content: center;
       align-items: center;
       padding: 16px;
@@ -760,7 +959,7 @@
       background: var(--card-bg);
       border: 1px solid var(--border-color);
       border-radius: 14px;
-      max-width: 560px;
+      max-width: 580px;
       width: 100%;
       max-height: 92vh;
       overflow-y: auto;
@@ -778,7 +977,6 @@
 
     .modal-content h3 { font-size: 1.15rem; font-weight: 700; }
 
-    /* モーダル内ドラッグ＆ドロップ追加ゾーン */
     .modal-dropzone {
       border: 2px dashed #374151;
       background: #12151c;
@@ -878,7 +1076,6 @@
       border-color: var(--accent);
     }
 
-    /* R18チェック & クイックタグ行 */
     .options-bar {
       display: flex;
       align-items: center;
@@ -926,7 +1123,6 @@
       border-color: var(--cosplay-color);
     }
 
-    /* コスプレ専用入力欄 */
     .cosplay-fields {
       display: none;
       background: rgba(168, 85, 247, 0.08);
@@ -945,6 +1141,39 @@
       font-size: 0.78rem;
       font-weight: 700;
       color: #d8b4fe;
+    }
+
+    /* カバー写真ピッカーグリッド */
+    .cover-picker-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+      gap: 8px;
+      max-height: 210px;
+      overflow-y: auto;
+      padding: 8px;
+      background: #11141a;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+
+    .cover-pick-item {
+      aspect-ratio: 1 / 1;
+      border-radius: 6px;
+      overflow: hidden;
+      cursor: pointer;
+      border: 2px solid transparent;
+      position: relative;
+    }
+
+    .cover-pick-item.selected {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent);
+    }
+
+    .cover-pick-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
     /* 類似画像確認モーダル */
@@ -1023,20 +1252,20 @@
     }
 
     .btn {
-      padding: 9px 16px;
+      padding: 8px 15px;
       border-radius: 7px;
-      font-size: 0.88rem;
+      font-size: 0.85rem;
       font-weight: 600;
       cursor: pointer;
       border: none;
-      transition: background 0.2s;
+      transition: background 0.2s, opacity 0.2s;
     }
 
     .btn-cancel { background: #282e3a; color: #fff; }
     .btn-cancel:hover { background: #353c4b; }
     .btn-submit { background: var(--accent); color: #fff; }
     .btn-submit:hover { background: var(--accent-hover); }
-    .btn-danger { background: #e11d48; color: #fff; }
+    .btn-danger { background: var(--danger); color: #fff; }
     .btn-danger:hover { background: #be123c; }
     .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
@@ -1067,17 +1296,8 @@
       z-index: 10;
     }
 
-    .lightbox-counter {
-      font-size: 0.9rem;
-      color: var(--text-sub);
-    }
-
-    .lightbox-close {
-      font-size: 32px;
-      color: #9ca3af;
-      cursor: pointer;
-      line-height: 1;
-    }
+    .lightbox-counter { font-size: 0.9rem; color: var(--text-sub); }
+    .lightbox-close { font-size: 32px; color: #9ca3af; cursor: pointer; line-height: 1; }
     .lightbox-close:hover { color: #fff; }
 
     .lightbox-main-area {
@@ -1094,13 +1314,15 @@
       width: 100%;
       height: 100%;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
+      gap: 12px;
     }
 
     .lightbox-content img {
       max-width: 90vw;
-      max-height: 72vh;
+      max-height: 70vh;
       border-radius: 6px;
       object-fit: contain;
       user-select: none;
@@ -1113,9 +1335,23 @@
 
     .lightbox-content iframe {
       width: 82vw;
-      height: 72vh;
+      height: 70vh;
       border: none;
       border-radius: 8px;
+    }
+
+    .icloud-jump-banner {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      color: #fff;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      box-shadow: 0 4px 15px rgba(2, 132, 199, 0.4);
     }
 
     .nav-arrow {
@@ -1148,7 +1384,7 @@
 
     .lightbox-bottombar {
       width: 100%;
-      max-width: 960px;
+      max-width: 980px;
       background: rgba(26, 29, 36, 0.9);
       border: 1px solid var(--border-color);
       backdrop-filter: blur(8px);
@@ -1184,13 +1420,20 @@
       gap: 6px;
     }
 
+    .lightbox-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
     .btn-edit-meta {
       background: #282e3c;
       color: var(--text-main);
       border: 1px solid var(--border-color);
-      padding: 6px 14px;
+      padding: 6px 13px;
       border-radius: 6px;
       font-size: 0.8rem;
+      font-weight: 600;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -1203,6 +1446,48 @@
       color: #fff;
     }
 
+    .btn-delete-meta {
+      background: rgba(225, 29, 72, 0.15);
+      color: #fda4af;
+      border: 1px solid rgba(225, 29, 72, 0.4);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-delete-meta:hover {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    /* トースト通知 */
+    .toast-notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #1e2433;
+      color: #fff;
+      border-left: 4px solid var(--accent);
+      padding: 12px 18px;
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      font-size: 0.85rem;
+      font-weight: 600;
+      z-index: 400;
+      opacity: 0;
+      transform: translateY(-10px);
+      pointer-events: none;
+      transition: all 0.25s ease;
+    }
+
+    .toast-notification.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     .status-msg {
       text-align: center;
       padding: 80px 20px;
@@ -1213,6 +1498,9 @@
 </head>
 <body>
 
+  <!-- トースト通知 -->
+  <div id="toast" class="toast-notification"></div>
+
   <!-- 画面全体ドラッグ＆ドロップ時のオーバーレイ -->
   <div id="drop-overlay" class="drop-overlay">
     <div class="drop-box-text">ここに画像・動画をまとめてドロップして追加</div>
@@ -1220,17 +1508,17 @@
 
   <header>
     <div class="header-left">
-      <div class="brand" onclick="closePersonPage()" title="トップへ戻る">
-        <img src="./MuseDex_logo.png" alt="MuseDex Logo" class="brand-logo">
-        <h1 class="brand-title">MuseDex</h1>
+      <div class="brand" onclick="closePersonPage()" title="ギャラリーのトップへ">
+        <img src="./MuseDex_logo.png" alt="MuseDex Logo" class="brand-logo" onerror="this.style.display='none'">
+        <h1 class="brand-title">
+          MuseDex <span id="page-dim-pill" class="page-dim-pill">3D</span>
+        </h1>
       </div>
 
-      <!-- 2D / 3D タブ -->
-      <div class="dim-tabs">
-        <button id="dim-all" class="dim-tab-btn active" onclick="switchDimension('ALL')">すべて</button>
-        <button id="dim-3d" class="dim-tab-btn" onclick="switchDimension('3D')">3D</button>
-        <button id="dim-2d" class="dim-tab-btn" onclick="switchDimension('2D')">2D</button>
-      </div>
+      <!-- 同一リポジトリ内の別ページ（MuseDex 3D ⇔ MuseDex 2D）移動リンク -->
+      <a id="sibling-page-link" href="./2d.html" class="sibling-page-link">
+        🎨 MuseDex 2D へ移動
+      </a>
     </div>
 
     <div class="header-controls">
@@ -1243,17 +1531,28 @@
         <span id="label-r18" class="r18-switch-label">R18</span>
       </div>
 
-      <!-- Tronoches へのリンクボタン -->
+      <!-- Tronoches へのリンクボタン（アイコン画像付き） -->
       <a href="https://nsfw-phi.vercel.app/" target="_blank" rel="noopener noreferrer" class="tronoches-link">
-        <span>🌌</span> Tronoches
+        <img src="https://nsfw-phi.vercel.app/logo.png" alt="Tronoches" class="tronoches-logo" onerror="this.src='./Tronoches_logo.png'">
+        <span>Tronoches</span>
       </a>
+
+      <!-- 一括選択モードボタン -->
+      <button id="batch-select-btn" class="tool-btn" onclick="toggleSelectionMode()">
+        ☑️ 一括選択
+      </button>
+
+      <!-- 既存重複スキャンボタン -->
+      <button class="tool-btn" onclick="scanExistingDuplicates()" title="ギャラリー内の重複画像を検出します">
+        🔍 重複チェック
+      </button>
 
       <div class="view-toggle" id="main-view-toggle">
         <button id="btn-group-view" class="view-btn active" onclick="switchView('group')">人物別</button>
         <button id="btn-all-view" class="view-btn" onclick="switchView('all')">すべて</button>
       </div>
 
-      <button id="toggle-accordion-btn" class="toggle-all-btn" onclick="toggleAllAccordions()">すべて閉じる</button>
+      <button id="toggle-accordion-btn" class="tool-btn" onclick="toggleAllAccordions()">すべて閉じる</button>
       <span id="photo-count" class="photo-count">0 items</span>
     </div>
   </header>
@@ -1278,24 +1577,44 @@
 
     <!-- 個別ページ（人物詳細ビュー） -->
     <div id="person-detail-page" class="person-detail-page">
-      <div class="detail-hero">
-        <div class="detail-top-bar">
-          <button class="back-btn" onclick="closePersonPage()">← ギャラリー一覧に戻る</button>
-          <span id="detail-dim-indicator" class="stat-pill">表示中: すべて</span>
-        </div>
-        <div class="detail-profile-row">
-          <img id="detail-avatar" class="detail-avatar" src="./MuseDex_logo.png" alt="Avatar">
-          <div class="detail-info">
-            <h2 id="detail-person-name">人物名</h2>
-            <div id="detail-stats" class="detail-stats"></div>
+      <div class="detail-hero-card">
+        <div id="detail-cover-banner" class="detail-cover-banner">
+          <div class="detail-cover-overlay"></div>
+          <div class="detail-top-bar">
+            <button class="back-btn" onclick="closePersonPage()">← ギャラリーに戻る</button>
+            <button class="back-btn" onclick="openProfileSettingsModal()">⚙️ カバー写真・SNS設定</button>
           </div>
         </div>
-        <div id="detail-tag-row" class="filter-chips"></div>
+
+        <div class="detail-body-content">
+          <div class="detail-profile-row">
+            <div class="detail-profile-left">
+              <img id="detail-avatar" class="detail-avatar" src="./MuseDex_logo.png" alt="Avatar">
+              <div class="detail-info">
+                <h2 id="detail-person-name">人物名</h2>
+                <div id="detail-stats" class="detail-stats"></div>
+              </div>
+            </div>
+            <!-- SNSリンク一覧 -->
+            <div id="detail-sns-links" class="detail-sns-links"></div>
+          </div>
+
+          <div id="detail-tag-row" class="filter-chips"></div>
+        </div>
       </div>
 
       <div id="detail-grid" class="gallery-grid"></div>
     </div>
   </main>
+
+  <!-- 一括操作フローティングバー -->
+  <div id="batch-action-bar" class="batch-action-bar">
+    <span id="batch-count-text" class="batch-count-text">0件選択中</span>
+    <button class="btn btn-cancel" onclick="selectAllVisible()">すべて選択</button>
+    <button class="btn btn-submit" onclick="openBatchEditModal()">🏷️ 一括タグ・R18編集</button>
+    <button class="btn btn-danger" onclick="confirmDeleteSelected()">🗑️ 選択項目を削除</button>
+    <button class="btn btn-cancel" onclick="toggleSelectionMode(false)">完了</button>
+  </div>
 
   <!-- 右下の＋ボタン -->
   <button id="fab-btn" class="fab-button" title="画像・動画を追加">+</button>
@@ -1308,7 +1627,6 @@
         <h3 id="modal-title">新しいメディアを登録</h3>
       </div>
 
-      <!-- モーダル内でもドロップ＆追加クリック可能 -->
       <div id="modal-dropzone" class="modal-dropzone" onclick="document.getElementById('file-input').click()">
         <div class="modal-dropzone-text">📁 クリックまたはドラッグ＆ドロップでさらに画像・動画を追加</div>
         <div id="upload-queue" class="upload-queue-container" onclick="event.stopPropagation()"></div>
@@ -1317,14 +1635,14 @@
       <div class="form-row-2col">
         <div class="form-group">
           <label for="input-person">人物名（同じ名前でまとまります）</label>
-          <input type="text" id="input-person" placeholder="例: 伊織もえ、未分類 など" list="person-list">
+          <input type="text" id="input-person" placeholder="例: 伊織もえ、瀬戸なちか など" list="person-list">
           <datalist id="person-list"></datalist>
         </div>
         <div class="form-group">
-          <label for="input-dimension">2D / 3D 区分</label>
+          <label for="input-dimension">登録ページ区分</label>
           <select id="input-dimension">
-            <option value="3D">3D（実写・グラビア・コスプレ等）</option>
-            <option value="2D">2D（イラスト・アニメ・CG等）</option>
+            <option value="3D">MuseDex 3D</option>
+            <option value="2D">MuseDex 2D</option>
           </select>
         </div>
       </div>
@@ -1340,11 +1658,10 @@
       </div>
 
       <div class="form-group">
-        <label for="input-tags">タグ（カンマ区切り）</label>
+        <label for="input-tags">タグ（カンマ区切り・全ファイルに一括適用）</label>
         <input type="text" id="input-tags" placeholder="例: 水着, コスプレ, ポートレート" oninput="syncCosplayFields('upload')">
       </div>
 
-      <!-- コスプレ選択時に展開される任意入力欄 -->
       <div id="upload-cosplay-fields" class="cosplay-fields">
         <div class="cosplay-fields-title">🎭 コスプレ詳細情報（任意）</div>
         <div class="form-row-2col">
@@ -1357,6 +1674,11 @@
             <input type="text" id="input-work-name" placeholder="例: Fate/Grand Order">
           </div>
         </div>
+      </div>
+
+      <div class="form-group">
+        <label for="input-icloud-url">☁️ スマホ用 動画リンク（任意・iCloud Drive共有URLなど）</label>
+        <input type="url" id="input-icloud-url" placeholder="https://www.icloud.com/iclouddrive/... （スマホ閲覧時はここを開きます）">
       </div>
 
       <div id="progress-container" class="progress-bar-container">
@@ -1373,35 +1695,157 @@
     </div>
   </div>
 
+  <!-- 複数メディア一括編集モーダル -->
+  <div id="batch-edit-modal" class="modal" style="z-index: 230;">
+    <div class="modal-content">
+      <h3 id="batch-edit-title">選択したメディアを一括編集</h3>
+
+      <div class="form-row-2col">
+        <div class="form-group">
+          <label for="batch-person">人物名を一括変更（空欄で変更しない）</label>
+          <input type="text" id="batch-person" placeholder="変更する場合のみ入力" list="person-list">
+        </div>
+        <div class="form-group">
+          <label for="batch-r18-mode">🔞 R18マーク一括設定</label>
+          <select id="batch-r18-mode">
+            <option value="keep">変更しない</option>
+            <option value="true">すべて R18 ON にする</option>
+            <option value="false">すべて R18 OFF（一般）にする</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="batch-tags">追加するタグ（カンマ区切り）</label>
+        <input type="text" id="batch-tags" placeholder="例: 水着, コスプレ, お気に入り">
+      </div>
+
+      <label style="display:flex;align-items:center;gap:8px;font-size:0.82rem;color:var(--text-sub);cursor:pointer;">
+        <input type="checkbox" id="batch-replace-tags">
+        既存のタグを上書きして置き換える（チェックなしの場合は既存タグに追加）
+      </label>
+
+      <div class="form-group">
+        <label for="batch-dimension">2D / 3D ページ移動</label>
+        <select id="batch-dimension">
+          <option value="keep">変更しない</option>
+          <option value="3D">MuseDex 3D へ移動</option>
+          <option value="2D">MuseDex 2D へ移動</option>
+        </select>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-cancel" onclick="closeBatchEditModal()">キャンセル</button>
+        <button id="submit-batch-edit-btn" class="btn btn-submit" onclick="executeBatchMetaUpdate()">一括保存する</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 個別ページ：カバー写真 & SNSリンク設定モーダル -->
+  <div id="profile-modal" class="modal" style="z-index: 240;">
+    <div class="modal-content">
+      <h3 id="profile-modal-title">プロフィール・カバー写真設定</h3>
+
+      <div class="form-group">
+        <label>🖼️ カバー写真を選択（クリックで選択）</label>
+        <div id="cover-picker-grid" class="cover-picker-grid"></div>
+        <input type="url" id="profile-cover-url" placeholder="またはカバー画像URLを直接入力">
+      </div>
+
+      <div class="form-group">
+        <label>👤 アイコン写真を選択（クリックで選択）</label>
+        <div id="avatar-picker-grid" class="cover-picker-grid"></div>
+        <input type="url" id="profile-avatar-url" placeholder="またはアイコン画像URLを直接入力">
+      </div>
+
+      <div class="form-row-2col">
+        <div class="form-group">
+          <label for="sns-x">𝕏 X (旧Twitter) URL</label>
+          <input type="url" id="sns-x" placeholder="https://x.com/...">
+        </div>
+        <div class="form-group">
+          <label for="sns-ig">📸 Instagram URL</label>
+          <input type="url" id="sns-ig" placeholder="https://instagram.com/...">
+        </div>
+      </div>
+
+      <div class="form-row-2col">
+        <div class="form-group">
+          <label for="sns-yt">▶️ YouTube / TikTok URL</label>
+          <input type="url" id="sns-yt" placeholder="https://youtube.com/...">
+        </div>
+        <div class="form-group">
+          <label for="sns-other">🔗 Fantia / その他リンク URL</label>
+          <input type="url" id="sns-other" placeholder="https://fantia.jp/...">
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-cancel" onclick="closeProfileSettingsModal()">キャンセル</button>
+        <button id="submit-profile-btn" class="btn btn-submit" onclick="savePersonProfile()">設定を保存</button>
+      </div>
+    </div>
+  </div>
+
   <!-- 類似画像の確認モーダル -->
   <div id="duplicate-modal" class="modal" style="z-index: 260;">
     <div class="modal-content">
-      <h3>⚠️ 類似の画像が既に登録されています</h3>
-      <p style="font-size: 0.85rem; color: var(--text-sub);">
+      <h3 id="dup-modal-heading">⚠️ 類似の画像が検出されました</h3>
+      <p id="dup-modal-desc" style="font-size: 0.85rem; color: var(--text-sub);">
         アップロードしようとしている画像は、既に登録されている画像と類似しています。同じ画像ですか？
       </p>
 
       <div class="dup-compare-grid">
         <div class="dup-box">
-          <span class="dup-box-label">今回選択した画像</span>
-          <img id="dup-new-img" src="" alt="New Image">
+          <span id="dup-left-label" class="dup-box-label">今回選択した画像</span>
+          <img id="dup-new-img" src="" alt="Image A">
           <div id="dup-new-meta" class="dup-box-meta"></div>
         </div>
         <div class="dup-box">
-          <span class="dup-box-label">登録済みの類似画像</span>
-          <img id="dup-existing-img" src="" alt="Existing Image">
+          <span id="dup-right-label" class="dup-box-label">登録済みの類似画像</span>
+          <img id="dup-existing-img" src="" alt="Image B">
           <div id="dup-existing-meta" class="dup-box-meta"></div>
         </div>
       </div>
 
       <div class="modal-actions">
-        <button class="btn btn-danger" onclick="resolveDuplicateDecision(true)">同じ画像です（スキップ）</button>
-        <button class="btn btn-submit" onclick="resolveDuplicateDecision(false)">いいえ、違う画像です（追加する）</button>
+        <button id="dup-btn-skip" class="btn btn-danger" onclick="resolveDuplicateDecision(true)">同じ画像です（スキップ）</button>
+        <button id="dup-btn-keep" class="btn btn-submit" onclick="resolveDuplicateDecision(false)">いいえ、違う画像です（追加する）</button>
       </div>
     </div>
   </div>
 
-  <!-- タグ・人物名・R18・コスプレ情報 編集用モーダル -->
+  <!-- 削除確認カスタムモーダル -->
+  <div id="delete-confirm-modal" class="modal" style="z-index: 280;">
+    <div class="modal-content" style="max-width: 440px;">
+      <h3 id="delete-confirm-title">🗑️ メディアの削除確認</h3>
+      <p id="delete-confirm-text" style="font-size: 0.9rem; color: var(--text-sub); line-height: 1.5;">
+        選択したメディアをGoogleドライブのゴミ箱へ移動して削除しますか？
+      </p>
+      <div class="modal-actions">
+        <button class="btn btn-cancel" onclick="closeDeleteConfirmModal()">キャンセル</button>
+        <button id="execute-delete-btn" class="btn btn-danger" onclick="executeConfirmedDelete()">削除する</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- アコーディオン人物名変更モーダル -->
+  <div id="rename-person-modal" class="modal" style="z-index: 275;">
+    <div class="modal-content" style="max-width: 420px;">
+      <h3>✏️ 人物名の変更</h3>
+      <input type="hidden" id="rename-old-person">
+      <div class="form-group">
+        <label for="rename-new-person">新しい人物名（既存の人物名を入れると統合されます）</label>
+        <input type="text" id="rename-new-person" list="person-list" placeholder="正しい人物名を入力">
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-cancel" onclick="closeRenamePersonModal()">キャンセル</button>
+        <button id="submit-rename-btn" class="btn btn-submit" onclick="executeRenamePersonSection()">変更する</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 単一メディア情報 編集用モーダル -->
   <div id="edit-modal" class="modal" style="z-index: 220;">
     <div class="modal-content">
       <h3>メディア情報の編集</h3>
@@ -1415,8 +1859,8 @@
         <div class="form-group">
           <label for="edit-dimension">2D / 3D 区分</label>
           <select id="edit-dimension">
-            <option value="3D">3D</option>
-            <option value="2D">2D</option>
+            <option value="3D">MuseDex 3D</option>
+            <option value="2D">MuseDex 2D</option>
           </select>
         </div>
       </div>
@@ -1450,9 +1894,17 @@
         </div>
       </div>
 
-      <div class="modal-actions">
-        <button class="btn btn-cancel" onclick="closeEditModal()">キャンセル</button>
-        <button id="submit-edit-btn" class="btn btn-submit" onclick="executeMetaUpdate()">保存する</button>
+      <div class="form-group">
+        <label for="edit-icloud-url">☁️ スマホ用 動画リンク（iCloud Drive共有URL等）</label>
+        <input type="url" id="edit-icloud-url" placeholder="https://www.icloud.com/iclouddrive/...">
+      </div>
+
+      <div class="modal-actions" style="justify-content: space-between;">
+        <button class="btn btn-danger" onclick="requestDeleteSingle(document.getElementById('edit-file-id').value)">🗑️ このメディアを削除</button>
+        <div style="display:flex;gap:10px;">
+          <button class="btn btn-cancel" onclick="closeEditModal()">キャンセル</button>
+          <button id="submit-edit-btn" class="btn btn-submit" onclick="executeMetaUpdate()">保存する</button>
+        </div>
       </div>
     </div>
   </div>
@@ -1473,32 +1925,49 @@
     <div class="lightbox-bottombar">
       <div class="lightbox-meta-info">
         <span id="lightbox-person" class="lightbox-person" title="この人物の個別ページを開く">人物名</span>
-        <span id="lightbox-dim-badge" class="dim-badge">3D</span>
         <span id="lightbox-r18-badge" class="r18-badge" style="display:none;">R18</span>
         <span id="lightbox-cosplay-badge" class="cosplay-badge" style="display:none;"></span>
         <div id="lightbox-tags" class="lightbox-tags"></div>
       </div>
-      <button class="btn-edit-meta" onclick="openEditModal()">
-        ✏️ 情報を編集
-      </button>
+      <div class="lightbox-actions">
+        <button class="btn-edit-meta" onclick="openEditModal()">✏️ 情報を編集</button>
+        <button class="btn-delete-meta" onclick="requestDeleteFromLightbox()">🗑️ 削除</button>
+      </div>
     </div>
   </div>
 
   <script>
     const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbx0F2NKIoBvHS6IhWbMiiAfs-9YEdeu1RJBJFl413_y_K4JCdU1wGtqwqGTteSjwsRr/exec';
-    const PHASH_CACHE_KEY = 'musedex_phash_cache_v1';
-    const HORIZONTAL_PREVIEW_LIMIT = 10; // 横スクロールに並べる最大枚数
+    const PHASH_CACHE_KEY = 'musedex_phash_cache_v2';
+    const HORIZONTAL_PREVIEW_LIMIT = 10;
 
+    // ==========================================
+    // 0. ページ判定（MuseDex 3D vs MuseDex 2D 別ページ動作）
+    // ==========================================
+    function detectPageDimension() {
+      const params = new URLSearchParams(window.location.search);
+      const pageParam = (params.get('page') || params.get('dim') || '').toUpperCase();
+      if (pageParam === '2D' || window.location.pathname.toLowerCase().includes('2d')) {
+        return '2D';
+      }
+      return '3D';
+    }
+
+    let currentDimension = detectPageDimension(); // '3D' または '2D'
     let mediaItems = [];
+    let personProfiles = {};           // { personName: { coverUrl, avatarUrl, snsLinks } }
     let currentView = 'group';         // 'group' (人物別) | 'all' (すべて)
-    let currentDimension = 'ALL';      // 'ALL' | '3D' | '2D'
-    let isR18Mode = false;             // false = 一般モード(ぼかし有), true = R18モード(ぼかし無)
-    let selectedPersonFilter = null;   // 人物フィルター
-    let selectedTagFilter = null;      // タグフィルター
+    let isR18Mode = false;             // false = 一般モード, true = R18モード
+    let selectedPersonFilter = null;
+    let selectedTagFilter = null;
+
+    // 一括選択モード状態
+    let isSelectionMode = false;
+    let selectedFileIds = new Set();
 
     // 個別ページ状態
-    let activePersonPage = null;       // null または 人物名
-    let activePersonPageTag = null;    // 個別ページ内タグ絞り込み
+    let activePersonPage = null;
+    let activePersonPageTag = null;
 
     let pendingFiles = [];
     let isAllExpanded = true;
@@ -1506,16 +1975,58 @@
     let currentSliderList = [];
     let currentSliderIndex = 0;
 
-    // ローカルキャッシュされた画像ハッシュ辞書 { fileId: phashString }
+    let pendingDeleteIds = [];
+
+    const HIDDEN_DELETED_KEY = 'musedex_deleted_ids_v1';
+    let locallyDeletedIds = new Set();
+    try {
+      locallyDeletedIds = new Set(JSON.parse(localStorage.getItem(HIDDEN_DELETED_KEY) || '[]'));
+    } catch (e) { locallyDeletedIds = new Set(); }
+
     let localPhashMap = {};
     try {
       localPhashMap = JSON.parse(localStorage.getItem(PHASH_CACHE_KEY) || '{}');
     } catch (e) { localPhashMap = {}; }
 
+    // スマホ端末判定
+    function isMobileDevice() {
+      return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth <= 768;
+    }
+
+    // ページ初期化（3Dページ / 2Dページの外観・リンク設定）
+    function applyPageIdentity() {
+      const is2D = currentDimension === '2D';
+      document.title = is2D ? 'MuseDex 2D' : 'MuseDex 3D';
+      document.body.classList.toggle('theme-2d', is2D);
+
+      const pill = document.getElementById('page-dim-pill');
+      pill.textContent = is2D ? '2D' : '3D';
+
+      const siblingLink = document.getElementById('sibling-page-link');
+      if (is2D) {
+        siblingLink.href = './index.html';
+        siblingLink.innerHTML = '📸 MuseDex 3D へ移動';
+      } else {
+        siblingLink.href = './2d.html';
+        siblingLink.innerHTML = '🎨 MuseDex 2D へ移動';
+      }
+
+      document.getElementById('input-dimension').value = currentDimension;
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(toast._timer);
+      toast._timer = setTimeout(() => toast.classList.remove('show'), 3500);
+    }
+
     // ==========================================
     // 1. 読み込み & 初期化
     // ==========================================
     async function loadGallery() {
+      applyPageIdentity();
       const status = document.getElementById('status');
       try {
         const response = await fetch(GAS_ENDPOINT);
@@ -1523,30 +2034,33 @@
 
         if (res.status !== 'success') throw new Error(res.message);
 
-        mediaItems = res.data.map(item => ({
-          ...item,
-          dimension: item.dimension || '3D',
-          isR18: Boolean(item.isR18),
-          charName: item.charName || '',
-          workName: item.workName || '',
-          phash: item.phash || localPhashMap[item.id] || ''
-        }));
+        personProfiles = res.profiles || {};
 
-        if (mediaItems.length === 0) {
-          status.style.display = 'block';
-          status.textContent = 'メディアがまだありません。右下の「＋」またはドラッグ＆ドロップで追加してください。';
-          document.getElementById('main-container').innerHTML = '';
-          document.getElementById('photo-count').textContent = '0 items';
-          return;
-        }
+        mediaItems = res.data
+          .filter(item => !locallyDeletedIds.has(item.id))
+          .map(item => {
+            const cachedHash = item.phash || localPhashMap[item.id] || '';
+            if (item.phash) localPhashMap[item.id] = item.phash;
+            return {
+              ...item,
+              dimension: item.dimension || '3D',
+              isR18: Boolean(item.isR18),
+              charName: item.charName || '',
+              workName: item.workName || '',
+              icloudUrl: item.icloudUrl || '',
+              phash: cachedHash
+            };
+          });
+
+        try { localStorage.setItem(PHASH_CACHE_KEY, JSON.stringify(localPhashMap)); } catch (e) {}
 
         status.style.display = 'none';
         document.getElementById('filters-section').style.display = 'flex';
         updatePersonDatalist();
         refreshAllViews();
 
-        // 既存画像でphashが未計算のものをバックグラウンドで計算試行
-        computeMissingPhashesInBackground();
+        // 既存画像でphashが未登録のものをCORS回避でバックグラウンド計算・保存
+        computeMissingPhashesViaGAS();
 
       } catch (err) {
         status.textContent = `読み込みエラー: ${err.message}`;
@@ -1556,7 +2070,8 @@
     function updatePersonDatalist() {
       const datalist = document.getElementById('person-list');
       datalist.innerHTML = '';
-      const uniquePersons = [...new Set(mediaItems.map(p => p.person).filter(p => p && p !== '未分類'))];
+      const pageItems = mediaItems.filter(i => (i.dimension || '3D') === currentDimension);
+      const uniquePersons = [...new Set(pageItems.map(p => p.person).filter(p => p && p !== '未分類'))];
       uniquePersons.forEach(person => {
         const opt = document.createElement('option');
         opt.value = person;
@@ -1565,17 +2080,13 @@
     }
 
     // ==========================================
-    // 2. モード切替（一般/R18、2D/3D、表示切替）
+    // 2. モード切替（一般/R18、一括選択、表示切替）
     // ==========================================
     function toggleR18Mode() {
       isR18Mode = !isR18Mode;
-      const toggle = document.getElementById('r18-toggle');
-      const labelGen = document.getElementById('label-general');
-      const labelR18 = document.getElementById('label-r18');
-
-      toggle.classList.toggle('r18-on', isR18Mode);
-      labelGen.classList.toggle('active-general', !isR18Mode);
-      labelR18.classList.toggle('active-r18', isR18Mode);
+      document.getElementById('r18-toggle').classList.toggle('r18-on', isR18Mode);
+      document.getElementById('label-general').classList.toggle('active-general', !isR18Mode);
+      document.getElementById('label-r18').classList.toggle('active-r18', isR18Mode);
 
       refreshAllViews();
       if (document.getElementById('lightbox').classList.contains('active')) {
@@ -1583,17 +2094,28 @@
       }
     }
 
-    function switchDimension(dim) {
-      currentDimension = dim;
-      document.getElementById('dim-all').classList.toggle('active', dim === 'ALL');
-      document.getElementById('dim-3d').classList.toggle('active', dim === '3D');
-      document.getElementById('dim-2d').classList.toggle('active', dim === '2D');
-
-      // アップロードモーダルの初期値も連動
-      if (dim === '2D' || dim === '3D') {
-        document.getElementById('input-dimension').value = dim;
+    function toggleSelectionMode(forceState) {
+      isSelectionMode = typeof forceState === 'boolean' ? forceState : !isSelectionMode;
+      if (!isSelectionMode) {
+        selectedFileIds.clear();
       }
+      document.getElementById('batch-select-btn').classList.toggle('active', isSelectionMode);
+      updateBatchActionBar();
+      refreshAllViews();
+    }
 
+    function updateBatchActionBar() {
+      const bar = document.getElementById('batch-action-bar');
+      bar.classList.toggle('active', isSelectionMode);
+      document.getElementById('batch-count-text').textContent = `${selectedFileIds.size}件選択中`;
+    }
+
+    function selectAllVisible() {
+      const visible = activePersonPage
+        ? getPersonPageItems(activePersonPage)
+        : getFilteredItems();
+      visible.forEach(item => selectedFileIds.add(item.id));
+      updateBatchActionBar();
       refreshAllViews();
     }
 
@@ -1614,10 +2136,9 @@
       }
     }
 
-    // 現在のDimension・人物・タグ条件に合うアイテムを取得
     function getFilteredItems(ignorePersonFilter = false, ignoreTagFilter = false) {
       return mediaItems.filter(item => {
-        if (currentDimension !== 'ALL' && (item.dimension || '3D') !== currentDimension) return false;
+        if ((item.dimension || '3D') !== currentDimension) return false;
         if (!ignorePersonFilter && selectedPersonFilter && item.person !== selectedPersonFilter) return false;
         if (!ignoreTagFilter && selectedTagFilter) {
           const hasTag = (item.tags && item.tags.includes(selectedTagFilter)) ||
@@ -1633,9 +2154,8 @@
     // 3. 人物 & タグ 絞り込みバー描画
     // ==========================================
     function renderFilterBars() {
-      const baseByDim = mediaItems.filter(item => currentDimension === 'ALL' || (item.dimension || '3D') === currentDimension);
+      const baseByDim = mediaItems.filter(item => (item.dimension || '3D') === currentDimension);
 
-      // 人物チップ集計
       const personCounts = {};
       baseByDim.forEach(item => {
         const p = item.person || '未分類';
@@ -1669,7 +2189,6 @@
         personChipsBox.appendChild(chip);
       });
 
-      // タグ集計（タグ + キャラ名 + 作品名）
       const tagCounts = {};
       baseByDim.forEach(item => {
         if (selectedPersonFilter && item.person !== selectedPersonFilter) return;
@@ -1703,7 +2222,7 @@
     }
 
     // ==========================================
-    // 4. メインギャラリー描画（横スクロール＋もっと見る➤）
+    // 4. メインギャラリー描画
     // ==========================================
     function renderGallery() {
       const container = document.getElementById('main-container');
@@ -1715,7 +2234,7 @@
       countLabel.textContent = `${filtered.length} items`;
 
       if (filtered.length === 0) {
-        container.innerHTML = `<div class="status-msg">条件に一致するメディアがありません。</div>`;
+        container.innerHTML = `<div class="status-msg">MuseDex ${currentDimension} に一致するメディアがありません。右下の「＋」から追加できます。</div>`;
         return;
       }
 
@@ -1728,7 +2247,7 @@
         });
         container.appendChild(grid);
       } else {
-        toggleBtn.style.display = 'inline-block';
+        toggleBtn.style.display = 'inline-flex';
         const groups = {};
         filtered.forEach(item => {
           const person = item.person || '未分類';
@@ -1757,16 +2276,23 @@
               <span class="person-name">${escapeHtml(person)}</span>
               <span class="person-count">${groupList.length}件</span>
             </div>
-            <button class="person-page-jump-btn" onclick="event.stopPropagation(); openPersonPage('${escapeJsStr(person)}')">
-              個別ページへ ➤
-            </button>
+            <div class="person-header-actions">
+              <button class="person-page-jump-btn" title="この人物の名前を変更" onclick="event.stopPropagation(); openRenamePersonModal('${escapeJsStr(person)}')">
+                ✏️ 名前変更
+              </button>
+              <button class="person-sec-del-btn" title="このアコーディオンごと全件削除" onclick="event.stopPropagation(); requestDeletePersonSection('${escapeJsStr(person)}')">
+                🗑️ アコーディオン削除
+              </button>
+              <button class="person-page-jump-btn" onclick="event.stopPropagation(); openPersonPage('${escapeJsStr(person)}')">
+                個別ページへ ➤
+              </button>
+            </div>
           `;
           sec.appendChild(header);
 
           const body = document.createElement('div');
           body.className = 'person-body';
 
-          // 横スクロールコンテナ（最大10枚＋「もっと見る➤」）
           const lane = document.createElement('div');
           lane.className = 'horizontal-scroll-lane';
 
@@ -1775,7 +2301,6 @@
             lane.appendChild(createMediaCard(item, groupList, idx));
           });
 
-          // 10枚以上ある場合（または個別ページへ飛ぶ導線として）右端に「もっと見る➤」カードを配置
           if (groupList.length > HORIZONTAL_PREVIEW_LIMIT) {
             const moreCard = document.createElement('div');
             moreCard.className = 'more-card';
@@ -1799,8 +2324,27 @@
     function createMediaCard(item, currentList, index) {
       const card = document.createElement('div');
       const shouldBlur = item.isR18 && !isR18Mode;
-      card.className = 'media-card' + (shouldBlur ? ' r18-blurred' : '');
-      card.onclick = () => openLightbox(currentList, index);
+      const isSelected = selectedFileIds.has(item.id);
+
+      card.className = 'media-card'
+        + (shouldBlur ? ' r18-blurred' : '')
+        + (isSelected ? ' selected' : '');
+
+      card.onclick = () => {
+        if (isSelectionMode) {
+          if (selectedFileIds.has(item.id)) selectedFileIds.delete(item.id);
+          else selectedFileIds.add(item.id);
+          card.classList.toggle('selected', selectedFileIds.has(item.id));
+          updateBatchActionBar();
+          return;
+        }
+        // スマホ閲覧時かつ動画にiCloud URLが設定されている場合は直接iCloud Driveを開く
+        if (item.type === 'video' && item.icloudUrl && isMobileDevice()) {
+          window.open(item.icloudUrl, '_blank', 'noopener');
+          return;
+        }
+        openLightbox(currentList, index);
+      };
 
       const img = document.createElement('img');
       img.src = item.thumbnailUrl;
@@ -1808,7 +2352,6 @@
       img.loading = 'lazy';
       card.appendChild(img);
 
-      // 一般モード時のR18ロックオーバーレイ
       if (shouldBlur) {
         const lock = document.createElement('div');
         lock.className = 'r18-overlay-lock';
@@ -1816,12 +2359,18 @@
         card.appendChild(lock);
       }
 
-      // 上部バッジ（R18・2D/3D・動画）
       const topBadges = document.createElement('div');
       topBadges.className = 'card-top-badges';
 
       const leftBadges = document.createElement('div');
       leftBadges.className = 'left-badges';
+
+      if (isSelectionMode) {
+        const checkBadge = document.createElement('div');
+        checkBadge.className = 'select-checkbox-badge';
+        checkBadge.textContent = isSelected ? '✓' : '';
+        leftBadges.appendChild(checkBadge);
+      }
 
       if (item.isR18) {
         const r18Badge = document.createElement('span');
@@ -1830,23 +2379,52 @@
         leftBadges.appendChild(r18Badge);
       }
 
-      const dimBadge = document.createElement('span');
-      dimBadge.className = 'dim-badge';
-      dimBadge.textContent = item.dimension || '3D';
-      leftBadges.appendChild(dimBadge);
+      if (item.icloudUrl) {
+        const icBadge = document.createElement('span');
+        icBadge.className = 'icloud-badge';
+        icBadge.textContent = '☁️ iCloud';
+        leftBadges.appendChild(icBadge);
+      }
 
       topBadges.appendChild(leftBadges);
+
+      const rightBadges = document.createElement('div');
+      rightBadges.className = 'right-badges';
 
       if (item.type === 'video') {
         const vBadge = document.createElement('div');
         vBadge.className = 'video-badge';
         vBadge.innerHTML = '▶ 動画';
-        topBadges.appendChild(vBadge);
+        rightBadges.appendChild(vBadge);
       }
 
+      if (!isSelectionMode) {
+        const editBtn = document.createElement('button');
+        editBtn.className = 'card-quick-btn edit-btn';
+        editBtn.title = '編集';
+        editBtn.innerHTML = '✏️';
+        editBtn.onclick = (e) => {
+          e.stopPropagation();
+          currentSliderList = currentList;
+          currentSliderIndex = index;
+          openEditModal();
+        };
+        rightBadges.appendChild(editBtn);
+
+        const delBtn = document.createElement('button');
+        delBtn.className = 'card-quick-btn';
+        delBtn.title = '削除';
+        delBtn.innerHTML = '🗑️';
+        delBtn.onclick = (e) => {
+          e.stopPropagation();
+          requestDeleteSingle(item.id);
+        };
+        rightBadges.appendChild(delBtn);
+      }
+
+      topBadges.appendChild(rightBadges);
       card.appendChild(topBadges);
 
-      // 下部情報（コスプレ情報 & タグ）
       const bottomInfo = document.createElement('div');
       bottomInfo.className = 'card-bottom-info';
 
@@ -1875,8 +2453,19 @@
     }
 
     // ==========================================
-    // 5. 個別ページ（Person Detail Page）制御
+    // 5. 個別ページ（カバー写真・SNSリンク対応）
     // ==========================================
+    function getPersonPageItems(personName) {
+      const base = mediaItems.filter(item => {
+        if ((item.person || '未分類') !== personName) return false;
+        if ((item.dimension || '3D') !== currentDimension) return false;
+        return true;
+      });
+      return activePersonPageTag
+        ? base.filter(i => i.tags && i.tags.includes(activePersonPageTag))
+        : base;
+    }
+
     function openPersonPage(personName) {
       activePersonPage = personName;
       activePersonPageTag = null;
@@ -1905,21 +2494,54 @@
       renderGallery();
     }
 
+    function detectSnsBadgeInfo(url) {
+      const lower = url.toLowerCase();
+      if (lower.includes('x.com') || lower.includes('twitter.com')) return { icon: '𝕏', label: 'X (Twitter)' };
+      if (lower.includes('instagram.com')) return { icon: '📸', label: 'Instagram' };
+      if (lower.includes('youtube.com') || lower.includes('youtu.be')) return { icon: '▶️', label: 'YouTube' };
+      if (lower.includes('tiktok.com')) return { icon: '🎵', label: 'TikTok' };
+      if (lower.includes('fantia.jp')) return { icon: '🔞', label: 'Fantia' };
+      if (lower.includes('patreon.com') || lower.includes('myfans.jp')) return { icon: '💎', label: 'FanClub' };
+      return { icon: '🔗', label: 'SNS / Web' };
+    }
+
     function renderPersonDetailPage(personName) {
       const personItems = mediaItems.filter(item => {
         if ((item.person || '未分類') !== personName) return false;
-        if (currentDimension !== 'ALL' && (item.dimension || '3D') !== currentDimension) return false;
+        if ((item.dimension || '3D') !== currentDimension) return false;
         return true;
       });
 
       document.getElementById('detail-person-name').textContent = personName;
-      document.getElementById('detail-dim-indicator').textContent = `表示区分: ${currentDimension === 'ALL' ? 'すべて (2D & 3D)' : currentDimension}`;
 
-      // アイコン設定（R18でない最初のサムネイル、または先頭サムネイル）
-      const avatarCandidate = personItems.find(i => !i.isR18 || isR18Mode) || personItems[0];
-      document.getElementById('detail-avatar').src = avatarCandidate ? avatarCandidate.thumbnailUrl : './MuseDex_logo.png';
+      const profile = personProfiles[personName] || {};
+      const defaultAvatarItem = personItems.find(i => !i.isR18 || isR18Mode) || personItems[0];
+      const avatarSrc = profile.avatarUrl || (defaultAvatarItem ? defaultAvatarItem.thumbnailUrl : './MuseDex_logo.png');
+      document.getElementById('detail-avatar').src = avatarSrc;
 
-      // 統計ピル
+      const coverBanner = document.getElementById('detail-cover-banner');
+      const coverSrc = profile.coverUrl || (defaultAvatarItem ? defaultAvatarItem.previewUrl : '');
+      if (coverSrc) {
+        coverBanner.style.backgroundImage = `url('${coverSrc}')`;
+      } else {
+        coverBanner.style.backgroundImage = 'none';
+      }
+
+      // SNSリンク表示
+      const snsContainer = document.getElementById('detail-sns-links');
+      snsContainer.innerHTML = '';
+      const snsLinks = Array.isArray(profile.snsLinks) ? profile.snsLinks.filter(Boolean) : [];
+      snsLinks.forEach(url => {
+        const info = detectSnsBadgeInfo(url);
+        const a = document.createElement('a');
+        a.href = url;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.className = 'sns-link-pill';
+        a.innerHTML = `<span>${info.icon}</span><span>${info.label}</span>`;
+        snsContainer.appendChild(a);
+      });
+
       const imageCount = personItems.filter(i => i.type === 'image').length;
       const videoCount = personItems.filter(i => i.type === 'video').length;
       const r18Count = personItems.filter(i => i.isR18).length;
@@ -1931,7 +2553,6 @@
         <span class="stat-pill">🔞 R18 ${r18Count} 件</span>
       `;
 
-      // 個別ページ内のタグフィルター生成
       const tagMap = {};
       personItems.forEach(item => {
         (item.tags || []).forEach(t => { tagMap[t] = (tagMap[t] || 0) + 1; });
@@ -1962,10 +2583,7 @@
         });
       }
 
-      const displayList = activePersonPageTag
-        ? personItems.filter(i => i.tags && i.tags.includes(activePersonPageTag))
-        : personItems;
-
+      const displayList = getPersonPageItems(personName);
       document.getElementById('photo-count').textContent = `${displayList.length} items`;
 
       const grid = document.getElementById('detail-grid');
@@ -1973,6 +2591,100 @@
       displayList.forEach((item, idx) => {
         grid.appendChild(createMediaCard(item, displayList, idx));
       });
+    }
+
+    // カバー写真・SNS設定モーダル制御
+    function openProfileSettingsModal() {
+      if (!activePersonPage) return;
+      const profile = personProfiles[activePersonPage] || {};
+      const personImages = mediaItems.filter(i => i.person === activePersonPage && i.type === 'image');
+
+      document.getElementById('profile-modal-title').textContent = `${activePersonPage} のカバー・SNS設定`;
+      document.getElementById('profile-cover-url').value = profile.coverUrl || '';
+      document.getElementById('profile-avatar-url').value = profile.avatarUrl || '';
+
+      const links = Array.isArray(profile.snsLinks) ? profile.snsLinks : [];
+      document.getElementById('sns-x').value = links[0] || '';
+      document.getElementById('sns-ig').value = links[1] || '';
+      document.getElementById('sns-yt').value = links[2] || '';
+      document.getElementById('sns-other').value = links[3] || '';
+
+      const coverGrid = document.getElementById('cover-picker-grid');
+      const avatarGrid = document.getElementById('avatar-picker-grid');
+      coverGrid.innerHTML = '';
+      avatarGrid.innerHTML = '';
+
+      personImages.forEach(item => {
+        // カバー用候補（高解像度previewUrl）
+        const cItem = document.createElement('div');
+        cItem.className = 'cover-pick-item' + (profile.coverUrl === item.previewUrl ? ' selected' : '');
+        cItem.innerHTML = `<img src="${item.thumbnailUrl}" alt="">`;
+        cItem.onclick = () => {
+          document.getElementById('profile-cover-url').value = item.previewUrl;
+          coverGrid.querySelectorAll('.cover-pick-item').forEach(el => el.classList.remove('selected'));
+          cItem.classList.add('selected');
+        };
+        coverGrid.appendChild(cItem);
+
+        // アイコン用候補
+        const aItem = document.createElement('div');
+        aItem.className = 'cover-pick-item' + (profile.avatarUrl === item.thumbnailUrl ? ' selected' : '');
+        aItem.innerHTML = `<img src="${item.thumbnailUrl}" alt="">`;
+        aItem.onclick = () => {
+          document.getElementById('profile-avatar-url').value = item.thumbnailUrl;
+          avatarGrid.querySelectorAll('.cover-pick-item').forEach(el => el.classList.remove('selected'));
+          aItem.classList.add('selected');
+        };
+        avatarGrid.appendChild(aItem);
+      });
+
+      document.getElementById('profile-modal').classList.add('active');
+    }
+
+    function closeProfileSettingsModal() {
+      document.getElementById('profile-modal').classList.remove('active');
+    }
+
+    async function savePersonProfile() {
+      if (!activePersonPage) return;
+      const btn = document.getElementById('submit-profile-btn');
+      btn.disabled = true;
+      btn.textContent = '保存中...';
+
+      const coverUrl = document.getElementById('profile-cover-url').value.trim();
+      const avatarUrl = document.getElementById('profile-avatar-url').value.trim();
+      const snsLinks = [
+        document.getElementById('sns-x').value.trim(),
+        document.getElementById('sns-ig').value.trim(),
+        document.getElementById('sns-yt').value.trim(),
+        document.getElementById('sns-other').value.trim()
+      ].filter(Boolean);
+
+      try {
+        const response = await fetch(GAS_ENDPOINT, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'saveProfile',
+            person: activePersonPage,
+            coverUrl,
+            avatarUrl,
+            snsLinks
+          }),
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+        });
+        const res = await response.json();
+        if (res.status !== 'success') throw new Error(res.message);
+
+        personProfiles[activePersonPage] = { coverUrl, avatarUrl, snsLinks };
+        closeProfileSettingsModal();
+        renderPersonDetailPage(activePersonPage);
+        showToast('プロフィール・カバー設定を保存しました');
+      } catch (err) {
+        showToast(`保存エラー: ${err.message}`);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '設定を保存';
+      }
     }
 
     function toggleAllAccordions() {
@@ -1985,7 +2697,7 @@
     }
 
     // ==========================================
-    // 6. コスプレ連動入力フォーム制御
+    // 6. コスプレ連動フォーム & 一括編集機能
     // ==========================================
     function syncCosplayFields(mode) {
       const tagsInput = document.getElementById(mode === 'upload' ? 'input-tags' : 'edit-tags');
@@ -2013,10 +2725,297 @@
       syncCosplayFields(mode);
     }
 
+    function openBatchEditModal() {
+      if (selectedFileIds.size === 0) {
+        showToast('編集するメディアを選択してください');
+        return;
+      }
+      document.getElementById('batch-edit-title').textContent = `選択した ${selectedFileIds.size} 件を一括編集`;
+      document.getElementById('batch-person').value = '';
+      document.getElementById('batch-r18-mode').value = 'keep';
+      document.getElementById('batch-tags').value = '';
+      document.getElementById('batch-replace-tags').checked = false;
+      document.getElementById('batch-dimension').value = 'keep';
+      document.getElementById('batch-edit-modal').classList.add('active');
+    }
+
+    function closeBatchEditModal() {
+      document.getElementById('batch-edit-modal').classList.remove('active');
+    }
+
+    async function executeBatchMetaUpdate() {
+      const fileIds = Array.from(selectedFileIds);
+      if (fileIds.length === 0) return;
+
+      const btn = document.getElementById('submit-batch-edit-btn');
+      btn.disabled = true;
+      btn.textContent = '一括更新中...';
+
+      const person = document.getElementById('batch-person').value.trim();
+      const r18Mode = document.getElementById('batch-r18-mode').value;
+      const rawTags = document.getElementById('batch-tags').value;
+      const addTags = rawTags.split(/[,、\s]+/).map(t => t.trim()).filter(Boolean);
+      const replaceTags = document.getElementById('batch-replace-tags').checked;
+      const dimension = document.getElementById('batch-dimension').value;
+
+      // 各アイテムの更新後メタデータを構築するヘルパー
+      const buildUpdatedMeta = (item) => {
+        const nextPerson = person ? person : (item.person || '未分類');
+        const nextDim = (dimension === '2D' || dimension === '3D') ? dimension : (item.dimension || currentDimension);
+        const nextR18 = r18Mode === 'true' ? true : (r18Mode === 'false' ? false : Boolean(item.isR18));
+        const nextTags = replaceTags
+          ? [...addTags]
+          : (addTags.length > 0 ? Array.from(new Set((item.tags || []).concat(addTags))) : (item.tags || []));
+        return { nextPerson, nextDim, nextR18, nextTags };
+      };
+
+      try {
+        const response = await fetch(GAS_ENDPOINT, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'batchUpdateMeta',
+            fileIds,
+            person: person || undefined,
+            r18Mode,
+            addTags,
+            replaceTags,
+            dimension: dimension !== 'keep' ? dimension : undefined
+          }),
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+        });
+
+        const res = await response.json();
+
+        // 万が一GASが旧バージョンで batchUpdateMeta に未対応だった場合は1件ずつ updateMeta で確実に更新する
+        if (res.status !== 'success') {
+          for (const id of fileIds) {
+            const item = mediaItems.find(m => m.id === id);
+            if (!item) continue;
+            const { nextPerson, nextDim, nextR18, nextTags } = buildUpdatedMeta(item);
+            await fetch(GAS_ENDPOINT, {
+              method: 'POST',
+              body: JSON.stringify({
+                action: 'updateMeta',
+                fileId: id,
+                person: nextPerson,
+                dimension: nextDim,
+                isR18: nextR18,
+                tags: nextTags,
+                charName: item.charName || '',
+                workName: item.workName || '',
+                icloudUrl: item.icloudUrl || ''
+              }),
+              headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+            });
+          }
+        }
+
+        // ローカルデータ即時反映
+        fileIds.forEach(id => {
+          const item = mediaItems.find(m => m.id === id);
+          if (!item) return;
+          const { nextPerson, nextDim, nextR18, nextTags } = buildUpdatedMeta(item);
+          item.person = nextPerson;
+          item.dimension = nextDim;
+          item.isR18 = nextR18;
+          item.tags = nextTags;
+        });
+
+        closeBatchEditModal();
+        toggleSelectionMode(false);
+        updatePersonDatalist();
+        refreshAllViews();
+        showToast(`${fileIds.length}件のメディア情報を一括更新しました`);
+      } catch (err) {
+        showToast(`一括更新エラー: ${err.message}`);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '一括保存する';
+      }
+    }
+
+    // アコーディオン単位での人物名変更
+    function openRenamePersonModal(personName) {
+      document.getElementById('rename-old-person').value = personName;
+      document.getElementById('rename-new-person').value = personName;
+      document.getElementById('rename-person-modal').classList.add('active');
+    }
+
+    function closeRenamePersonModal() {
+      document.getElementById('rename-person-modal').classList.remove('active');
+    }
+
+    async function executeRenamePersonSection() {
+      const oldName = document.getElementById('rename-old-person').value;
+      const newName = document.getElementById('rename-new-person').value.trim();
+      if (!oldName || !newName || oldName === newName) {
+        closeRenamePersonModal();
+        return;
+      }
+
+      const targets = mediaItems.filter(m => (m.person || '未分類') === oldName && (m.dimension || '3D') === currentDimension);
+      if (targets.length === 0) {
+        closeRenamePersonModal();
+        return;
+      }
+
+      const btn = document.getElementById('submit-rename-btn');
+      btn.disabled = true;
+      btn.textContent = '変更中...';
+
+      const fileIds = targets.map(t => t.id);
+
+      try {
+        const response = await fetch(GAS_ENDPOINT, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'batchUpdateMeta',
+            fileIds,
+            person: newName,
+            r18Mode: 'keep',
+            addTags: [],
+            replaceTags: false
+          }),
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+        });
+        const res = await response.json();
+
+        if (res.status !== 'success') {
+          for (const item of targets) {
+            await fetch(GAS_ENDPOINT, {
+              method: 'POST',
+              body: JSON.stringify({
+                action: 'updateMeta',
+                fileId: item.id,
+                person: newName,
+                dimension: item.dimension || currentDimension,
+                isR18: Boolean(item.isR18),
+                tags: item.tags || []
+              }),
+              headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+            });
+          }
+        }
+
+        targets.forEach(item => { item.person = newName; });
+        if (selectedPersonFilter === oldName) selectedPersonFilter = newName;
+        closeRenamePersonModal();
+        updatePersonDatalist();
+        refreshAllViews();
+        showToast(`「${oldName}」を「${newName}」へ変更しました`);
+      } catch (err) {
+        showToast(`名前変更エラー: ${err.message}`);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '変更する';
+      }
+    }
+
     // ==========================================
-    // 7. 類似画像判定（dHash計算 & 確認ダイアログ）
+    // 7. 削除機能（単一・ライトボックス・一括・アコーディオンごと削除対応）
     // ==========================================
-    // 画像の64bit Perceptual Hash (dHash: 9x8隣接輝度比較) を算出
+    function requestDeleteSingle(fileId) {
+      if (!fileId) return;
+      pendingDeleteIds = [fileId];
+      const target = mediaItems.find(m => m.id === fileId);
+      document.getElementById('delete-confirm-title').textContent = '🗑️ メディアの削除確認';
+      document.getElementById('delete-confirm-text').textContent =
+        `「${target ? target.name : 'このメディア'}」を削除（Googleドライブのゴミ箱へ移動）しますか？`;
+      document.getElementById('delete-confirm-modal').classList.add('active');
+    }
+
+    function requestDeleteFromLightbox() {
+      const item = currentSliderList[currentSliderIndex];
+      if (!item) return;
+      requestDeleteSingle(item.id);
+    }
+
+    function confirmDeleteSelected() {
+      if (selectedFileIds.size === 0) {
+        showToast('削除する項目を選択してください');
+        return;
+      }
+      pendingDeleteIds = Array.from(selectedFileIds);
+      document.getElementById('delete-confirm-title').textContent = '🗑️ 選択項目の一括削除';
+      document.getElementById('delete-confirm-text').textContent =
+        `選択中の ${pendingDeleteIds.length} 件のメディアを一括削除（Googleドライブのゴミ箱へ移動）しますか？`;
+      document.getElementById('delete-confirm-modal').classList.add('active');
+    }
+
+    // アコーディオン（人物セクション）ごと一括削除
+    function requestDeletePersonSection(personName) {
+      const targets = mediaItems.filter(m => (m.person || '未分類') === personName && (m.dimension || '3D') === currentDimension);
+      if (targets.length === 0) return;
+
+      pendingDeleteIds = targets.map(t => t.id);
+      document.getElementById('delete-confirm-title').textContent = `🗑️ 「${personName}」をアコーディオンごと削除`;
+      document.getElementById('delete-confirm-text').textContent =
+        `「${personName}」のセクションに含まれる全 ${targets.length} 件のメディアをすべて削除し、アコーディオンごと消去しますか？`;
+      document.getElementById('delete-confirm-modal').classList.add('active');
+    }
+
+    function closeDeleteConfirmModal() {
+      document.getElementById('delete-confirm-modal').classList.remove('active');
+      pendingDeleteIds = [];
+    }
+
+    async function executeConfirmedDelete() {
+      if (pendingDeleteIds.length === 0) return;
+      const btn = document.getElementById('execute-delete-btn');
+      btn.disabled = true;
+      btn.textContent = '削除中...';
+
+      const idsToDelete = [...pendingDeleteIds];
+
+      try {
+        const response = await fetch(GAS_ENDPOINT, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'deleteFiles',
+            fileIds: idsToDelete
+          }),
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+        });
+        const res = await response.json();
+
+        // もしGAS側が未デプロイで replace エラーを返した場合でも、画面上から即座に消去しローカル除外リストに記録
+        if (res.status !== 'success') {
+          idsToDelete.forEach(id => locallyDeletedIds.add(id));
+          try {
+            localStorage.setItem(HIDDEN_DELETED_KEY, JSON.stringify(Array.from(locallyDeletedIds)));
+          } catch (e) {}
+        }
+
+        mediaItems = mediaItems.filter(m => !idsToDelete.includes(m.id));
+        idsToDelete.forEach(id => selectedFileIds.delete(id));
+
+        closeDeleteConfirmModal();
+        closeEditModal();
+        if (document.getElementById('lightbox').classList.contains('active')) {
+          closeLightbox();
+        }
+        if (isSelectionMode && selectedFileIds.size === 0) {
+          toggleSelectionMode(false);
+        } else {
+          updateBatchActionBar();
+        }
+        if (selectedPersonFilter && !mediaItems.some(m => m.person === selectedPersonFilter && (m.dimension || '3D') === currentDimension)) {
+          selectedPersonFilter = null;
+        }
+        updatePersonDatalist();
+        refreshAllViews();
+        showToast(`${idsToDelete.length}件のメディアを削除しました`);
+      } catch (err) {
+        showToast(`削除エラー: ${err.message}`);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '削除する';
+      }
+    }
+
+    // ==========================================
+    // 8. 重複防止機能（CORS回避ハッシュ計算 & 既存重複スキャン）
+    // ==========================================
     function computeImagePhash(imgElement) {
       try {
         const canvas = document.createElement('canvas');
@@ -2042,7 +3041,6 @@
       }
     }
 
-    // ハミング距離を計算（64bit中何bit異なるか）
     function getHammingDistance(hashA, hashB) {
       if (!hashA || !hashB || hashA.length !== 64 || hashB.length !== 64) return 64;
       let dist = 0;
@@ -2052,25 +3050,66 @@
       return dist;
     }
 
-    // 既存メディアおよび現在キュー内のメディアから類似画像を検索
-    function findSimilarExistingItem(newPhash, fileName) {
-      const HAMMING_THRESHOLD = 10; // 64bit中10bit以下（類似度約84%以上）なら類似と判定
+    // GAS経由でCORS制限なしに未計算画像のphashを計算＆Googleドライブへ保存
+    async function computeMissingPhashesViaGAS() {
+      const missingItems = mediaItems.filter(i => i.type === 'image' && (!i.phash || i.phash.length !== 64));
+      for (const item of missingItems) {
+        try {
+          const response = await fetch(GAS_ENDPOINT, {
+            method: 'POST',
+            body: JSON.stringify({ action: 'getImageBase64', fileId: item.id }),
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+          });
+          const res = await response.json();
+          if (res.status === 'success' && res.base64) {
+            const hash = await computeHashFromBase64(res.base64);
+            if (hash && hash.length === 64) {
+              item.phash = hash;
+              localPhashMap[item.id] = hash;
+              try { localStorage.setItem(PHASH_CACHE_KEY, JSON.stringify(localPhashMap)); } catch (e) {}
+              // GAS側のメタデータにも永続保存
+              fetch(GAS_ENDPOINT, {
+                method: 'POST',
+                body: JSON.stringify({ action: 'updateMeta', fileId: item.id, phash: hash }),
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+              }).catch(() => {});
+            }
+          }
+        } catch (err) {}
+      }
+    }
 
-      // 1. 登録済みメディアとの比較
+    function computeHashFromBase64(base64Src) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve(computeImagePhash(img));
+        img.onerror = () => resolve('');
+        img.src = base64Src;
+      });
+    }
+
+    function findSimilarExistingItem(newPhash, fileName, fileSize) {
+      const HAMMING_THRESHOLD = 11; // 64bit中11bit以下なら類似画像と判定
+
+      // 1. 登録済みメディアとの比較（phash または ファイル名一致）
       for (const item of mediaItems) {
         if (item.type !== 'image') continue;
         const itemHash = item.phash || localPhashMap[item.id];
-        if (itemHash && newPhash) {
+        if (itemHash && newPhash && itemHash.length === 64 && newPhash.length === 64) {
           const dist = getHammingDistance(newPhash, itemHash);
           if (dist <= HAMMING_THRESHOLD) {
             return { item, distance: dist, source: '登録済み' };
           }
         }
+        // ハッシュ未計算でもファイル名とサイズが一致する場合
+        if (item.name === fileName && item.size && fileSize && Math.abs(item.size - fileSize) < 1024) {
+          return { item, distance: 0, source: '登録済み(同名ファイル)' };
+        }
       }
 
       // 2. 現在のアップロード待機キュー内の画像との比較
       for (const queued of pendingFiles) {
-        if (queued.phash && newPhash) {
+        if (queued.phash && newPhash && queued.phash.length === 64) {
           const dist = getHammingDistance(newPhash, queued.phash);
           if (dist <= HAMMING_THRESHOLD) {
             return {
@@ -2090,30 +3129,72 @@
       return null;
     }
 
-    // バックグラウンドで既存画像のハッシュ計算を試みる
-    function computeMissingPhashesInBackground() {
-      mediaItems.forEach(item => {
-        if (item.type !== 'image' || item.phash || localPhashMap[item.id]) return;
-        const img = new Image();
-        img.crossOrigin = 'anonymous';
-        img.onload = () => {
-          const h = computeImagePhash(img);
-          if (h) {
-            item.phash = h;
-            localPhashMap[item.id] = h;
-            try { localStorage.setItem(PHASH_CACHE_KEY, JSON.stringify(localPhashMap)); } catch (e) {}
+    // 既にギャラリー内に入ってしまった重複画像をスキャンして削除できる機能
+    async function scanExistingDuplicates() {
+      showToast('ギャラリー内の重複画像をスキャンしています...');
+      await computeMissingPhashesViaGAS();
+
+      const images = mediaItems.filter(i => i.type === 'image' && (i.dimension || '3D') === currentDimension);
+      const foundPairs = [];
+
+      for (let i = 0; i < images.length; i++) {
+        for (let j = i + 1; j < images.length; j++) {
+          const a = images[i];
+          const b = images[j];
+          const hashA = a.phash || localPhashMap[a.id];
+          const hashB = b.phash || localPhashMap[b.id];
+
+          let isDup = false;
+          let dist = 64;
+          if (hashA && hashB && hashA.length === 64 && hashB.length === 64) {
+            dist = getHammingDistance(hashA, hashB);
+            if (dist <= 10) isDup = true;
+          } else if (a.name === b.name && a.person === b.person) {
+            dist = 0;
+            isDup = true;
           }
-        };
-        img.src = item.thumbnailUrl;
-      });
+
+          if (isDup) {
+            foundPairs.push({ newer: a, older: b, distance: dist });
+          }
+        }
+      }
+
+      if (foundPairs.length === 0) {
+        showToast('重複している画像は見つかりませんでした✨');
+        return;
+      }
+
+      for (const pair of foundPairs) {
+        const shouldDeleteNewer = await askExistingDuplicateRemoval(pair.newer, pair.older, pair.distance);
+        if (shouldDeleteNewer) {
+          try {
+            await fetch(GAS_ENDPOINT, {
+              method: 'POST',
+              body: JSON.stringify({ action: 'deleteFiles', fileIds: [pair.newer.id] }),
+              headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+            });
+            mediaItems = mediaItems.filter(m => m.id !== pair.newer.id);
+            refreshAllViews();
+            showToast('重複画像を1件削除しました');
+          } catch (e) {}
+        }
+      }
     }
 
-    // 類似確認モーダルをPromiseで制御
     let duplicateConfirmResolver = null;
 
     function askUserAboutDuplicate(newFileObj, similarMatch) {
       return new Promise((resolve) => {
         duplicateConfirmResolver = resolve;
+
+        document.getElementById('dup-modal-heading').textContent = '⚠️ 類似の画像が既に登録されています';
+        document.getElementById('dup-modal-desc').textContent =
+          'アップロードしようとしている画像は、既に登録されている画像と類似しています。同じ画像ですか？';
+        document.getElementById('dup-left-label').textContent = '今回選択した画像';
+        document.getElementById('dup-right-label').textContent = '登録済みの類似画像';
+        document.getElementById('dup-btn-skip').textContent = '同じ画像です（スキップ）';
+        document.getElementById('dup-btn-keep').textContent = 'いいえ、違う画像です（追加する）';
 
         document.getElementById('dup-new-img').src = newFileObj.previewUrl;
         document.getElementById('dup-new-meta').textContent = newFileObj.name;
@@ -2122,6 +3203,30 @@
         const similarityPct = Math.round(((64 - similarMatch.distance) / 64) * 100);
         document.getElementById('dup-existing-meta').textContent =
           `${similarMatch.item.person || '未分類'} / ${similarMatch.item.name} (類似度: 約${similarityPct}%)`;
+
+        document.getElementById('duplicate-modal').classList.add('active');
+      });
+    }
+
+    function askExistingDuplicateRemoval(itemA, itemB, distance) {
+      return new Promise((resolve) => {
+        duplicateConfirmResolver = resolve;
+
+        document.getElementById('dup-modal-heading').textContent = '🔍 登録済みの重複画像が見つかりました';
+        document.getElementById('dup-modal-desc').textContent =
+          'ギャラリー内に同じ（または酷似した）画像が2枚存在します。片方（左側）を削除しますか？';
+        document.getElementById('dup-left-label').textContent = '画像A（削除対象）';
+        document.getElementById('dup-right-label').textContent = '画像B（残す画像）';
+        document.getElementById('dup-btn-skip').textContent = '同じ画像です（片方を削除）';
+        document.getElementById('dup-btn-keep').textContent = 'いいえ、両方残す';
+
+        document.getElementById('dup-new-img').src = itemA.thumbnailUrl;
+        document.getElementById('dup-new-meta').textContent = `${itemA.person} / ${itemA.name}`;
+
+        document.getElementById('dup-existing-img').src = itemB.thumbnailUrl;
+        const similarityPct = Math.round(((64 - distance) / 64) * 100);
+        document.getElementById('dup-existing-meta').textContent =
+          `${itemB.person} / ${itemB.name} (類似度: 約${similarityPct}%)`;
 
         document.getElementById('duplicate-modal').classList.add('active');
       });
@@ -2136,7 +3241,7 @@
     }
 
     // ==========================================
-    // 8. 一括ドラッグ＆ドロップ & アップロード処理
+    // 9. 一括ドラッグ＆ドロップ & アップロード処理
     // ==========================================
     const fabBtn = document.getElementById('fab-btn');
     const fileInput = document.getElementById('file-input');
@@ -2152,7 +3257,6 @@
       }
     };
 
-    // ウィンドウ全体へのドラッグ＆ドロップ（複数枚一括対応）
     window.addEventListener('dragover', (e) => {
       e.preventDefault();
       dropOverlay.classList.add('active');
@@ -2170,7 +3274,6 @@
       }
     });
 
-    // モーダル内ドロップゾーン
     modalDropzone.addEventListener('dragover', (e) => {
       e.preventDefault();
       e.stopPropagation();
@@ -2192,11 +3295,10 @@
       }
     });
 
-    // 選択・ドロップされた複数ファイルを順次検証してキューに追加
     async function handleSelectedFiles(files) {
       const validFiles = files.filter(f => f.type.startsWith('image/') || f.type.startsWith('video/'));
       if (validFiles.length === 0) {
-        alert('画像または動画ファイルを選択してください');
+        showToast('画像または動画ファイルを選択してください');
         return;
       }
 
@@ -2205,7 +3307,7 @@
 
       for (const file of validFiles) {
         if (file.size > MAX_PAYLOAD_BYTES) {
-          alert(`「${file.name}」はサイズが ${(file.size / (1024 * 1024)).toFixed(1)}MB あります。\nGASの送信上限（20MB）を超えるため、Googleドライブへ直接ドラッグ＆ドロップしてください。`);
+          showToast(`「${file.name}」は20MBを超えるため、Googleドライブへ直接追加してください`);
         } else {
           safeFiles.push(file);
         }
@@ -2217,9 +3319,8 @@
         const isVideo = file.type.startsWith('video/');
         const processed = await processFileAndHash(file);
 
-        // 画像の場合は類似チェックを実行
         if (!isVideo && processed.phash) {
-          const similarMatch = findSimilarExistingItem(processed.phash, file.name);
+          const similarMatch = findSimilarExistingItem(processed.phash, file.name, file.size);
           if (similarMatch) {
             const shouldSkip = await askUserAboutDuplicate({
               name: file.name,
@@ -2227,7 +3328,6 @@
             }, similarMatch);
 
             if (shouldSkip) {
-              // 「同じ画像です」が選ばれた場合はスキップ
               continue;
             }
           }
@@ -2245,7 +3345,7 @@
 
       if (pendingFiles.length > 0) {
         renderUploadQueue();
-        // 個別ページ閲覧中ならその人物名をデフォルトセット
+        document.getElementById('input-dimension').value = currentDimension;
         if (activePersonPage && !document.getElementById('input-person').value) {
           document.getElementById('input-person').value = activePersonPage;
         }
@@ -2256,7 +3356,7 @@
     function renderUploadQueue() {
       const queueContainer = document.getElementById('upload-queue');
       queueContainer.innerHTML = '';
-      document.getElementById('modal-title').textContent = `${pendingFiles.length}件のメディアを登録`;
+      document.getElementById('modal-title').textContent = `${pendingFiles.length}件のメディアを一括登録`;
 
       pendingFiles.forEach((item, idx) => {
         const itemBox = document.createElement('div');
@@ -2292,10 +3392,8 @@
           reader.onload = (e) => {
             const img = new Image();
             img.onload = () => {
-              // 類似判定用64bit dHashを計算
               const phash = computeImagePhash(img);
 
-              // アップロード用リサイズ (最大2048px)
               const canvas = document.createElement('canvas');
               let width = img.width;
               let height = img.height;
@@ -2342,12 +3440,13 @@
       progressContainer.style.display = 'flex';
 
       const person = document.getElementById('input-person').value.trim() || '未分類';
-      const dimension = document.getElementById('input-dimension').value || '3D';
+      const dimension = document.getElementById('input-dimension').value || currentDimension;
       const isR18 = document.getElementById('input-r18').checked;
       const rawTags = document.getElementById('input-tags').value;
       const tags = rawTags.split(/[,、\s]+/).map(t => t.trim()).filter(Boolean);
       const charName = tags.includes('コスプレ') ? document.getElementById('input-char-name').value.trim() : '';
       const workName = tags.includes('コスプレ') ? document.getElementById('input-work-name').value.trim() : '';
+      const icloudUrl = document.getElementById('input-icloud-url').value.trim();
 
       const total = pendingFiles.length;
       let successCount = 0;
@@ -2367,6 +3466,7 @@
           tags: tags,
           charName: charName,
           workName: workName,
+          icloudUrl: icloudUrl,
           phash: item.phash
         };
 
@@ -2394,10 +3494,9 @@
 
       setTimeout(async () => {
         closeUploadModal();
-        document.getElementById('status').style.display = 'block';
-        document.getElementById('status').textContent = '最新データを読み込み中...';
+        showToast(`${successCount}件のアップロードが完了しました`);
         await loadGallery();
-      }, 700);
+      }, 600);
     }
 
     function closeUploadModal() {
@@ -2407,6 +3506,7 @@
       document.getElementById('input-r18').checked = false;
       document.getElementById('input-char-name').value = '';
       document.getElementById('input-work-name').value = '';
+      document.getElementById('input-icloud-url').value = '';
       document.getElementById('upload-cosplay-fields').classList.remove('active');
       document.getElementById('upload-cosplay-btn').classList.remove('active');
       document.getElementById('file-input').value = '';
@@ -2417,7 +3517,7 @@
     }
 
     // ==========================================
-    // 9. ライトボックス & 編集モーダル
+    // 10. ライトボックス & 単一編集モーダル
     // ==========================================
     function openLightbox(list, index) {
       currentSliderList = list;
@@ -2434,9 +3534,19 @@
       container.innerHTML = '';
 
       if (item.type === 'video') {
+        // スマホかつiCloud URLがある場合はiCloud起動ボタンを大きく表示
+        if (item.icloudUrl && isMobileDevice()) {
+          const icloudBtn = document.createElement('a');
+          icloudBtn.href = item.icloudUrl;
+          icloudBtn.target = '_blank';
+          icloudBtn.rel = 'noopener noreferrer';
+          icloudBtn.className = 'icloud-jump-banner';
+          icloudBtn.innerHTML = '☁️ iCloud Drive でこの動画を再生する';
+          container.appendChild(icloudBtn);
+        }
         const iframe = document.createElement('iframe');
         iframe.src = item.previewUrl;
-        iframe.allow = 'autoplay';
+        iframe.allow = 'autoplay; fullscreen';
         iframe.allowFullscreen = true;
         container.appendChild(iframe);
       } else {
@@ -2458,7 +3568,6 @@
         openPersonPage(item.person || '未分類');
       };
 
-      document.getElementById('lightbox-dim-badge').textContent = item.dimension || '3D';
       document.getElementById('lightbox-r18-badge').style.display = item.isR18 ? 'inline-block' : 'none';
 
       const cosEl = document.getElementById('lightbox-cosplay-badge');
@@ -2506,11 +3615,12 @@
 
       document.getElementById('edit-file-id').value = item.id;
       document.getElementById('edit-person').value = item.person || '';
-      document.getElementById('edit-dimension').value = item.dimension || '3D';
+      document.getElementById('edit-dimension').value = item.dimension || currentDimension;
       document.getElementById('edit-r18').checked = Boolean(item.isR18);
       document.getElementById('edit-tags').value = (item.tags || []).join(', ');
       document.getElementById('edit-char-name').value = item.charName || '';
       document.getElementById('edit-work-name').value = item.workName || '';
+      document.getElementById('edit-icloud-url').value = item.icloudUrl || '';
 
       syncCosplayFields('edit');
       document.getElementById('edit-modal').classList.add('active');
@@ -2523,12 +3633,13 @@
     async function executeMetaUpdate() {
       const fileId = document.getElementById('edit-file-id').value;
       const person = document.getElementById('edit-person').value.trim() || '未分類';
-      const dimension = document.getElementById('edit-dimension').value || '3D';
+      const dimension = document.getElementById('edit-dimension').value || currentDimension;
       const isR18 = document.getElementById('edit-r18').checked;
       const rawTags = document.getElementById('edit-tags').value;
       const tags = rawTags.split(/[,、\s]+/).map(t => t.trim()).filter(Boolean);
       const charName = tags.includes('コスプレ') ? document.getElementById('edit-char-name').value.trim() : '';
       const workName = tags.includes('コスプレ') ? document.getElementById('edit-work-name').value.trim() : '';
+      const icloudUrl = document.getElementById('edit-icloud-url').value.trim();
 
       const submitBtn = document.getElementById('submit-edit-btn');
       submitBtn.disabled = true;
@@ -2536,13 +3647,14 @@
 
       const payload = {
         action: 'updateMeta',
-        fileId: fileId,
-        person: person,
-        dimension: dimension,
-        isR18: isR18,
-        tags: tags,
-        charName: charName,
-        workName: workName
+        fileId,
+        person,
+        dimension,
+        isR18,
+        tags,
+        charName,
+        workName,
+        icloudUrl
       };
 
       try {
@@ -2563,15 +3675,19 @@
           target.tags = tags;
           target.charName = charName;
           target.workName = workName;
+          target.icloudUrl = icloudUrl;
         }
 
         closeEditModal();
-        renderCurrentSlide();
+        if (document.getElementById('lightbox').classList.contains('active')) {
+          renderCurrentSlide();
+        }
         updatePersonDatalist();
         refreshAllViews();
+        showToast('メディア情報を更新しました');
 
       } catch (err) {
-        alert(`更新に失敗しました: ${err.message}`);
+        showToast(`更新エラー: ${err.message}`);
       } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = '保存する';
@@ -2581,24 +3697,23 @@
     // キーボード・スワイプ操作
     document.addEventListener('keydown', (e) => {
       const lightbox = document.getElementById('lightbox');
-      const editModal = document.getElementById('edit-modal');
-      const uploadModal = document.getElementById('upload-modal');
       const dupModal = document.getElementById('duplicate-modal');
-
       if (dupModal.classList.contains('active')) return;
 
-      if (editModal.classList.contains('active') || uploadModal.classList.contains('active')) {
-        if (e.key === 'Escape') {
-          closeEditModal();
-          closeUploadModal();
-        }
+      if (e.key === 'Escape') {
+        closeDeleteConfirmModal();
+        closeRenamePersonModal();
+        closeProfileSettingsModal();
+        closeBatchEditModal();
+        closeEditModal();
+        closeUploadModal();
+        if (lightbox.classList.contains('active')) closeLightbox();
         return;
       }
 
       if (lightbox.classList.contains('active')) {
         if (e.key === 'ArrowLeft') prevSlide();
         if (e.key === 'ArrowRight') nextSlide();
-        if (e.key === 'Escape') closeLightbox();
       }
     });
 

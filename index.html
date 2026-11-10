@@ -10,11 +10,15 @@
     :root {
       --bg-color: #0f1115;
       --card-bg: #1a1d24;
+      --card-hover: #222630;
       --border-color: #272c36;
       --text-main: #f3f4f6;
       --text-sub: #9ca3af;
       --accent: #3b82f6;
       --accent-hover: #2563eb;
+      --r18-color: #ec4899;
+      --r18-bg: rgba(236, 72, 153, 0.15);
+      --cosplay-color: #a855f7;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -22,46 +26,158 @@
       background-color: var(--bg-color);
       color: var(--text-main);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      padding: 24px;
+      padding: 20px 24px;
       min-height: 100vh;
       position: relative;
     }
 
+    /* ==========================================
+       ヘッダー & ナビゲーション
+       ========================================== */
     header {
-      max-width: 1400px;
-      margin: 0 auto 24px;
+      max-width: 1440px;
+      margin: 0 auto 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding-bottom: 16px;
       border-bottom: 1px solid var(--border-color);
       flex-wrap: wrap;
-      gap: 16px;
+      gap: 14px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
+      cursor: pointer;
+      user-select: none;
     }
 
     .brand-logo {
-      width: 36px;
-      height: 36px;
+      width: 38px;
+      height: 38px;
       object-fit: contain;
-      border-radius: 6px;
+      border-radius: 8px;
     }
 
     .brand-title {
       font-size: 1.5rem;
-      font-weight: 700;
+      font-weight: 800;
       letter-spacing: -0.02em;
+    }
+
+    /* 2D / 3D 切り替えタブ */
+    .dim-tabs {
+      display: flex;
+      background: var(--card-bg);
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+    }
+
+    .dim-tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-sub);
+      padding: 6px 16px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      border-radius: 7px;
+      transition: all 0.2s;
+    }
+
+    .dim-tab-btn.active {
+      background: var(--accent);
+      color: #fff;
     }
 
     .header-controls {
       display: flex;
       align-items: center;
       gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* 一般 / R18 トグルスイッチ */
+    .r18-switch-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--card-bg);
+      padding: 5px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--border-color);
+      user-select: none;
+    }
+
+    .r18-switch-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-sub);
+      transition: color 0.2s;
+    }
+
+    .r18-switch-label.active-general { color: #fff; }
+    .r18-switch-label.active-r18 { color: var(--r18-color); }
+
+    .toggle-switch {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      background: #2d3340;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.25s;
+    }
+
+    .toggle-switch.r18-on {
+      background: var(--r18-color);
+    }
+
+    .toggle-knob {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 18px;
+      height: 18px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .toggle-switch.r18-on .toggle-knob {
+      transform: translateX(20px);
+    }
+
+    /* Tronoches リンクボタン */
+    .tronoches-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      color: #fff;
+      text-decoration: none;
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      transition: transform 0.2s, opacity 0.2s;
+      box-shadow: 0 2px 10px rgba(168, 85, 247, 0.25);
+    }
+
+    .tronoches-link:hover {
+      transform: translateY(-1px);
+      opacity: 0.92;
     }
 
     .view-toggle {
@@ -76,8 +192,8 @@
       background: transparent;
       border: none;
       color: var(--text-sub);
-      padding: 6px 14px;
-      font-size: 0.85rem;
+      padding: 6px 12px;
+      font-size: 0.82rem;
       font-weight: 600;
       cursor: pointer;
       border-radius: 6px;
@@ -106,21 +222,85 @@
     }
 
     .photo-count {
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       color: var(--text-sub);
       background: var(--card-bg);
-      padding: 6px 14px;
+      padding: 6px 12px;
       border-radius: 20px;
       border: 1px solid var(--border-color);
     }
 
-    main {
-      max-width: 1400px;
-      margin: 0 auto 80px;
+    /* ==========================================
+       絞り込みフィルターバー（人物 & タグ）
+       ========================================== */
+    .filters-wrapper {
+      max-width: 1440px;
+      margin: 0 auto 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
+    .filter-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      background: #14171f;
+      border: 1px solid var(--border-color);
+      padding: 10px 14px;
+      border-radius: 10px;
+    }
+
+    .filter-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-sub);
+      white-space: nowrap;
+      padding-top: 4px;
+      min-width: 90px;
+    }
+
+    .filter-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      flex: 1;
+    }
+
+    .filter-chip {
+      font-size: 0.78rem;
+      background: var(--card-bg);
+      color: var(--text-sub);
+      border: 1px solid var(--border-color);
+      padding: 4px 11px;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.15s;
+      user-select: none;
+    }
+
+    .filter-chip:hover {
+      color: #fff;
+      border-color: #4b5563;
+    }
+
+    .filter-chip.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+      font-weight: 600;
+    }
+
+    main {
+      max-width: 1440px;
+      margin: 0 auto 90px;
+    }
+
+    /* ==========================================
+       人物別アコーディオン & 横スクロール
+       ========================================== */
     .person-section {
-      margin-bottom: 28px;
+      margin-bottom: 24px;
       background: #14171f;
       border: 1px solid var(--border-color);
       border-radius: 12px;
@@ -131,7 +311,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 16px 20px;
+      padding: 14px 20px;
       cursor: pointer;
       user-select: none;
       background: var(--card-bg);
@@ -160,20 +340,38 @@
     }
 
     .person-name {
-      font-size: 1.2rem;
-      font-weight: 600;
+      font-size: 1.15rem;
+      font-weight: 700;
     }
 
     .person-count {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       color: var(--text-sub);
       background: #282e3c;
       padding: 3px 10px;
       border-radius: 12px;
     }
 
+    .person-page-jump-btn {
+      background: #252b38;
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .person-page-jump-btn:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
     .person-body {
-      padding: 20px;
+      padding: 18px 20px;
       display: block;
     }
 
@@ -181,9 +379,176 @@
       display: none;
     }
 
+    /* 横スクロールレーン */
+    .horizontal-scroll-lane {
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      padding-bottom: 10px;
+      scroll-behavior: smooth;
+      scrollbar-width: thin;
+      scrollbar-color: #374151 #14171f;
+    }
+
+    .horizontal-scroll-lane::-webkit-scrollbar {
+      height: 8px;
+    }
+    .horizontal-scroll-lane::-webkit-scrollbar-track {
+      background: #14171f;
+      border-radius: 4px;
+    }
+    .horizontal-scroll-lane::-webkit-scrollbar-thumb {
+      background: #374151;
+      border-radius: 4px;
+    }
+    .horizontal-scroll-lane::-webkit-scrollbar-thumb:hover {
+      background: #4b5563;
+    }
+
+    .horizontal-scroll-lane .media-card {
+      flex: 0 0 220px;
+      width: 220px;
+      height: 220px;
+    }
+
+    /* 「もっと見る➤」カード */
+    .more-card {
+      flex: 0 0 180px;
+      width: 180px;
+      height: 220px;
+      background: linear-gradient(145deg, #1e2330, #161922);
+      border: 1px dashed #3b4252;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      color: var(--text-main);
+      transition: all 0.2s;
+      user-select: none;
+    }
+
+    .more-card:hover {
+      border-color: var(--accent);
+      background: rgba(59, 130, 246, 0.12);
+      transform: translateY(-2px);
+    }
+
+    .more-card-icon {
+      font-size: 1.6rem;
+      color: var(--accent);
+    }
+
+    .more-card-text {
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .more-card-sub {
+      font-size: 0.78rem;
+      color: var(--text-sub);
+    }
+
+    /* ==========================================
+       個別ページ（Person Detail Page）UI
+       ========================================== */
+    .person-detail-page {
+      display: none;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .person-detail-page.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .detail-hero {
+      background: linear-gradient(135deg, #1a1f2c, #12151e);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .detail-top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .back-btn {
+      background: #262b38;
+      color: #fff;
+      border: 1px solid var(--border-color);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+
+    .back-btn:hover {
+      background: #32394a;
+    }
+
+    .detail-profile-row {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .detail-avatar {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--accent);
+      background: #0f1115;
+    }
+
+    .detail-info h2 {
+      font-size: 1.7rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .detail-stats {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .stat-pill {
+      font-size: 0.78rem;
+      background: #232836;
+      color: var(--text-sub);
+      padding: 4px 12px;
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+    }
+
+    /* ==========================================
+       グリッド & メディアカード共通
+       ========================================== */
     .gallery-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
       gap: 16px;
     }
 
@@ -200,7 +565,7 @@
 
     .media-card:hover {
       transform: translateY(-2px);
-      border-color: #3b4252;
+      border-color: #4b5563;
     }
 
     .media-card img {
@@ -208,45 +573,125 @@
       height: 100%;
       object-fit: cover;
       display: block;
+      transition: filter 0.3s ease, transform 0.3s ease;
+    }
+
+    /* 一般モード時のR18ぼかし処理 */
+    .media-card.r18-blurred img {
+      filter: blur(22px) brightness(0.85);
+      transform: scale(1.08);
+    }
+
+    .r18-overlay-lock {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+      background: rgba(15, 17, 21, 0.35);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.85rem;
+      pointer-events: none;
+      z-index: 4;
+    }
+
+    /* 各種バッジ */
+    .card-top-badges {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      right: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .left-badges {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .r18-badge {
+      background: var(--r18-color);
+      color: #fff;
+      font-size: 0.68rem;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 5px;
+      letter-spacing: 0.03em;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    }
+
+    .dim-badge {
+      background: rgba(15, 17, 21, 0.78);
+      color: #93c5fd;
+      border: 1px solid rgba(59, 130, 246, 0.4);
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 5px;
     }
 
     .video-badge {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(0, 0, 0, 0.75);
       backdrop-filter: blur(4px);
       color: #fff;
-      padding: 4px 8px;
+      padding: 3px 8px;
       border-radius: 6px;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      pointer-events: none;
     }
 
-    .card-tags {
+    .card-bottom-info {
       position: absolute;
       bottom: 8px;
       left: 8px;
       right: 8px;
       display: flex;
-      flex-wrap: wrap;
+      flex-direction: column;
       gap: 4px;
       pointer-events: none;
+      z-index: 5;
+    }
+
+    .cosplay-badge {
+      font-size: 0.7rem;
+      background: rgba(88, 28, 135, 0.85);
+      border: 1px solid rgba(168, 85, 247, 0.5);
+      color: #f3e8ff;
+      padding: 2px 7px;
+      border-radius: 4px;
+      width: fit-content;
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
     }
 
     .tag-badge {
-      font-size: 0.7rem;
-      background: rgba(15, 17, 21, 0.75);
+      font-size: 0.68rem;
+      background: rgba(15, 17, 21, 0.8);
       backdrop-filter: blur(4px);
       padding: 2px 6px;
       border-radius: 4px;
       color: #e5e7eb;
     }
 
+    /* ==========================================
+       右下＋ボタン & ドロップオーバーレイ
+       ========================================== */
     .fab-button {
       position: fixed;
       bottom: 32px;
@@ -260,7 +705,7 @@
       justify-content: center;
       align-items: center;
       font-size: 32px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
       cursor: pointer;
       border: none;
       z-index: 90;
@@ -276,9 +721,9 @@
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(59, 130, 246, 0.15);
+      background: rgba(59, 130, 246, 0.18);
       border: 3px dashed var(--accent);
-      z-index: 100;
+      z-index: 300;
       justify-content: center;
       align-items: center;
       pointer-events: none;
@@ -287,13 +732,16 @@
     .drop-overlay.active { display: flex; }
     .drop-box-text {
       background: rgba(15, 17, 21, 0.95);
-      padding: 20px 40px;
+      padding: 22px 42px;
       border-radius: 12px;
       font-size: 1.2rem;
-      font-weight: 600;
+      font-weight: 700;
       border: 1px solid var(--accent);
     }
 
+    /* ==========================================
+       モーダル共通（アップロード・編集・類似確認）
+       ========================================== */
     .modal {
       display: none;
       position: fixed;
@@ -302,7 +750,7 @@
       z-index: 120;
       justify-content: center;
       align-items: center;
-      padding: 20px;
+      padding: 16px;
       backdrop-filter: blur(6px);
     }
 
@@ -311,32 +759,60 @@
     .modal-content {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
-      border-radius: 12px;
-      max-width: 520px;
+      border-radius: 14px;
+      max-width: 560px;
       width: 100%;
-      padding: 24px;
+      max-height: 92vh;
+      overflow-y: auto;
+      padding: 22px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
     }
 
-    .modal-content h3 { font-size: 1.2rem; font-weight: 600; }
+    .modal-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-content h3 { font-size: 1.15rem; font-weight: 700; }
+
+    /* モーダル内ドラッグ＆ドロップ追加ゾーン */
+    .modal-dropzone {
+      border: 2px dashed #374151;
+      background: #12151c;
+      border-radius: 10px;
+      padding: 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .modal-dropzone:hover, .modal-dropzone.dragover {
+      border-color: var(--accent);
+      background: rgba(59, 130, 246, 0.08);
+    }
+
+    .modal-dropzone-text {
+      font-size: 0.8rem;
+      color: var(--text-sub);
+      margin-bottom: 8px;
+    }
 
     .upload-queue-container {
       display: flex;
       gap: 10px;
       overflow-x: auto;
-      padding: 8px;
-      background: #11141a;
-      border-radius: 8px;
-      min-height: 100px;
+      padding: 6px 2px;
+      min-height: 86px;
       align-items: center;
     }
 
     .upload-queue-item {
       position: relative;
-      width: 80px;
-      height: 80px;
+      width: 76px;
+      height: 76px;
       border-radius: 6px;
       overflow: hidden;
       flex-shrink: 0;
@@ -353,14 +829,27 @@
       object-fit: cover;
     }
 
-    .upload-queue-item .type-icon {
+    .queue-remove-btn {
       position: absolute;
-      bottom: 2px;
-      right: 4px;
-      font-size: 10px;
-      background: rgba(0, 0, 0, 0.7);
-      padding: 1px 4px;
-      border-radius: 4px;
+      top: 2px;
+      right: 2px;
+      width: 18px;
+      height: 18px;
+      background: rgba(0,0,0,0.75);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      font-size: 11px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .form-row-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
     }
 
     .form-group {
@@ -370,29 +859,138 @@
     }
 
     .form-group label {
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       color: var(--text-sub);
+      font-weight: 600;
     }
 
-    .form-group input {
+    .form-group input, .form-group select {
       background: #11141a;
       border: 1px solid var(--border-color);
-      padding: 10px 12px;
+      padding: 9px 12px;
       border-radius: 6px;
       color: #fff;
       font-size: 0.9rem;
     }
 
-    .form-group input:focus {
+    .form-group input:focus, .form-group select:focus {
       outline: none;
       border-color: var(--accent);
+    }
+
+    /* R18チェック & クイックタグ行 */
+    .options-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      background: #13161f;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+
+    .r18-check-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #f472b6;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .r18-check-label input {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--r18-color);
+    }
+
+    .cosplay-quick-btn {
+      background: #231d33;
+      color: #d8b4fe;
+      border: 1px solid #6b21a8;
+      padding: 4px 10px;
+      border-radius: 14px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .cosplay-quick-btn.active {
+      background: var(--cosplay-color);
+      color: #fff;
+      border-color: var(--cosplay-color);
+    }
+
+    /* コスプレ専用入力欄 */
+    .cosplay-fields {
+      display: none;
+      background: rgba(168, 85, 247, 0.08);
+      border: 1px solid rgba(168, 85, 247, 0.35);
+      border-radius: 8px;
+      padding: 12px;
+      gap: 10px;
+      flex-direction: column;
+    }
+
+    .cosplay-fields.active {
+      display: flex;
+    }
+
+    .cosplay-fields-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #d8b4fe;
+    }
+
+    /* 類似画像確認モーダル */
+    .dup-compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 6px 0;
+    }
+
+    .dup-box {
+      background: #11141a;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dup-box-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-sub);
+    }
+
+    .dup-box img {
+      width: 100%;
+      height: 170px;
+      object-fit: contain;
+      border-radius: 6px;
+      background: #090b0e;
+    }
+
+    .dup-box-meta {
+      font-size: 0.75rem;
+      color: var(--text-sub);
+      text-align: center;
+      word-break: break-all;
     }
 
     .progress-bar-container {
       display: none;
       flex-direction: column;
       gap: 6px;
-      margin-top: 8px;
     }
 
     .progress-bar-bg {
@@ -419,14 +1017,15 @@
     .modal-actions {
       display: flex;
       justify-content: flex-end;
-      gap: 12px;
-      margin-top: 8px;
+      gap: 10px;
+      margin-top: 4px;
+      flex-wrap: wrap;
     }
 
     .btn {
-      padding: 9px 18px;
-      border-radius: 6px;
-      font-size: 0.9rem;
+      padding: 9px 16px;
+      border-radius: 7px;
+      font-size: 0.88rem;
       font-weight: 600;
       cursor: pointer;
       border: none;
@@ -437,8 +1036,13 @@
     .btn-cancel:hover { background: #353c4b; }
     .btn-submit { background: var(--accent); color: #fff; }
     .btn-submit:hover { background: var(--accent-hover); }
-    .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-danger { background: #e11d48; color: #fff; }
+    .btn-danger:hover { background: #be123c; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
+    /* ==========================================
+       スライド式ライトボックス
+       ========================================== */
     .lightbox {
       display: none;
       position: fixed;
@@ -500,6 +1104,11 @@
       border-radius: 6px;
       object-fit: contain;
       user-select: none;
+      transition: filter 0.25s;
+    }
+
+    .lightbox-content img.r18-blurred-lg {
+      filter: blur(28px);
     }
 
     .lightbox-content iframe {
@@ -513,7 +1122,7 @@
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      background: rgba(25, 28, 35, 0.7);
+      background: rgba(25, 28, 35, 0.75);
       border: 1px solid var(--border-color);
       color: #fff;
       width: 48px;
@@ -539,8 +1148,8 @@
 
     .lightbox-bottombar {
       width: 100%;
-      max-width: 900px;
-      background: rgba(26, 29, 36, 0.85);
+      max-width: 960px;
+      background: rgba(26, 29, 36, 0.9);
       border: 1px solid var(--border-color);
       backdrop-filter: blur(8px);
       padding: 12px 20px;
@@ -556,7 +1165,7 @@
     .lightbox-meta-info {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: wrap;
     }
 
@@ -564,6 +1173,9 @@
       font-weight: 700;
       font-size: 0.95rem;
       color: #fff;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 3px;
     }
 
     .lightbox-tags {
@@ -601,52 +1213,159 @@
 </head>
 <body>
 
+  <!-- 画面全体ドラッグ＆ドロップ時のオーバーレイ -->
   <div id="drop-overlay" class="drop-overlay">
-    <div class="drop-box-text">ここに画像・動画をドロップして追加</div>
+    <div class="drop-box-text">ここに画像・動画をまとめてドロップして追加</div>
   </div>
 
   <header>
-    <div class="brand">
-      <img src="./MuseDex_logo.png" alt="MuseDex Logo" class="brand-logo">
-      <h1 class="brand-title">MuseDex</h1>
+    <div class="header-left">
+      <div class="brand" onclick="closePersonPage()" title="トップへ戻る">
+        <img src="./MuseDex_logo.png" alt="MuseDex Logo" class="brand-logo">
+        <h1 class="brand-title">MuseDex</h1>
+      </div>
+
+      <!-- 2D / 3D タブ -->
+      <div class="dim-tabs">
+        <button id="dim-all" class="dim-tab-btn active" onclick="switchDimension('ALL')">すべて</button>
+        <button id="dim-3d" class="dim-tab-btn" onclick="switchDimension('3D')">3D</button>
+        <button id="dim-2d" class="dim-tab-btn" onclick="switchDimension('2D')">2D</button>
+      </div>
     </div>
 
     <div class="header-controls">
-      <div class="view-toggle">
+      <!-- 一般 / R18 切り替えスイッチ -->
+      <div class="r18-switch-wrapper" onclick="toggleR18Mode()" title="一般モードとR18モードを切り替え">
+        <span id="label-general" class="r18-switch-label active-general">一般</span>
+        <div id="r18-toggle" class="toggle-switch">
+          <div class="toggle-knob"></div>
+        </div>
+        <span id="label-r18" class="r18-switch-label">R18</span>
+      </div>
+
+      <!-- Tronoches へのリンクボタン -->
+      <a href="https://nsfw-phi.vercel.app/" target="_blank" rel="noopener noreferrer" class="tronoches-link">
+        <span>🌌</span> Tronoches
+      </a>
+
+      <div class="view-toggle" id="main-view-toggle">
         <button id="btn-group-view" class="view-btn active" onclick="switchView('group')">人物別</button>
         <button id="btn-all-view" class="view-btn" onclick="switchView('all')">すべて</button>
       </div>
+
       <button id="toggle-accordion-btn" class="toggle-all-btn" onclick="toggleAllAccordions()">すべて閉じる</button>
       <span id="photo-count" class="photo-count">0 items</span>
     </div>
   </header>
 
-  <div id="status" class="status-msg">メディアを読み込み中...</div>
-  <main id="main-container"></main>
+  <!-- 人物・タグ絞り込みフィルターバー -->
+  <section id="filters-section" class="filters-wrapper" style="display: none;">
+    <div id="person-filter-row" class="filter-row">
+      <span class="filter-title">👤 人物絞り込み:</span>
+      <div id="person-filter-chips" class="filter-chips"></div>
+    </div>
+    <div id="tag-filter-row" class="filter-row">
+      <span class="filter-title">🏷️ タグ絞り込み:</span>
+      <div id="tag-filter-chips" class="filter-chips"></div>
+    </div>
+  </section>
 
+  <div id="status" class="status-msg">メディアを読み込み中...</div>
+
+  <main>
+    <!-- 通常ギャラリーコンテナ -->
+    <div id="main-container"></div>
+
+    <!-- 個別ページ（人物詳細ビュー） -->
+    <div id="person-detail-page" class="person-detail-page">
+      <div class="detail-hero">
+        <div class="detail-top-bar">
+          <button class="back-btn" onclick="closePersonPage()">← ギャラリー一覧に戻る</button>
+          <span id="detail-dim-indicator" class="stat-pill">表示中: すべて</span>
+        </div>
+        <div class="detail-profile-row">
+          <img id="detail-avatar" class="detail-avatar" src="./MuseDex_logo.png" alt="Avatar">
+          <div class="detail-info">
+            <h2 id="detail-person-name">人物名</h2>
+            <div id="detail-stats" class="detail-stats"></div>
+          </div>
+        </div>
+        <div id="detail-tag-row" class="filter-chips"></div>
+      </div>
+
+      <div id="detail-grid" class="gallery-grid"></div>
+    </div>
+  </main>
+
+  <!-- 右下の＋ボタン -->
   <button id="fab-btn" class="fab-button" title="画像・動画を追加">+</button>
   <input type="file" id="file-input" accept="image/*,video/*" multiple style="display: none;">
 
   <!-- 新規アップロードモーダル -->
   <div id="upload-modal" class="modal">
     <div class="modal-content">
-      <h3 id="modal-title">新しいメディアを登録</h3>
-      <div id="upload-queue" class="upload-queue-container"></div>
-      <div class="form-group">
-        <label for="input-person">人物名（同じ名前で1つにまとまります）</label>
-        <input type="text" id="input-person" placeholder="例: 佐藤、Alice など" list="person-list">
-        <datalist id="person-list"></datalist>
+      <div class="modal-header-row">
+        <h3 id="modal-title">新しいメディアを登録</h3>
       </div>
+
+      <!-- モーダル内でもドロップ＆追加クリック可能 -->
+      <div id="modal-dropzone" class="modal-dropzone" onclick="document.getElementById('file-input').click()">
+        <div class="modal-dropzone-text">📁 クリックまたはドラッグ＆ドロップでさらに画像・動画を追加</div>
+        <div id="upload-queue" class="upload-queue-container" onclick="event.stopPropagation()"></div>
+      </div>
+
+      <div class="form-row-2col">
+        <div class="form-group">
+          <label for="input-person">人物名（同じ名前でまとまります）</label>
+          <input type="text" id="input-person" placeholder="例: 伊織もえ、未分類 など" list="person-list">
+          <datalist id="person-list"></datalist>
+        </div>
+        <div class="form-group">
+          <label for="input-dimension">2D / 3D 区分</label>
+          <select id="input-dimension">
+            <option value="3D">3D（実写・グラビア・コスプレ等）</option>
+            <option value="2D">2D（イラスト・アニメ・CG等）</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="options-bar">
+        <label class="r18-check-label">
+          <input type="checkbox" id="input-r18">
+          🔞 R18マークを設定する（一般モード時にぼかし表示）
+        </label>
+        <button type="button" id="upload-cosplay-btn" class="cosplay-quick-btn" onclick="toggleCosplayTag('upload')">
+          🎭 + コスプレタグ
+        </button>
+      </div>
+
       <div class="form-group">
         <label for="input-tags">タグ（カンマ区切り）</label>
-        <input type="text" id="input-tags" placeholder="例: 記念, 旅行, ポートレート">
+        <input type="text" id="input-tags" placeholder="例: 水着, コスプレ, ポートレート" oninput="syncCosplayFields('upload')">
       </div>
+
+      <!-- コスプレ選択時に展開される任意入力欄 -->
+      <div id="upload-cosplay-fields" class="cosplay-fields">
+        <div class="cosplay-fields-title">🎭 コスプレ詳細情報（任意）</div>
+        <div class="form-row-2col">
+          <div class="form-group">
+            <label for="input-char-name">キャラ名</label>
+            <input type="text" id="input-char-name" placeholder="例: マシュ・キリエライト">
+          </div>
+          <div class="form-group">
+            <label for="input-work-name">作品名</label>
+            <input type="text" id="input-work-name" placeholder="例: Fate/Grand Order">
+          </div>
+        </div>
+      </div>
+
       <div id="progress-container" class="progress-bar-container">
         <div class="progress-bar-bg">
           <div id="progress-fill" class="progress-bar-fill"></div>
         </div>
         <span id="progress-text" class="progress-text">0 / 0</span>
       </div>
+
       <div class="modal-actions">
         <button id="cancel-upload-btn" class="btn btn-cancel" onclick="closeUploadModal()">キャンセル</button>
         <button id="submit-upload-btn" class="btn btn-submit" onclick="executeBatchUpload()">アップロード</button>
@@ -654,19 +1373,83 @@
     </div>
   </div>
 
-  <!-- タグ・人物名 編集用モーダル -->
-  <div id="edit-modal" class="modal" style="z-index: 200;">
+  <!-- 類似画像の確認モーダル -->
+  <div id="duplicate-modal" class="modal" style="z-index: 260;">
     <div class="modal-content">
-      <h3>タグ・人物名の編集</h3>
-      <input type="hidden" id="edit-file-id">
-      <div class="form-group">
-        <label for="edit-person">人物名</label>
-        <input type="text" id="edit-person" list="person-list">
+      <h3>⚠️ 類似の画像が既に登録されています</h3>
+      <p style="font-size: 0.85rem; color: var(--text-sub);">
+        アップロードしようとしている画像は、既に登録されている画像と類似しています。同じ画像ですか？
+      </p>
+
+      <div class="dup-compare-grid">
+        <div class="dup-box">
+          <span class="dup-box-label">今回選択した画像</span>
+          <img id="dup-new-img" src="" alt="New Image">
+          <div id="dup-new-meta" class="dup-box-meta"></div>
+        </div>
+        <div class="dup-box">
+          <span class="dup-box-label">登録済みの類似画像</span>
+          <img id="dup-existing-img" src="" alt="Existing Image">
+          <div id="dup-existing-meta" class="dup-box-meta"></div>
+        </div>
       </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-danger" onclick="resolveDuplicateDecision(true)">同じ画像です（スキップ）</button>
+        <button class="btn btn-submit" onclick="resolveDuplicateDecision(false)">いいえ、違う画像です（追加する）</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- タグ・人物名・R18・コスプレ情報 編集用モーダル -->
+  <div id="edit-modal" class="modal" style="z-index: 220;">
+    <div class="modal-content">
+      <h3>メディア情報の編集</h3>
+      <input type="hidden" id="edit-file-id">
+
+      <div class="form-row-2col">
+        <div class="form-group">
+          <label for="edit-person">人物名</label>
+          <input type="text" id="edit-person" list="person-list">
+        </div>
+        <div class="form-group">
+          <label for="edit-dimension">2D / 3D 区分</label>
+          <select id="edit-dimension">
+            <option value="3D">3D</option>
+            <option value="2D">2D</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="options-bar">
+        <label class="r18-check-label">
+          <input type="checkbox" id="edit-r18">
+          🔞 R18マークを設定する
+        </label>
+        <button type="button" id="edit-cosplay-btn" class="cosplay-quick-btn" onclick="toggleCosplayTag('edit')">
+          🎭 + コスプレタグ
+        </button>
+      </div>
+
       <div class="form-group">
         <label for="edit-tags">タグ（カンマ区切りで追加・変更）</label>
-        <input type="text" id="edit-tags" placeholder="例: 旅行, 水着, 笑顔">
+        <input type="text" id="edit-tags" placeholder="例: 旅行, 水着, コスプレ" oninput="syncCosplayFields('edit')">
       </div>
+
+      <div id="edit-cosplay-fields" class="cosplay-fields">
+        <div class="cosplay-fields-title">🎭 コスプレ詳細情報（任意）</div>
+        <div class="form-row-2col">
+          <div class="form-group">
+            <label for="edit-char-name">キャラ名</label>
+            <input type="text" id="edit-char-name" placeholder="例: マシュ・キリエライト">
+          </div>
+          <div class="form-group">
+            <label for="edit-work-name">作品名</label>
+            <input type="text" id="edit-work-name" placeholder="例: Fate/Grand Order">
+          </div>
+        </div>
+      </div>
+
       <div class="modal-actions">
         <button class="btn btn-cancel" onclick="closeEditModal()">キャンセル</button>
         <button id="submit-edit-btn" class="btn btn-submit" onclick="executeMetaUpdate()">保存する</button>
@@ -689,52 +1472,81 @@
 
     <div class="lightbox-bottombar">
       <div class="lightbox-meta-info">
-        <span id="lightbox-person" class="lightbox-person">人物名</span>
+        <span id="lightbox-person" class="lightbox-person" title="この人物の個別ページを開く">人物名</span>
+        <span id="lightbox-dim-badge" class="dim-badge">3D</span>
+        <span id="lightbox-r18-badge" class="r18-badge" style="display:none;">R18</span>
+        <span id="lightbox-cosplay-badge" class="cosplay-badge" style="display:none;"></span>
         <div id="lightbox-tags" class="lightbox-tags"></div>
       </div>
       <button class="btn-edit-meta" onclick="openEditModal()">
-        ✏️ タグを編集
+        ✏️ 情報を編集
       </button>
     </div>
   </div>
 
   <script>
     const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbx0F2NKIoBvHS6IhWbMiiAfs-9YEdeu1RJBJFl413_y_K4JCdU1wGtqwqGTteSjwsRr/exec';
+    const PHASH_CACHE_KEY = 'musedex_phash_cache_v1';
+    const HORIZONTAL_PREVIEW_LIMIT = 10; // 横スクロールに並べる最大枚数
 
     let mediaItems = [];
-    let currentView = 'group';
+    let currentView = 'group';         // 'group' (人物別) | 'all' (すべて)
+    let currentDimension = 'ALL';      // 'ALL' | '3D' | '2D'
+    let isR18Mode = false;             // false = 一般モード(ぼかし有), true = R18モード(ぼかし無)
+    let selectedPersonFilter = null;   // 人物フィルター
+    let selectedTagFilter = null;      // タグフィルター
+
+    // 個別ページ状態
+    let activePersonPage = null;       // null または 人物名
+    let activePersonPageTag = null;    // 個別ページ内タグ絞り込み
+
     let pendingFiles = [];
     let isAllExpanded = true;
 
     let currentSliderList = [];
     let currentSliderIndex = 0;
 
+    // ローカルキャッシュされた画像ハッシュ辞書 { fileId: phashString }
+    let localPhashMap = {};
+    try {
+      localPhashMap = JSON.parse(localStorage.getItem(PHASH_CACHE_KEY) || '{}');
+    } catch (e) { localPhashMap = {}; }
+
     // ==========================================
-    // 1. 読み込み & 描画
+    // 1. 読み込み & 初期化
     // ==========================================
     async function loadGallery() {
       const status = document.getElementById('status');
-      const countLabel = document.getElementById('photo-count');
-
       try {
         const response = await fetch(GAS_ENDPOINT);
         const res = await response.json();
 
         if (res.status !== 'success') throw new Error(res.message);
 
-        mediaItems = res.data;
-        countLabel.textContent = `${mediaItems.length} items`;
+        mediaItems = res.data.map(item => ({
+          ...item,
+          dimension: item.dimension || '3D',
+          isR18: Boolean(item.isR18),
+          charName: item.charName || '',
+          workName: item.workName || '',
+          phash: item.phash || localPhashMap[item.id] || ''
+        }));
 
         if (mediaItems.length === 0) {
           status.style.display = 'block';
           status.textContent = 'メディアがまだありません。右下の「＋」またはドラッグ＆ドロップで追加してください。';
           document.getElementById('main-container').innerHTML = '';
+          document.getElementById('photo-count').textContent = '0 items';
           return;
         }
 
         status.style.display = 'none';
+        document.getElementById('filters-section').style.display = 'flex';
         updatePersonDatalist();
-        renderGallery();
+        refreshAllViews();
+
+        // 既存画像でphashが未計算のものをバックグラウンドで計算試行
+        computeMissingPhashesInBackground();
 
       } catch (err) {
         status.textContent = `読み込みエラー: ${err.message}`;
@@ -752,23 +1564,173 @@
       });
     }
 
+    // ==========================================
+    // 2. モード切替（一般/R18、2D/3D、表示切替）
+    // ==========================================
+    function toggleR18Mode() {
+      isR18Mode = !isR18Mode;
+      const toggle = document.getElementById('r18-toggle');
+      const labelGen = document.getElementById('label-general');
+      const labelR18 = document.getElementById('label-r18');
+
+      toggle.classList.toggle('r18-on', isR18Mode);
+      labelGen.classList.toggle('active-general', !isR18Mode);
+      labelR18.classList.toggle('active-r18', isR18Mode);
+
+      refreshAllViews();
+      if (document.getElementById('lightbox').classList.contains('active')) {
+        renderCurrentSlide();
+      }
+    }
+
+    function switchDimension(dim) {
+      currentDimension = dim;
+      document.getElementById('dim-all').classList.toggle('active', dim === 'ALL');
+      document.getElementById('dim-3d').classList.toggle('active', dim === '3D');
+      document.getElementById('dim-2d').classList.toggle('active', dim === '2D');
+
+      // アップロードモーダルの初期値も連動
+      if (dim === '2D' || dim === '3D') {
+        document.getElementById('input-dimension').value = dim;
+      }
+
+      refreshAllViews();
+    }
+
+    function switchView(view) {
+      currentView = view;
+      document.getElementById('btn-group-view').classList.toggle('active', view === 'group');
+      document.getElementById('btn-all-view').classList.toggle('active', view === 'all');
+      if (activePersonPage) closePersonPage();
+      else renderGallery();
+    }
+
+    function refreshAllViews() {
+      renderFilterBars();
+      if (activePersonPage) {
+        renderPersonDetailPage(activePersonPage);
+      } else {
+        renderGallery();
+      }
+    }
+
+    // 現在のDimension・人物・タグ条件に合うアイテムを取得
+    function getFilteredItems(ignorePersonFilter = false, ignoreTagFilter = false) {
+      return mediaItems.filter(item => {
+        if (currentDimension !== 'ALL' && (item.dimension || '3D') !== currentDimension) return false;
+        if (!ignorePersonFilter && selectedPersonFilter && item.person !== selectedPersonFilter) return false;
+        if (!ignoreTagFilter && selectedTagFilter) {
+          const hasTag = (item.tags && item.tags.includes(selectedTagFilter)) ||
+                         item.charName === selectedTagFilter ||
+                         item.workName === selectedTagFilter;
+          if (!hasTag) return false;
+        }
+        return true;
+      });
+    }
+
+    // ==========================================
+    // 3. 人物 & タグ 絞り込みバー描画
+    // ==========================================
+    function renderFilterBars() {
+      const baseByDim = mediaItems.filter(item => currentDimension === 'ALL' || (item.dimension || '3D') === currentDimension);
+
+      // 人物チップ集計
+      const personCounts = {};
+      baseByDim.forEach(item => {
+        const p = item.person || '未分類';
+        personCounts[p] = (personCounts[p] || 0) + 1;
+      });
+
+      const personChipsBox = document.getElementById('person-filter-chips');
+      personChipsBox.innerHTML = '';
+
+      const allPersonChip = document.createElement('span');
+      allPersonChip.className = 'filter-chip' + (selectedPersonFilter === null ? ' active' : '');
+      allPersonChip.textContent = 'すべて';
+      allPersonChip.onclick = () => {
+        selectedPersonFilter = null;
+        refreshAllViews();
+      };
+      personChipsBox.appendChild(allPersonChip);
+
+      Object.keys(personCounts).sort((a, b) => {
+        if (a === '未分類') return 1;
+        if (b === '未分類') return -1;
+        return a.localeCompare(b, 'ja');
+      }).forEach(person => {
+        const chip = document.createElement('span');
+        chip.className = 'filter-chip' + (selectedPersonFilter === person ? ' active' : '');
+        chip.textContent = `${person} (${personCounts[person]})`;
+        chip.onclick = () => {
+          selectedPersonFilter = (selectedPersonFilter === person) ? null : person;
+          refreshAllViews();
+        };
+        personChipsBox.appendChild(chip);
+      });
+
+      // タグ集計（タグ + キャラ名 + 作品名）
+      const tagCounts = {};
+      baseByDim.forEach(item => {
+        if (selectedPersonFilter && item.person !== selectedPersonFilter) return;
+        (item.tags || []).forEach(t => {
+          tagCounts[t] = (tagCounts[t] || 0) + 1;
+        });
+      });
+
+      const tagChipsBox = document.getElementById('tag-filter-chips');
+      tagChipsBox.innerHTML = '';
+
+      const allTagChip = document.createElement('span');
+      allTagChip.className = 'filter-chip' + (selectedTagFilter === null ? ' active' : '');
+      allTagChip.textContent = 'すべて';
+      allTagChip.onclick = () => {
+        selectedTagFilter = null;
+        refreshAllViews();
+      };
+      tagChipsBox.appendChild(allTagChip);
+
+      Object.keys(tagCounts).sort((a, b) => a.localeCompare(b, 'ja')).forEach(tag => {
+        const chip = document.createElement('span');
+        chip.className = 'filter-chip' + (selectedTagFilter === tag ? ' active' : '');
+        chip.textContent = `#${tag} (${tagCounts[tag]})`;
+        chip.onclick = () => {
+          selectedTagFilter = (selectedTagFilter === tag) ? null : tag;
+          refreshAllViews();
+        };
+        tagChipsBox.appendChild(chip);
+      });
+    }
+
+    // ==========================================
+    // 4. メインギャラリー描画（横スクロール＋もっと見る➤）
+    // ==========================================
     function renderGallery() {
       const container = document.getElementById('main-container');
       const toggleBtn = document.getElementById('toggle-accordion-btn');
+      const countLabel = document.getElementById('photo-count');
       container.innerHTML = '';
+
+      const filtered = getFilteredItems();
+      countLabel.textContent = `${filtered.length} items`;
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="status-msg">条件に一致するメディアがありません。</div>`;
+        return;
+      }
 
       if (currentView === 'all') {
         toggleBtn.style.display = 'none';
         const grid = document.createElement('div');
         grid.className = 'gallery-grid';
-        mediaItems.forEach((item, idx) => {
-          grid.appendChild(createMediaCard(item, mediaItems, idx));
+        filtered.forEach((item, idx) => {
+          grid.appendChild(createMediaCard(item, filtered, idx));
         });
         container.appendChild(grid);
       } else {
         toggleBtn.style.display = 'inline-block';
         const groups = {};
-        mediaItems.forEach(item => {
+        filtered.forEach(item => {
           const person = item.person || '未分類';
           if (!groups[person]) groups[person] = [];
           groups[person].push(item);
@@ -795,28 +1757,49 @@
               <span class="person-name">${escapeHtml(person)}</span>
               <span class="person-count">${groupList.length}件</span>
             </div>
+            <button class="person-page-jump-btn" onclick="event.stopPropagation(); openPersonPage('${escapeJsStr(person)}')">
+              個別ページへ ➤
+            </button>
           `;
           sec.appendChild(header);
 
           const body = document.createElement('div');
           body.className = 'person-body';
 
-          const grid = document.createElement('div');
-          grid.className = 'gallery-grid';
-          groupList.forEach((item, idx) => {
-            grid.appendChild(createMediaCard(item, groupList, idx));
-          });
-          body.appendChild(grid);
+          // 横スクロールコンテナ（最大10枚＋「もっと見る➤」）
+          const lane = document.createElement('div');
+          lane.className = 'horizontal-scroll-lane';
 
+          const previewItems = groupList.slice(0, HORIZONTAL_PREVIEW_LIMIT);
+          previewItems.forEach((item, idx) => {
+            lane.appendChild(createMediaCard(item, groupList, idx));
+          });
+
+          // 10枚以上ある場合（または個別ページへ飛ぶ導線として）右端に「もっと見る➤」カードを配置
+          if (groupList.length > HORIZONTAL_PREVIEW_LIMIT) {
+            const moreCard = document.createElement('div');
+            moreCard.className = 'more-card';
+            moreCard.onclick = () => openPersonPage(person);
+            moreCard.innerHTML = `
+              <div class="more-card-icon">➤</div>
+              <div class="more-card-text">もっと見る</div>
+              <div class="more-card-sub">全 ${groupList.length} 件を表示</div>
+            `;
+            lane.appendChild(moreCard);
+          }
+
+          body.appendChild(lane);
           sec.appendChild(body);
           container.appendChild(sec);
         });
       }
     }
 
+    // メディアカード生成
     function createMediaCard(item, currentList, index) {
       const card = document.createElement('div');
-      card.className = 'media-card';
+      const shouldBlur = item.isR18 && !isR18Mode;
+      card.className = 'media-card' + (shouldBlur ? ' r18-blurred' : '');
       card.onclick = () => openLightbox(currentList, index);
 
       const img = document.createElement('img');
@@ -825,33 +1808,171 @@
       img.loading = 'lazy';
       card.appendChild(img);
 
+      // 一般モード時のR18ロックオーバーレイ
+      if (shouldBlur) {
+        const lock = document.createElement('div');
+        lock.className = 'r18-overlay-lock';
+        lock.innerHTML = `<span>🔞 R18</span><small style="font-size:0.68rem;color:#d1d5db;">R18モードで表示</small>`;
+        card.appendChild(lock);
+      }
+
+      // 上部バッジ（R18・2D/3D・動画）
+      const topBadges = document.createElement('div');
+      topBadges.className = 'card-top-badges';
+
+      const leftBadges = document.createElement('div');
+      leftBadges.className = 'left-badges';
+
+      if (item.isR18) {
+        const r18Badge = document.createElement('span');
+        r18Badge.className = 'r18-badge';
+        r18Badge.textContent = 'R18';
+        leftBadges.appendChild(r18Badge);
+      }
+
+      const dimBadge = document.createElement('span');
+      dimBadge.className = 'dim-badge';
+      dimBadge.textContent = item.dimension || '3D';
+      leftBadges.appendChild(dimBadge);
+
+      topBadges.appendChild(leftBadges);
+
       if (item.type === 'video') {
-        const badge = document.createElement('div');
-        badge.className = 'video-badge';
-        badge.innerHTML = '▶ 動画';
-        card.appendChild(badge);
+        const vBadge = document.createElement('div');
+        vBadge.className = 'video-badge';
+        vBadge.innerHTML = '▶ 動画';
+        topBadges.appendChild(vBadge);
+      }
+
+      card.appendChild(topBadges);
+
+      // 下部情報（コスプレ情報 & タグ）
+      const bottomInfo = document.createElement('div');
+      bottomInfo.className = 'card-bottom-info';
+
+      if (item.charName || item.workName) {
+        const cosBadge = document.createElement('div');
+        cosBadge.className = 'cosplay-badge';
+        const label = [item.charName, item.workName ? `(${item.workName})` : ''].filter(Boolean).join(' ');
+        cosBadge.textContent = `🎭 ${label}`;
+        bottomInfo.appendChild(cosBadge);
       }
 
       if (item.tags && item.tags.length > 0) {
         const tagsContainer = document.createElement('div');
         tagsContainer.className = 'card-tags';
-        item.tags.forEach(t => {
+        item.tags.slice(0, 4).forEach(t => {
           const badge = document.createElement('span');
           badge.className = 'tag-badge';
           badge.textContent = `#${t}`;
           tagsContainer.appendChild(badge);
         });
-        card.appendChild(tagsContainer);
+        bottomInfo.appendChild(tagsContainer);
       }
 
+      card.appendChild(bottomInfo);
       return card;
     }
 
-    function switchView(view) {
-      currentView = view;
-      document.getElementById('btn-group-view').classList.toggle('active', view === 'group');
-      document.getElementById('btn-all-view').classList.toggle('active', view === 'all');
+    // ==========================================
+    // 5. 個別ページ（Person Detail Page）制御
+    // ==========================================
+    function openPersonPage(personName) {
+      activePersonPage = personName;
+      activePersonPageTag = null;
+
+      document.getElementById('main-container').style.display = 'none';
+      document.getElementById('filters-section').style.display = 'none';
+      document.getElementById('main-view-toggle').style.display = 'none';
+      document.getElementById('toggle-accordion-btn').style.display = 'none';
+
+      const detailPage = document.getElementById('person-detail-page');
+      detailPage.classList.add('active');
+
+      renderPersonDetailPage(personName);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function closePersonPage() {
+      activePersonPage = null;
+      activePersonPageTag = null;
+
+      document.getElementById('person-detail-page').classList.remove('active');
+      document.getElementById('main-container').style.display = 'block';
+      document.getElementById('filters-section').style.display = 'flex';
+      document.getElementById('main-view-toggle').style.display = 'flex';
+
       renderGallery();
+    }
+
+    function renderPersonDetailPage(personName) {
+      const personItems = mediaItems.filter(item => {
+        if ((item.person || '未分類') !== personName) return false;
+        if (currentDimension !== 'ALL' && (item.dimension || '3D') !== currentDimension) return false;
+        return true;
+      });
+
+      document.getElementById('detail-person-name').textContent = personName;
+      document.getElementById('detail-dim-indicator').textContent = `表示区分: ${currentDimension === 'ALL' ? 'すべて (2D & 3D)' : currentDimension}`;
+
+      // アイコン設定（R18でない最初のサムネイル、または先頭サムネイル）
+      const avatarCandidate = personItems.find(i => !i.isR18 || isR18Mode) || personItems[0];
+      document.getElementById('detail-avatar').src = avatarCandidate ? avatarCandidate.thumbnailUrl : './MuseDex_logo.png';
+
+      // 統計ピル
+      const imageCount = personItems.filter(i => i.type === 'image').length;
+      const videoCount = personItems.filter(i => i.type === 'video').length;
+      const r18Count = personItems.filter(i => i.isR18).length;
+
+      document.getElementById('detail-stats').innerHTML = `
+        <span class="stat-pill">合計 ${personItems.length} 件</span>
+        <span class="stat-pill">🖼️ 画像 ${imageCount} 枚</span>
+        <span class="stat-pill">🎬 動画 ${videoCount} 本</span>
+        <span class="stat-pill">🔞 R18 ${r18Count} 件</span>
+      `;
+
+      // 個別ページ内のタグフィルター生成
+      const tagMap = {};
+      personItems.forEach(item => {
+        (item.tags || []).forEach(t => { tagMap[t] = (tagMap[t] || 0) + 1; });
+      });
+
+      const detailTagRow = document.getElementById('detail-tag-row');
+      detailTagRow.innerHTML = '';
+
+      if (Object.keys(tagMap).length > 0) {
+        const allChip = document.createElement('span');
+        allChip.className = 'filter-chip' + (activePersonPageTag === null ? ' active' : '');
+        allChip.textContent = 'すべてのタグ';
+        allChip.onclick = () => {
+          activePersonPageTag = null;
+          renderPersonDetailPage(personName);
+        };
+        detailTagRow.appendChild(allChip);
+
+        Object.keys(tagMap).forEach(tag => {
+          const chip = document.createElement('span');
+          chip.className = 'filter-chip' + (activePersonPageTag === tag ? ' active' : '');
+          chip.textContent = `#${tag} (${tagMap[tag]})`;
+          chip.onclick = () => {
+            activePersonPageTag = (activePersonPageTag === tag) ? null : tag;
+            renderPersonDetailPage(personName);
+          };
+          detailTagRow.appendChild(chip);
+        });
+      }
+
+      const displayList = activePersonPageTag
+        ? personItems.filter(i => i.tags && i.tags.includes(activePersonPageTag))
+        : personItems;
+
+      document.getElementById('photo-count').textContent = `${displayList.length} items`;
+
+      const grid = document.getElementById('detail-grid');
+      grid.innerHTML = '';
+      displayList.forEach((item, idx) => {
+        grid.appendChild(createMediaCard(item, displayList, idx));
+      });
     }
 
     function toggleAllAccordions() {
@@ -864,7 +1985,439 @@
     }
 
     // ==========================================
-    // 2. スライド式ライトボックス制御
+    // 6. コスプレ連動入力フォーム制御
+    // ==========================================
+    function syncCosplayFields(mode) {
+      const tagsInput = document.getElementById(mode === 'upload' ? 'input-tags' : 'edit-tags');
+      const cosplayFields = document.getElementById(mode === 'upload' ? 'upload-cosplay-fields' : 'edit-cosplay-fields');
+      const quickBtn = document.getElementById(mode === 'upload' ? 'upload-cosplay-btn' : 'edit-cosplay-btn');
+
+      const tags = tagsInput.value.split(/[,、\s]+/).map(t => t.trim()).filter(Boolean);
+      const hasCosplay = tags.includes('コスプレ');
+
+      cosplayFields.classList.toggle('active', hasCosplay);
+      quickBtn.classList.toggle('active', hasCosplay);
+    }
+
+    function toggleCosplayTag(mode) {
+      const tagsInput = document.getElementById(mode === 'upload' ? 'input-tags' : 'edit-tags');
+      let tags = tagsInput.value.split(/[,、\s]+/).map(t => t.trim()).filter(Boolean);
+
+      if (tags.includes('コスプレ')) {
+        tags = tags.filter(t => t !== 'コスプレ');
+      } else {
+        tags.push('コスプレ');
+      }
+
+      tagsInput.value = tags.join(', ');
+      syncCosplayFields(mode);
+    }
+
+    // ==========================================
+    // 7. 類似画像判定（dHash計算 & 確認ダイアログ）
+    // ==========================================
+    // 画像の64bit Perceptual Hash (dHash: 9x8隣接輝度比較) を算出
+    function computeImagePhash(imgElement) {
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = 9;
+        canvas.height = 8;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(imgElement, 0, 0, 9, 8);
+        const data = ctx.getImageData(0, 0, 9, 8).data;
+
+        let hashBits = '';
+        for (let y = 0; y < 8; y++) {
+          for (let x = 0; x < 8; x++) {
+            const idxLeft = (y * 9 + x) * 4;
+            const idxRight = (y * 9 + (x + 1)) * 4;
+            const grayLeft = data[idxLeft] * 0.299 + data[idxLeft + 1] * 0.587 + data[idxLeft + 2] * 0.114;
+            const grayRight = data[idxRight] * 0.299 + data[idxRight + 1] * 0.587 + data[idxRight + 2] * 0.114;
+            hashBits += (grayLeft < grayRight) ? '1' : '0';
+          }
+        }
+        return hashBits;
+      } catch (e) {
+        return '';
+      }
+    }
+
+    // ハミング距離を計算（64bit中何bit異なるか）
+    function getHammingDistance(hashA, hashB) {
+      if (!hashA || !hashB || hashA.length !== 64 || hashB.length !== 64) return 64;
+      let dist = 0;
+      for (let i = 0; i < 64; i++) {
+        if (hashA[i] !== hashB[i]) dist++;
+      }
+      return dist;
+    }
+
+    // 既存メディアおよび現在キュー内のメディアから類似画像を検索
+    function findSimilarExistingItem(newPhash, fileName) {
+      const HAMMING_THRESHOLD = 10; // 64bit中10bit以下（類似度約84%以上）なら類似と判定
+
+      // 1. 登録済みメディアとの比較
+      for (const item of mediaItems) {
+        if (item.type !== 'image') continue;
+        const itemHash = item.phash || localPhashMap[item.id];
+        if (itemHash && newPhash) {
+          const dist = getHammingDistance(newPhash, itemHash);
+          if (dist <= HAMMING_THRESHOLD) {
+            return { item, distance: dist, source: '登録済み' };
+          }
+        }
+      }
+
+      // 2. 現在のアップロード待機キュー内の画像との比較
+      for (const queued of pendingFiles) {
+        if (queued.phash && newPhash) {
+          const dist = getHammingDistance(newPhash, queued.phash);
+          if (dist <= HAMMING_THRESHOLD) {
+            return {
+              item: {
+                name: queued.name,
+                person: '今回追加リスト内',
+                tags: [],
+                thumbnailUrl: queued.previewUrl
+              },
+              distance: dist,
+              source: 'キュー内'
+            };
+          }
+        }
+      }
+
+      return null;
+    }
+
+    // バックグラウンドで既存画像のハッシュ計算を試みる
+    function computeMissingPhashesInBackground() {
+      mediaItems.forEach(item => {
+        if (item.type !== 'image' || item.phash || localPhashMap[item.id]) return;
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => {
+          const h = computeImagePhash(img);
+          if (h) {
+            item.phash = h;
+            localPhashMap[item.id] = h;
+            try { localStorage.setItem(PHASH_CACHE_KEY, JSON.stringify(localPhashMap)); } catch (e) {}
+          }
+        };
+        img.src = item.thumbnailUrl;
+      });
+    }
+
+    // 類似確認モーダルをPromiseで制御
+    let duplicateConfirmResolver = null;
+
+    function askUserAboutDuplicate(newFileObj, similarMatch) {
+      return new Promise((resolve) => {
+        duplicateConfirmResolver = resolve;
+
+        document.getElementById('dup-new-img').src = newFileObj.previewUrl;
+        document.getElementById('dup-new-meta').textContent = newFileObj.name;
+
+        document.getElementById('dup-existing-img').src = similarMatch.item.thumbnailUrl;
+        const similarityPct = Math.round(((64 - similarMatch.distance) / 64) * 100);
+        document.getElementById('dup-existing-meta').textContent =
+          `${similarMatch.item.person || '未分類'} / ${similarMatch.item.name} (類似度: 約${similarityPct}%)`;
+
+        document.getElementById('duplicate-modal').classList.add('active');
+      });
+    }
+
+    function resolveDuplicateDecision(isSameImageSkip) {
+      document.getElementById('duplicate-modal').classList.remove('active');
+      if (duplicateConfirmResolver) {
+        duplicateConfirmResolver(isSameImageSkip);
+        duplicateConfirmResolver = null;
+      }
+    }
+
+    // ==========================================
+    // 8. 一括ドラッグ＆ドロップ & アップロード処理
+    // ==========================================
+    const fabBtn = document.getElementById('fab-btn');
+    const fileInput = document.getElementById('file-input');
+    const dropOverlay = document.getElementById('drop-overlay');
+    const modalDropzone = document.getElementById('modal-dropzone');
+
+    fabBtn.onclick = () => fileInput.click();
+
+    fileInput.onchange = async (e) => {
+      if (e.target.files.length > 0) {
+        await handleSelectedFiles(Array.from(e.target.files));
+        fileInput.value = '';
+      }
+    };
+
+    // ウィンドウ全体へのドラッグ＆ドロップ（複数枚一括対応）
+    window.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropOverlay.classList.add('active');
+    });
+
+    window.addEventListener('dragleave', (e) => {
+      if (e.relatedTarget === null) dropOverlay.classList.remove('active');
+    });
+
+    window.addEventListener('drop', async (e) => {
+      e.preventDefault();
+      dropOverlay.classList.remove('active');
+      if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        await handleSelectedFiles(Array.from(e.dataTransfer.files));
+      }
+    });
+
+    // モーダル内ドロップゾーン
+    modalDropzone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      modalDropzone.classList.add('dragover');
+    });
+
+    modalDropzone.addEventListener('dragleave', (e) => {
+      e.stopPropagation();
+      modalDropzone.classList.remove('dragover');
+    });
+
+    modalDropzone.addEventListener('drop', async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      modalDropzone.classList.remove('dragover');
+      dropOverlay.classList.remove('active');
+      if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        await handleSelectedFiles(Array.from(e.dataTransfer.files));
+      }
+    });
+
+    // 選択・ドロップされた複数ファイルを順次検証してキューに追加
+    async function handleSelectedFiles(files) {
+      const validFiles = files.filter(f => f.type.startsWith('image/') || f.type.startsWith('video/'));
+      if (validFiles.length === 0) {
+        alert('画像または動画ファイルを選択してください');
+        return;
+      }
+
+      const MAX_PAYLOAD_BYTES = 20 * 1024 * 1024;
+      const safeFiles = [];
+
+      for (const file of validFiles) {
+        if (file.size > MAX_PAYLOAD_BYTES) {
+          alert(`「${file.name}」はサイズが ${(file.size / (1024 * 1024)).toFixed(1)}MB あります。\nGASの送信上限（20MB）を超えるため、Googleドライブへ直接ドラッグ＆ドロップしてください。`);
+        } else {
+          safeFiles.push(file);
+        }
+      }
+
+      if (safeFiles.length === 0) return;
+
+      for (const file of safeFiles) {
+        const isVideo = file.type.startsWith('video/');
+        const processed = await processFileAndHash(file);
+
+        // 画像の場合は類似チェックを実行
+        if (!isVideo && processed.phash) {
+          const similarMatch = findSimilarExistingItem(processed.phash, file.name);
+          if (similarMatch) {
+            const shouldSkip = await askUserAboutDuplicate({
+              name: file.name,
+              previewUrl: processed.previewUrl
+            }, similarMatch);
+
+            if (shouldSkip) {
+              // 「同じ画像です」が選ばれた場合はスキップ
+              continue;
+            }
+          }
+        }
+
+        pendingFiles.push({
+          name: file.name,
+          isVideo: isVideo,
+          mimeType: file.type || (isVideo ? 'video/mp4' : 'image/jpeg'),
+          base64: processed.base64,
+          previewUrl: processed.previewUrl,
+          phash: processed.phash || ''
+        });
+      }
+
+      if (pendingFiles.length > 0) {
+        renderUploadQueue();
+        // 個別ページ閲覧中ならその人物名をデフォルトセット
+        if (activePersonPage && !document.getElementById('input-person').value) {
+          document.getElementById('input-person').value = activePersonPage;
+        }
+        document.getElementById('upload-modal').classList.add('active');
+      }
+    }
+
+    function renderUploadQueue() {
+      const queueContainer = document.getElementById('upload-queue');
+      queueContainer.innerHTML = '';
+      document.getElementById('modal-title').textContent = `${pendingFiles.length}件のメディアを登録`;
+
+      pendingFiles.forEach((item, idx) => {
+        const itemBox = document.createElement('div');
+        itemBox.className = 'upload-queue-item';
+
+        if (item.isVideo) {
+          itemBox.innerHTML = `<span style="font-size:22px;">🎬</span>`;
+        } else {
+          const img = document.createElement('img');
+          img.src = item.previewUrl;
+          itemBox.appendChild(img);
+        }
+
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'queue-remove-btn';
+        removeBtn.innerHTML = '&times;';
+        removeBtn.onclick = (e) => {
+          e.stopPropagation();
+          pendingFiles.splice(idx, 1);
+          if (pendingFiles.length === 0) closeUploadModal();
+          else renderUploadQueue();
+        };
+        itemBox.appendChild(removeBtn);
+
+        queueContainer.appendChild(itemBox);
+      });
+    }
+
+    function processFileAndHash(file) {
+      return new Promise((resolve) => {
+        if (file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+              // 類似判定用64bit dHashを計算
+              const phash = computeImagePhash(img);
+
+              // アップロード用リサイズ (最大2048px)
+              const canvas = document.createElement('canvas');
+              let width = img.width;
+              let height = img.height;
+              const maxDim = 2048;
+
+              if (width > maxDim || height > maxDim) {
+                if (width > height) {
+                  height = Math.round((height * maxDim) / width);
+                  width = maxDim;
+                } else {
+                  width = Math.round((width * maxDim) / height);
+                  height = maxDim;
+                }
+              }
+              canvas.width = width;
+              canvas.height = height;
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(img, 0, 0, width, height);
+              const base64 = canvas.toDataURL('image/jpeg', 0.88);
+              resolve({ base64, previewUrl: base64, phash });
+            };
+            img.src = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        } else {
+          const reader = new FileReader();
+          reader.onload = (e) => resolve({ base64: e.target.result, previewUrl: '', phash: '' });
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+
+    async function executeBatchUpload() {
+      if (pendingFiles.length === 0) return;
+
+      const submitBtn = document.getElementById('submit-upload-btn');
+      const cancelBtn = document.getElementById('cancel-upload-btn');
+      const progressContainer = document.getElementById('progress-container');
+      const progressFill = document.getElementById('progress-fill');
+      const progressText = document.getElementById('progress-text');
+
+      submitBtn.disabled = true;
+      cancelBtn.disabled = true;
+      progressContainer.style.display = 'flex';
+
+      const person = document.getElementById('input-person').value.trim() || '未分類';
+      const dimension = document.getElementById('input-dimension').value || '3D';
+      const isR18 = document.getElementById('input-r18').checked;
+      const rawTags = document.getElementById('input-tags').value;
+      const tags = rawTags.split(/[,、\s]+/).map(t => t.trim()).filter(Boolean);
+      const charName = tags.includes('コスプレ') ? document.getElementById('input-char-name').value.trim() : '';
+      const workName = tags.includes('コスプレ') ? document.getElementById('input-work-name').value.trim() : '';
+
+      const total = pendingFiles.length;
+      let successCount = 0;
+
+      for (let i = 0; i < total; i++) {
+        const item = pendingFiles[i];
+        progressText.textContent = `送信中... (${i + 1} / ${total}) - ${item.name}`;
+        progressFill.style.width = `${Math.round((i / total) * 100)}%`;
+
+        const payload = {
+          fileName: item.name,
+          mimeType: item.mimeType,
+          base64: item.base64,
+          person: person,
+          dimension: dimension,
+          isR18: isR18,
+          tags: tags,
+          charName: charName,
+          workName: workName,
+          phash: item.phash
+        };
+
+        try {
+          const response = await fetch(GAS_ENDPOINT, {
+            method: 'POST',
+            body: JSON.stringify(payload),
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+          });
+          const res = await response.json();
+          if (res.status === 'success') {
+            successCount++;
+            if (res.fileId && item.phash) {
+              localPhashMap[res.fileId] = item.phash;
+              try { localStorage.setItem(PHASH_CACHE_KEY, JSON.stringify(localPhashMap)); } catch (e) {}
+            }
+          }
+        } catch (err) {
+          console.error('Upload error:', err);
+        }
+      }
+
+      progressFill.style.width = '100%';
+      progressText.textContent = `完了 (${successCount} / ${total} 件)`;
+
+      setTimeout(async () => {
+        closeUploadModal();
+        document.getElementById('status').style.display = 'block';
+        document.getElementById('status').textContent = '最新データを読み込み中...';
+        await loadGallery();
+      }, 700);
+    }
+
+    function closeUploadModal() {
+      document.getElementById('upload-modal').classList.remove('active');
+      document.getElementById('input-person').value = '';
+      document.getElementById('input-tags').value = '';
+      document.getElementById('input-r18').checked = false;
+      document.getElementById('input-char-name').value = '';
+      document.getElementById('input-work-name').value = '';
+      document.getElementById('upload-cosplay-fields').classList.remove('active');
+      document.getElementById('upload-cosplay-btn').classList.remove('active');
+      document.getElementById('file-input').value = '';
+      document.getElementById('progress-container').style.display = 'none';
+      document.getElementById('submit-upload-btn').disabled = false;
+      document.getElementById('cancel-upload-btn').disabled = false;
+      pendingFiles = [];
+    }
+
+    // ==========================================
+    // 9. ライトボックス & 編集モーダル
     // ==========================================
     function openLightbox(list, index) {
       currentSliderList = list;
@@ -890,11 +2443,32 @@
         const img = document.createElement('img');
         img.src = item.previewUrl;
         img.alt = item.name;
+        if (item.isR18 && !isR18Mode) {
+          img.className = 'r18-blurred-lg';
+        }
         container.appendChild(img);
       }
 
       document.getElementById('lightbox-counter').textContent = `${currentSliderIndex + 1} / ${currentSliderList.length}`;
-      document.getElementById('lightbox-person').textContent = item.person || '未分類';
+
+      const personEl = document.getElementById('lightbox-person');
+      personEl.textContent = item.person || '未分類';
+      personEl.onclick = () => {
+        closeLightbox();
+        openPersonPage(item.person || '未分類');
+      };
+
+      document.getElementById('lightbox-dim-badge').textContent = item.dimension || '3D';
+      document.getElementById('lightbox-r18-badge').style.display = item.isR18 ? 'inline-block' : 'none';
+
+      const cosEl = document.getElementById('lightbox-cosplay-badge');
+      if (item.charName || item.workName) {
+        cosEl.style.display = 'inline-block';
+        cosEl.textContent = `🎭 ${[item.charName, item.workName ? `(${item.workName})` : ''].filter(Boolean).join(' ')}`;
+      } else {
+        cosEl.style.display = 'none';
+      }
+
       const tagsBox = document.getElementById('lightbox-tags');
       tagsBox.innerHTML = '';
       if (item.tags && item.tags.length > 0) {
@@ -926,10 +2500,92 @@
       document.getElementById('lightbox-content').innerHTML = '';
     }
 
+    function openEditModal() {
+      const item = currentSliderList[currentSliderIndex];
+      if (!item) return;
+
+      document.getElementById('edit-file-id').value = item.id;
+      document.getElementById('edit-person').value = item.person || '';
+      document.getElementById('edit-dimension').value = item.dimension || '3D';
+      document.getElementById('edit-r18').checked = Boolean(item.isR18);
+      document.getElementById('edit-tags').value = (item.tags || []).join(', ');
+      document.getElementById('edit-char-name').value = item.charName || '';
+      document.getElementById('edit-work-name').value = item.workName || '';
+
+      syncCosplayFields('edit');
+      document.getElementById('edit-modal').classList.add('active');
+    }
+
+    function closeEditModal() {
+      document.getElementById('edit-modal').classList.remove('active');
+    }
+
+    async function executeMetaUpdate() {
+      const fileId = document.getElementById('edit-file-id').value;
+      const person = document.getElementById('edit-person').value.trim() || '未分類';
+      const dimension = document.getElementById('edit-dimension').value || '3D';
+      const isR18 = document.getElementById('edit-r18').checked;
+      const rawTags = document.getElementById('edit-tags').value;
+      const tags = rawTags.split(/[,、\s]+/).map(t => t.trim()).filter(Boolean);
+      const charName = tags.includes('コスプレ') ? document.getElementById('edit-char-name').value.trim() : '';
+      const workName = tags.includes('コスプレ') ? document.getElementById('edit-work-name').value.trim() : '';
+
+      const submitBtn = document.getElementById('submit-edit-btn');
+      submitBtn.disabled = true;
+      submitBtn.textContent = '保存中...';
+
+      const payload = {
+        action: 'updateMeta',
+        fileId: fileId,
+        person: person,
+        dimension: dimension,
+        isR18: isR18,
+        tags: tags,
+        charName: charName,
+        workName: workName
+      };
+
+      try {
+        const response = await fetch(GAS_ENDPOINT, {
+          method: 'POST',
+          body: JSON.stringify(payload),
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+        });
+
+        const res = await response.json();
+        if (res.status !== 'success') throw new Error(res.message);
+
+        const target = mediaItems.find(m => m.id === fileId);
+        if (target) {
+          target.person = person;
+          target.dimension = dimension;
+          target.isR18 = isR18;
+          target.tags = tags;
+          target.charName = charName;
+          target.workName = workName;
+        }
+
+        closeEditModal();
+        renderCurrentSlide();
+        updatePersonDatalist();
+        refreshAllViews();
+
+      } catch (err) {
+        alert(`更新に失敗しました: ${err.message}`);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = '保存する';
+      }
+    }
+
+    // キーボード・スワイプ操作
     document.addEventListener('keydown', (e) => {
       const lightbox = document.getElementById('lightbox');
       const editModal = document.getElementById('edit-modal');
       const uploadModal = document.getElementById('upload-modal');
+      const dupModal = document.getElementById('duplicate-modal');
+
+      if (dupModal.classList.contains('active')) return;
 
       if (editModal.classList.contains('active') || uploadModal.classList.contains('active')) {
         if (e.key === 'Escape') {
@@ -956,278 +2612,20 @@
 
     lightboxElem.addEventListener('touchend', (e) => {
       touchEndX = e.changedTouches[0].screenX;
-      handleSwipe();
-    }, { passive: true });
-
-    function handleSwipe() {
-      const diff = touchEndX - touchStartX;
-      if (Math.abs(diff) > 50) {
-        if (diff > 0) prevSlide();
+      if (Math.abs(touchEndX - touchStartX) > 50) {
+        if (touchEndX > touchStartX) prevSlide();
         else nextSlide();
       }
-    }
-
-    // ==========================================
-    // 3. タグ・人物名 編集機能
-    // ==========================================
-    function openEditModal() {
-      const item = currentSliderList[currentSliderIndex];
-      if (!item) return;
-
-      document.getElementById('edit-file-id').value = item.id;
-      document.getElementById('edit-person').value = item.person || '';
-      document.getElementById('edit-tags').value = (item.tags || []).join(', ');
-      document.getElementById('edit-modal').classList.add('active');
-    }
-
-    function closeEditModal() {
-      document.getElementById('edit-modal').classList.remove('active');
-    }
-
-    async function executeMetaUpdate() {
-      const fileId = document.getElementById('edit-file-id').value;
-      const person = document.getElementById('edit-person').value.trim() || '未分類';
-      const rawTags = document.getElementById('edit-tags').value;
-      const tags = rawTags.split(/[,、\s]+/).filter(t => t.trim() !== '');
-
-      const submitBtn = document.getElementById('submit-edit-btn');
-      submitBtn.disabled = true;
-      submitBtn.textContent = '保存中...';
-
-      const payload = {
-        action: 'updateMeta',
-        fileId: fileId,
-        person: person,
-        tags: tags
-      };
-
-      try {
-        const response = await fetch(GAS_ENDPOINT, {
-          method: 'POST',
-          body: JSON.stringify(payload),
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' }
-        });
-
-        const res = await response.json();
-        if (res.status !== 'success') throw new Error(res.message);
-
-        const target = mediaItems.find(m => m.id === fileId);
-        if (target) {
-          target.person = person;
-          target.tags = tags;
-        }
-
-        closeEditModal();
-        renderCurrentSlide();
-        updatePersonDatalist();
-        renderGallery();
-
-      } catch (err) {
-        alert(`更新に失敗しました: ${err.message}`);
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = '保存する';
-      }
-    }
-
-    // ==========================================
-    // 4. アップロード処理（大容量防止ガード付き）
-    // ==========================================
-    const fabBtn = document.getElementById('fab-btn');
-    const fileInput = document.getElementById('file-input');
-    const dropOverlay = document.getElementById('drop-overlay');
-
-    fabBtn.onclick = () => fileInput.click();
-
-    fileInput.onchange = (e) => {
-      if (e.target.files.length > 0) handleSelectedFiles(Array.from(e.target.files));
-    };
-
-    window.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      dropOverlay.classList.add('active');
-    });
-
-    window.addEventListener('dragleave', (e) => {
-      if (e.relatedTarget === null) dropOverlay.classList.remove('active');
-    });
-
-    window.addEventListener('drop', (e) => {
-      e.preventDefault();
-      dropOverlay.classList.remove('active');
-      if (e.dataTransfer.files.length > 0) {
-        handleSelectedFiles(Array.from(e.dataTransfer.files));
-      }
-    });
-
-    async function handleSelectedFiles(files) {
-      pendingFiles = [];
-      const queueContainer = document.getElementById('upload-queue');
-      queueContainer.innerHTML = '';
-
-      const validFiles = files.filter(f => f.type.startsWith('image/') || f.type.startsWith('video/'));
-      if (validFiles.length === 0) {
-        alert('画像または動画ファイルを選択してください');
-        return;
-      }
-
-      // GASのPOST通信制限（約20MB）を超えるファイルの事前判定
-      const MAX_PAYLOAD_BYTES = 20 * 1024 * 1024;
-      const safeFiles = [];
-
-      for (const file of validFiles) {
-        if (file.size > MAX_PAYLOAD_BYTES) {
-          alert(`「${file.name}」はファイルサイズが ${(file.size / (1024 * 1024)).toFixed(1)}MB あります。\nGASの送信容量上限（20MB）を超えるため、このファイルはGoogleドライブのフォルダへ直接ドラッグ＆ドロップしてください。\n（追加後にページをリロードすると自動反映されます）`);
-        } else {
-          safeFiles.push(file);
-        }
-      }
-
-      if (safeFiles.length === 0) {
-        document.getElementById('file-input').value = '';
-        return;
-      }
-
-      document.getElementById('modal-title').textContent = `${safeFiles.length}件のメディアを登録`;
-
-      for (const file of safeFiles) {
-        const itemBox = document.createElement('div');
-        itemBox.className = 'upload-queue-item';
-
-        const isVideo = file.type.startsWith('video/');
-        if (isVideo) {
-          itemBox.innerHTML = `
-            <span style="font-size:24px;">🎬</span>
-            <span class="type-icon">VIDEO</span>
-          `;
-        } else {
-          const img = document.createElement('img');
-          img.src = URL.createObjectURL(file);
-          itemBox.appendChild(img);
-        }
-        queueContainer.appendChild(itemBox);
-
-        const base64Data = await convertFileToBase64(file);
-        pendingFiles.push({
-          name: file.name,
-          mimeType: file.type || (isVideo ? 'video/mp4' : 'image/jpeg'),
-          base64: base64Data
-        });
-      }
-
-      document.getElementById('upload-modal').classList.add('active');
-    }
-
-    function convertFileToBase64(file) {
-      return new Promise((resolve) => {
-        if (file.type.startsWith('image/')) {
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            const img = new Image();
-            img.onload = () => {
-              const canvas = document.createElement('canvas');
-              let width = img.width;
-              let height = img.height;
-              const maxDim = 2048;
-
-              if (width > maxDim || height > maxDim) {
-                if (width > height) {
-                  height = Math.round((height * maxDim) / width);
-                  width = maxDim;
-                } else {
-                  width = Math.round((width * maxDim) / height);
-                  height = maxDim;
-                }
-              }
-              canvas.width = width;
-              canvas.height = height;
-              const ctx = canvas.getContext('2d');
-              ctx.drawImage(img, 0, 0, width, height);
-              resolve(canvas.toDataURL('image/jpeg', 0.88));
-            };
-            img.src = e.target.result;
-          };
-          reader.readAsDataURL(file);
-        } else {
-          const reader = new FileReader();
-          reader.onload = (e) => resolve(e.target.result);
-          reader.readAsDataURL(file);
-        }
-      });
-    }
-
-    async function executeBatchUpload() {
-      if (pendingFiles.length === 0) return;
-
-      const submitBtn = document.getElementById('submit-upload-btn');
-      const cancelBtn = document.getElementById('cancel-upload-btn');
-      const progressContainer = document.getElementById('progress-container');
-      const progressFill = document.getElementById('progress-fill');
-      const progressText = document.getElementById('progress-text');
-
-      submitBtn.disabled = true;
-      cancelBtn.disabled = true;
-      progressContainer.style.display = 'flex';
-
-      const person = document.getElementById('input-person').value.trim() || '未分類';
-      const rawTags = document.getElementById('input-tags').value;
-      const tags = rawTags.split(/[,、\s]+/).filter(t => t.trim() !== '');
-
-      const total = pendingFiles.length;
-      let successCount = 0;
-
-      for (let i = 0; i < total; i++) {
-        const item = pendingFiles[i];
-        progressText.textContent = `送信中... (${i + 1} / ${total}) - ${item.name}`;
-        progressFill.style.width = `${Math.round(((i) / total) * 100)}%`;
-
-        const payload = {
-          fileName: item.name,
-          mimeType: item.mimeType,
-          base64: item.base64,
-          person: person,
-          tags: tags
-        };
-
-        try {
-          const response = await fetch(GAS_ENDPOINT, {
-            method: 'POST',
-            body: JSON.stringify(payload),
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' }
-          });
-          const res = await response.json();
-          if (res.status === 'success') successCount++;
-        } catch (err) {
-          console.error(`Upload error:`, err);
-        }
-      }
-
-      progressFill.style.width = '100%';
-      progressText.textContent = `完了 (${successCount} / ${total} 件)`;
-
-      setTimeout(async () => {
-        closeUploadModal();
-        document.getElementById('status').style.display = 'block';
-        document.getElementById('status').textContent = '最新データを読み込み中...';
-        await loadGallery();
-      }, 800);
-    }
-
-    function closeUploadModal() {
-      document.getElementById('upload-modal').classList.remove('active');
-      document.getElementById('input-person').value = '';
-      document.getElementById('input-tags').value = '';
-      document.getElementById('file-input').value = '';
-      document.getElementById('progress-container').style.display = 'none';
-      document.getElementById('submit-upload-btn').disabled = false;
-      document.getElementById('cancel-upload-btn').disabled = false;
-      pendingFiles = [];
-    }
+    }, { passive: true });
 
     function escapeHtml(str) {
-      return str.replace(/[&<>'"]/g, tag => ({
+      return String(str).replace(/[&<>'"]/g, tag => ({
         '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
       }[tag] || tag));
+    }
+
+    function escapeJsStr(str) {
+      return String(str).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
     }
 
     loadGallery();

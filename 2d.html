@@ -1528,6 +1528,19 @@
       renderGallery();
     }
 
+    function detectSnsBadgeInfo(url) {
+      const lower = url.toLowerCase();
+      if (lower.includes('x.com') || lower.includes('twitter.com')) return { icon: '𝕏', label: 'X (Twitter)' };
+      if (lower.includes('pixiv.net')) return { icon: '🎨', label: 'Pixiv' };
+      if (lower.includes('instagram.com')) return { icon: '📸', label: 'Instagram' };
+      if (lower.includes('youtube.com') || lower.includes('youtu.be')) return { icon: '▶️', label: 'YouTube' };
+      if (lower.includes('booth.pm')) return { icon: '🛍️', label: 'BOOTH' };
+      if (lower.includes('fanbox.cc')) return { icon: '📦', label: 'FANBOX' };
+      if (lower.includes('fantia.jp')) return { icon: '🔞', label: 'Fantia' };
+      if (lower.includes('patreon.com') || lower.includes('dlsite.com')) return { icon: '💎', label: 'Support' };
+      return { icon: '🔗', label: 'SNS / Web' };
+    }
+
     function renderPersonDetailPage(personName) {
       const personItems = mediaItems.filter(item => (item.person || '未分類') === personName && (item.dimension || '3D') === currentDimension);
       document.getElementById('detail-person-name').textContent = personName;
@@ -1539,14 +1552,56 @@
       const snsContainer = document.getElementById('detail-sns-links');
       snsContainer.innerHTML = '';
       (Array.isArray(profile.snsLinks) ? profile.snsLinks.filter(Boolean) : []).forEach(url => {
+        const info = detectSnsBadgeInfo(url);
         const a = document.createElement('a');
         a.href = url;
         a.target = '_blank';
         a.rel = 'noopener noreferrer';
         a.className = 'sns-link-pill';
-        a.textContent = '🔗 リンク';
+        a.innerHTML = `<span>${info.icon}</span><span>${info.label}</span>`;
         snsContainer.appendChild(a);
       });
+
+      const imageCount = personItems.filter(i => i.type === 'image').length;
+      const videoCount = personItems.filter(i => i.type === 'video').length;
+      const r18Count = personItems.filter(i => i.isR18).length;
+
+      document.getElementById('detail-stats').innerHTML = `
+        <span class="stat-pill">合計 ${personItems.length} 件</span>
+        <span class="stat-pill">🖼️ 画像 ${imageCount} 枚</span>
+        <span class="stat-pill">🎬 動画 ${videoCount} 本</span>
+        <span class="stat-pill">🔞 R18 ${r18Count} 件</span>
+      `;
+
+      const tagMap = {};
+      personItems.forEach(item => {
+        (item.tags || []).forEach(t => { tagMap[t] = (tagMap[t] || 0) + 1; });
+      });
+
+      const detailTagRow = document.getElementById('detail-tag-row');
+      detailTagRow.innerHTML = '';
+
+      if (Object.keys(tagMap).length > 0) {
+        const allChip = document.createElement('span');
+        allChip.className = 'filter-chip' + (activePersonPageTag === null ? ' active' : '');
+        allChip.textContent = 'すべてのタグ';
+        allChip.onclick = () => {
+          activePersonPageTag = null;
+          renderPersonDetailPage(personName);
+        };
+        detailTagRow.appendChild(allChip);
+
+        Object.keys(tagMap).forEach(tag => {
+          const chip = document.createElement('span');
+          chip.className = 'filter-chip' + (activePersonPageTag === tag ? ' active' : '');
+          chip.textContent = `#${tag} (${tagMap[tag]})`;
+          chip.onclick = () => {
+            activePersonPageTag = (activePersonPageTag === tag) ? null : tag;
+            renderPersonDetailPage(personName);
+          };
+          detailTagRow.appendChild(chip);
+        });
+      }
 
       const displayList = getPersonPageItems(personName);
       document.getElementById('photo-count').textContent = `${displayList.length} items`;

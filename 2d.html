@@ -388,43 +388,25 @@
       background: #14171f;
       border: 1px solid var(--border-color);
       border-radius: 16px;
-      overflow: hidden;
+      padding: 20px 24px;
       margin-bottom: 24px;
-    }
-
-    .detail-cover-banner {
-      position: relative;
-      width: 100%;
-      height: 240px;
-      background: linear-gradient(135deg, #271e3a, #11141d);
-      background-size: cover;
-      background-position: center;
-    }
-
-    .detail-cover-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to bottom, rgba(15,17,21,0.35) 0%, rgba(20,23,31,0.92) 100%);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
     }
 
     .detail-top-bar {
-      position: absolute;
-      top: 16px;
-      left: 20px;
-      right: 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
       gap: 12px;
-      z-index: 5;
     }
 
     .back-btn {
-      background: rgba(20, 23, 31, 0.85);
-      backdrop-filter: blur(8px);
+      background: var(--card-bg);
       color: #fff;
-      border: 1px solid rgba(255,255,255,0.15);
+      border: 1px solid var(--border-color);
       padding: 8px 16px;
       border-radius: 8px;
       font-size: 0.85rem;
@@ -435,22 +417,12 @@
       gap: 6px;
     }
 
-    .detail-body-content {
-      position: relative;
-      padding: 0 24px 22px;
-      margin-top: -46px;
-      z-index: 6;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .detail-profile-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
-    .detail-profile-left { display: flex; align-items: flex-end; gap: 18px; flex-wrap: wrap; }
+    .detail-profile-row { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+    .detail-profile-left { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
 
     .detail-avatar {
-      width: 92px;
-      height: 92px;
+      width: 88px;
+      height: 88px;
       border-radius: 50%;
       object-fit: cover;
       border: 3px solid var(--accent);
@@ -752,8 +724,8 @@
         </h1>
       </div>
 
-      <a id="sibling-page-link" href="./index.html" class="sibling-page-link">
-        📸 MuseDex 3D へ移動
+      <a id="sibling-page-link" href="./3d.html" class="sibling-page-link">
+        👯 MuseDex 3D へ移動
       </a>
     </div>
 
@@ -780,7 +752,7 @@
       </button>
 
       <div class="view-toggle" id="main-view-toggle">
-        <button id="btn-group-view" class="view-btn active" onclick="switchView('group')">キャラ/作者別</button>
+        <button id="btn-group-view" class="view-btn active" onclick="switchView('group')">作者/キャラ別</button>
         <button id="btn-all-view" class="view-btn" onclick="switchView('all')">すべて</button>
       </div>
 
@@ -791,7 +763,7 @@
 
   <section id="filters-section" class="filters-wrapper" style="display: none;">
     <div id="person-filter-row" class="filter-row">
-      <span class="filter-title">👤 人物/キャラ:</span>
+      <span class="filter-title">👤 作者/キャラ:</span>
       <div id="person-filter-chips" class="filter-chips"></div>
     </div>
     <div id="tag-filter-row" class="filter-row">
@@ -807,28 +779,23 @@
 
     <div id="person-detail-page" class="person-detail-page">
       <div class="detail-hero-card">
-        <div id="detail-cover-banner" class="detail-cover-banner">
-          <div class="detail-cover-overlay"></div>
-          <div class="detail-top-bar">
-            <button class="back-btn" onclick="closePersonPage()">← ギャラリーに戻る</button>
-            <button class="back-btn" onclick="openProfileSettingsModal()">⚙️ カバー写真・SNS設定</button>
-          </div>
+        <div class="detail-top-bar">
+          <button class="back-btn" onclick="closePersonPage()">← ギャラリーに戻る</button>
+          <button class="back-btn" onclick="openProfileSettingsModal()">⚙️ カバー写真・SNS設定</button>
         </div>
 
-        <div class="detail-body-content">
-          <div class="detail-profile-row">
-            <div class="detail-profile-left">
-              <img id="detail-avatar" class="detail-avatar" src="./MuseDex_logo.png" alt="Avatar">
-              <div class="detail-info">
-                <h2 id="detail-person-name">名前</h2>
-                <div id="detail-stats" class="detail-stats"></div>
-              </div>
+        <div class="detail-profile-row">
+          <div class="detail-profile-left">
+            <img id="detail-avatar" class="detail-avatar" src="./MuseDex_logo.png" alt="Avatar">
+            <div class="detail-info">
+              <h2 id="detail-person-name">名前</h2>
+              <div id="detail-stats" class="detail-stats"></div>
             </div>
-            <div id="detail-sns-links" class="detail-sns-links"></div>
           </div>
-
-          <div id="detail-tag-row" class="filter-chips"></div>
+          <div id="detail-sns-links" class="detail-sns-links"></div>
         </div>
+
+        <div id="detail-tag-row" class="filter-chips"></div>
       </div>
 
       <div id="detail-grid" class="gallery-grid"></div>
@@ -858,15 +825,15 @@
 
       <div class="form-row-2col">
         <div class="form-group">
-          <label for="input-person">キャラ名 / 作者名（同じ名前でまとまります）</label>
+          <label for="input-person">作者 / キャラ名（同じ名前でまとまります）</label>
           <input type="text" id="input-person" placeholder="例: アスナ、マシュ など" list="person-list">
           <datalist id="person-list"></datalist>
         </div>
         <div class="form-group">
           <label for="input-dimension">登録ページ区分</label>
           <select id="input-dimension">
-            <option value="2D" selected>MuseDex 2D</option>
-            <option value="3D">MuseDex 3D</option>
+            <option value="2D" selected>🎨 MuseDex 2D</option>
+            <option value="3D">👯 MuseDex 3D</option>
           </select>
         </div>
       </div>
@@ -951,8 +918,8 @@
         <label for="batch-dimension">2D / 3D ページ移動</label>
         <select id="batch-dimension">
           <option value="keep">変更しない</option>
-          <option value="2D">MuseDex 2D へ移動</option>
-          <option value="3D">MuseDex 3D へ移動</option>
+          <option value="2D">🎨 MuseDex 2D へ移動</option>
+          <option value="3D">👯 MuseDex 3D へ移動</option>
         </select>
       </div>
 
@@ -963,17 +930,12 @@
     </div>
   </div>
 
-  <!-- プロフィール設定モーダル -->
+  <!-- プロフィール設定モーダル（カバー写真＝アイコン画像 ＆ SNSリンク） -->
   <div id="profile-modal" class="modal" style="z-index: 240;">
     <div class="modal-content">
-      <h3 id="profile-modal-title">プロフィール・カバー写真設定</h3>
+      <h3 id="profile-modal-title">カバー写真（アイコン）・SNS設定</h3>
       <div class="form-group">
-        <label>🖼️ カバー写真を選択</label>
-        <div id="cover-picker-grid" class="cover-picker-grid"></div>
-        <input type="url" id="profile-cover-url" placeholder="またはカバー画像URLを直接入力">
-      </div>
-      <div class="form-group">
-        <label>👤 アイコン写真を選択</label>
+        <label>👤 カバー写真（アイコン画像）を選択（クリックで選択）</label>
         <div id="avatar-picker-grid" class="cover-picker-grid"></div>
         <input type="url" id="profile-avatar-url" placeholder="またはアイコン画像URLを直接入力">
       </div>
@@ -1063,14 +1025,14 @@
       <input type="hidden" id="edit-file-id">
       <div class="form-row-2col">
         <div class="form-group">
-          <label for="edit-person">名前</label>
+          <label for="edit-person">作者 / キャラ名</label>
           <input type="text" id="edit-person" list="person-list">
         </div>
         <div class="form-group">
           <label for="edit-dimension">2D / 3D 区分</label>
           <select id="edit-dimension">
-            <option value="2D">MuseDex 2D</option>
-            <option value="3D">MuseDex 3D</option>
+            <option value="2D">🎨 MuseDex 2D</option>
+            <option value="3D">👯 MuseDex 3D</option>
           </select>
         </div>
       </div>
@@ -1574,10 +1536,6 @@
       const defaultAvatarItem = personItems.find(i => !i.isR18 || isR18Mode) || personItems[0];
       document.getElementById('detail-avatar').src = profile.avatarUrl || (defaultAvatarItem ? defaultAvatarItem.thumbnailUrl : './MuseDex_logo.png');
 
-      const coverBanner = document.getElementById('detail-cover-banner');
-      const coverSrc = profile.coverUrl || (defaultAvatarItem ? defaultAvatarItem.previewUrl : '');
-      coverBanner.style.backgroundImage = coverSrc ? `url('${coverSrc}')` : 'none';
-
       const snsContainer = document.getElementById('detail-sns-links');
       snsContainer.innerHTML = '';
       (Array.isArray(profile.snsLinks) ? profile.snsLinks.filter(Boolean) : []).forEach(url => {
@@ -1601,7 +1559,7 @@
       if (!activePersonPage) return;
       const profile = personProfiles[activePersonPage] || {};
       const personImages = mediaItems.filter(i => i.person === activePersonPage && i.type === 'image');
-      document.getElementById('profile-cover-url').value = profile.coverUrl || '';
+      document.getElementById('profile-modal-title').textContent = `${activePersonPage} のカバー写真（アイコン）・SNS設定`;
       document.getElementById('profile-avatar-url').value = profile.avatarUrl || '';
       const links = Array.isArray(profile.snsLinks) ? profile.snsLinks : [];
       document.getElementById('sns-x').value = links[0] || '';
@@ -1609,22 +1567,18 @@
       document.getElementById('sns-yt').value = links[2] || '';
       document.getElementById('sns-other').value = links[3] || '';
 
-      const coverGrid = document.getElementById('cover-picker-grid');
       const avatarGrid = document.getElementById('avatar-picker-grid');
-      coverGrid.innerHTML = '';
       avatarGrid.innerHTML = '';
 
       personImages.forEach(item => {
-        const cItem = document.createElement('div');
-        cItem.className = 'cover-pick-item';
-        cItem.innerHTML = `<img src="${item.thumbnailUrl}" alt="">`;
-        cItem.onclick = () => { document.getElementById('profile-cover-url').value = item.previewUrl; };
-        coverGrid.appendChild(cItem);
-
         const aItem = document.createElement('div');
-        aItem.className = 'cover-pick-item';
+        aItem.className = 'cover-pick-item' + (profile.avatarUrl === item.thumbnailUrl ? ' selected' : '');
         aItem.innerHTML = `<img src="${item.thumbnailUrl}" alt="">`;
-        aItem.onclick = () => { document.getElementById('profile-avatar-url').value = item.thumbnailUrl; };
+        aItem.onclick = () => {
+          document.getElementById('profile-avatar-url').value = item.thumbnailUrl;
+          avatarGrid.querySelectorAll('.cover-pick-item').forEach(el => el.classList.remove('selected'));
+          aItem.classList.add('selected');
+        };
         avatarGrid.appendChild(aItem);
       });
 
@@ -1637,7 +1591,6 @@
 
     async function savePersonProfile() {
       if (!activePersonPage) return;
-      const coverUrl = document.getElementById('profile-cover-url').value.trim();
       const avatarUrl = document.getElementById('profile-avatar-url').value.trim();
       const snsLinks = [
         document.getElementById('sns-x').value.trim(),
@@ -1649,13 +1602,13 @@
       try {
         await fetch(GAS_ENDPOINT, {
           method: 'POST',
-          body: JSON.stringify({ action: 'saveProfile', person: activePersonPage, coverUrl, avatarUrl, snsLinks }),
+          body: JSON.stringify({ action: 'saveProfile', person: activePersonPage, avatarUrl, snsLinks }),
           headers: { 'Content-Type': 'text/plain;charset=utf-8' }
         });
-        personProfiles[activePersonPage] = { coverUrl, avatarUrl, snsLinks };
+        personProfiles[activePersonPage] = { avatarUrl, snsLinks };
         closeProfileSettingsModal();
         renderPersonDetailPage(activePersonPage);
-        showToast('プロフィール設定を保存しました');
+        showToast('カバー写真（アイコン）・SNS設定を保存しました');
       } catch (err) {
         showToast(`保存エラー: ${err.message}`);
       }

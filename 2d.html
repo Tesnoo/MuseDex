@@ -666,9 +666,93 @@
 
     .modal-dropzone { border: 2px dashed #374151; background: #12151c; border-radius: 10px; padding: 12px; text-align: center; cursor: pointer; }
     .modal-dropzone-text { font-size: 0.8rem; color: var(--text-sub); margin-bottom: 8px; }
-    .upload-queue-container { display: flex; gap: 10px; overflow-x: auto; padding: 6px 2px; min-height: 86px; align-items: center; }
-    .upload-queue-item { position: relative; width: 76px; height: 76px; border-radius: 6px; overflow: hidden; flex-shrink: 0; background: #232832; border: 1px solid var(--border-color); display: flex; justify-content: center; align-items: center; }
+    .upload-queue-container { display: flex; gap: 10px; overflow-x: auto; padding: 6px 2px; min-height: 92px; align-items: center; }
+    .upload-queue-item {
+      position: relative;
+      width: 84px;
+      height: 84px;
+      border-radius: 8px;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: #232832;
+      border: 2px solid var(--border-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+    }
+    .upload-queue-item:hover { border-color: #64748b; }
+    .upload-queue-item.active-item {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent);
+      transform: translateY(-2px);
+    }
     .upload-queue-item img { width: 100%; height: 100%; object-fit: cover; }
+    .queue-item-index {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      background: rgba(15, 17, 21, 0.82);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 1px 5px;
+      border-radius: 4px;
+      pointer-events: none;
+    }
+    .upload-queue-item.active-item .queue-item-index { background: var(--accent); }
+    .queue-item-label {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(15, 17, 21, 0.86);
+      color: #e5e7eb;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 4px;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      pointer-events: none;
+    }
+    .queue-editing-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #141822;
+      border: 1px solid #2e3646;
+      padding: 8px 12px;
+      border-radius: 8px;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .queue-editing-status {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #c4b5fd;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .queue-copy-all-btn {
+      background: #252b3b;
+      color: var(--text-main);
+      border: 1px solid #3b4252;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.74rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .queue-copy-all-btn:hover {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
     .queue-remove-btn { position: absolute; top: 2px; right: 2px; width: 18px; height: 18px; background: rgba(0,0,0,0.75); color: #fff; border: none; border-radius: 50%; font-size: 11px; cursor: pointer; }
     .form-row-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .form-group { display: flex; flex-direction: column; gap: 6px; }
@@ -953,21 +1037,28 @@
       <h3 id="modal-title">MuseDex 2D に新しいメディアを登録</h3>
 
       <div id="modal-dropzone" class="modal-dropzone" onclick="document.getElementById('file-input').click()">
-        <div class="modal-dropzone-text">📁 クリックまたはドラッグ＆ドロップでさらに追加</div>
+        <div class="modal-dropzone-text">📁 クリックまたはドラッグ＆ドロップでさらに追加（サムネイルをクリックして個別に設定できます）</div>
         <div id="upload-queue" class="upload-queue-container" onclick="event.stopPropagation()"></div>
+      </div>
+
+      <div id="queue-editing-bar" class="queue-editing-bar">
+        <span id="queue-editing-status" class="queue-editing-status">📌 1 / 1枚目を個別設定中</span>
+        <button type="button" class="queue-copy-all-btn" onclick="copyCurrentMetaToAllQueue()" title="今表示している入力内容を、追加済みの他の画像すべてにコピーします">
+          📋 この設定を全ファイルに一括適用
+        </button>
       </div>
 
       <div class="form-row-2col">
         <div class="form-group">
           <label for="input-person">✒️ 作者名（カンマ区切りで複数可）</label>
           <div class="suggest-wrap">
-            <input type="text" id="input-person" placeholder="例: Volyz, itzah" autocomplete="off">
+            <input type="text" id="input-person" placeholder="例: Volyz, itzah" autocomplete="off" oninput="saveCurrentQueueItemMeta()">
             <div class="suggest-dropdown"></div>
           </div>
         </div>
         <div class="form-group">
           <label for="input-dimension">登録ページ区分</label>
-          <select id="input-dimension">
+          <select id="input-dimension" onchange="saveCurrentQueueItemMeta()">
             <option value="2D" selected>🎨 MuseDex 2D</option>
             <option value="3D">👯 MuseDex 3D</option>
           </select>
@@ -978,7 +1069,7 @@
         <div class="form-group">
           <label for="input-char-name">👤 キャラ名（カンマ区切りで複数可）</label>
           <div class="suggest-wrap">
-            <input type="text" id="input-char-name" placeholder="例: サムス・アラン, ニア" autocomplete="off">
+            <input type="text" id="input-char-name" placeholder="例: サムス・アラン, ニア" autocomplete="off" oninput="saveCurrentQueueItemMeta()">
             <div class="suggest-dropdown"></div>
           </div>
         </div>
@@ -990,7 +1081,7 @@
             </button>
           </div>
           <div class="suggest-wrap">
-            <input type="text" id="input-work-name" placeholder="例: メトロイド, ゼノブレイド" autocomplete="off" oninput="syncOriginalWorkBtn('upload')">
+            <input type="text" id="input-work-name" placeholder="例: メトロイド, ゼノブレイド" autocomplete="off" oninput="syncOriginalWorkBtn('upload'); saveCurrentQueueItemMeta();">
             <div class="suggest-dropdown"></div>
           </div>
         </div>
@@ -998,25 +1089,22 @@
 
       <div class="form-group">
         <div class="label-with-actions">
-          <label for="input-tags">🏷️ タグ（カンマ区切り・全ファイルに一括適用）</label>
+          <label for="input-tags">🏷️ タグ（カンマ区切り）</label>
           <div class="quick-tag-btns">
             <button type="button" id="upload-r18-btn" class="r18-quick-btn" onclick="toggleQuickTag('upload', 'R18')">
               🔞 + R18
             </button>
-            <button type="button" id="upload-cosplay-btn" class="cosplay-quick-btn" onclick="toggleQuickTag('upload', 'コスプレ')">
-              🎭 + コスプレ
-            </button>
           </div>
         </div>
         <div class="suggest-wrap">
-          <input type="text" id="input-tags" placeholder="例: 巨乳, ぴっちりスーツ, ふたなり" autocomplete="off" oninput="syncTagQuickButtons('upload')">
+          <input type="text" id="input-tags" placeholder="例: 巨乳, ぴっちりスーツ, ふたなり" autocomplete="off" oninput="syncTagQuickButtons('upload'); saveCurrentQueueItemMeta();">
           <div class="suggest-dropdown"></div>
         </div>
       </div>
 
       <div class="form-group">
         <label for="input-icloud-url">☁️ スマホ用 動画リンク（任意・iCloud Drive共有URLなど）</label>
-        <input type="url" id="input-icloud-url" placeholder="https://www.icloud.com/iclouddrive/...">
+        <input type="url" id="input-icloud-url" placeholder="https://www.icloud.com/iclouddrive/..." oninput="saveCurrentQueueItemMeta()">
       </div>
 
       <div id="progress-container" class="progress-bar-container">
@@ -1083,9 +1171,6 @@
           <div class="quick-tag-btns">
             <button type="button" id="batch-r18-btn" class="r18-quick-btn" onclick="toggleQuickTag('batch', 'R18')">
               🔞 + R18
-            </button>
-            <button type="button" id="batch-cosplay-btn" class="cosplay-quick-btn" onclick="toggleQuickTag('batch', 'コスプレ')">
-              🎭 + コスプレ
             </button>
           </div>
         </div>
@@ -1257,9 +1342,6 @@
             <button type="button" id="edit-r18-btn" class="r18-quick-btn" onclick="toggleQuickTag('edit', 'R18')">
               🔞 + R18
             </button>
-            <button type="button" id="edit-cosplay-btn" class="cosplay-quick-btn" onclick="toggleQuickTag('edit', 'コスプレ')">
-              🎭 + コスプレ
-            </button>
           </div>
         </div>
         <div class="suggest-wrap">
@@ -1330,6 +1412,7 @@
     let activePersonPageTag = null;
 
     let pendingFiles = [];
+    let activeQueueIndex = 0;
     let isAllExpanded = true;
     let currentSliderList = [];
     let currentSliderIndex = 0;
@@ -1412,8 +1495,8 @@
 
     function getSuggestionCounts(type) {
       const counts = {};
-      const pageItems = mediaItems.filter(i => (i.dimension || '3D') === currentDimension);
-      const sourceItems = pageItems.length > 0 ? pageItems : mediaItems;
+      // 2Dページでは2Dに登録されたメディアのみからサジェスト候補を集計（3Dの人物名等は除外）
+      const sourceItems = mediaItems.filter(i => (i.dimension || '3D') === currentDimension);
 
       sourceItems.forEach(item => {
         if (type === 'person') {
@@ -1550,9 +1633,6 @@
 
       const r18Btn = document.getElementById(`${mode}-r18-btn`);
       if (r18Btn) r18Btn.classList.toggle('active', tags.includes('R18'));
-
-      const cosBtn = document.getElementById(`${mode}-cosplay-btn`);
-      if (cosBtn) cosBtn.classList.toggle('active', tags.includes('コスプレ'));
     }
 
     function toggleQuickTag(mode, tagName) {
@@ -1566,6 +1646,7 @@
       }
       tagsInput.value = tags.join(', ');
       syncTagQuickButtons(mode);
+      if (mode === 'upload') saveCurrentQueueItemMeta();
     }
 
     function getWorkInputId(mode) {
@@ -1593,6 +1674,7 @@
       }
       workInput.value = works.join(', ');
       syncOriginalWorkBtn(mode);
+      if (mode === 'upload') saveCurrentQueueItemMeta();
     }
 
     function toggleFilterAccordion(accId) {
@@ -2478,6 +2560,11 @@
 
     async function handleSelectedFiles(files) {
       const validFiles = files.filter(f => f.type.startsWith('image/') || f.type.startsWith('video/'));
+      const wasEmpty = pendingFiles.length === 0;
+      const defaultAuthor = (activePersonPage && activePersonPageField === 'person') ? activePersonPage : '';
+      const defaultChar = (activePersonPage && activePersonPageField === 'charName') ? activePersonPage : '';
+      const defaultWork = (activePersonPage && activePersonPageField === 'workName') ? activePersonPage : '';
+
       for (const file of validFiles) {
         if (file.size > 20 * 1024 * 1024) {
           showToast(`「${file.name}」は20MBを超えるため直接Googleドライブへ追加してください`);
@@ -2498,43 +2585,139 @@
           mimeType: file.type || (isVideo ? 'video/mp4' : 'image/jpeg'),
           base64: processed.base64,
           previewUrl: processed.previewUrl,
-          phash: processed.phash || ''
+          phash: processed.phash || '',
+          person: defaultAuthor,
+          dimension: '2D',
+          charName: defaultChar,
+          workName: defaultWork,
+          tags: '',
+          icloudUrl: ''
         });
       }
       if (pendingFiles.length > 0) {
-        renderUploadQueue();
-        if (activePersonPage) {
-          if (activePersonPageField === 'person' && !document.getElementById('input-person').value) {
-            document.getElementById('input-person').value = activePersonPage;
-          } else if (activePersonPageField === 'charName' && !document.getElementById('input-char-name').value) {
-            document.getElementById('input-char-name').value = activePersonPage;
-          } else if (activePersonPageField === 'workName' && !document.getElementById('input-work-name').value) {
-            document.getElementById('input-work-name').value = activePersonPage;
-          }
+        if (wasEmpty) {
+          activeQueueIndex = 0;
+          loadQueueItemToForm(0);
         }
+        renderUploadQueue();
         document.getElementById('upload-modal').classList.add('active');
       }
+    }
+
+    function saveCurrentQueueItemMeta() {
+      const item = pendingFiles[activeQueueIndex];
+      if (!item) return;
+      item.person = document.getElementById('input-person').value;
+      item.dimension = document.getElementById('input-dimension').value || '2D';
+      item.charName = document.getElementById('input-char-name').value;
+      item.workName = document.getElementById('input-work-name').value;
+      item.tags = document.getElementById('input-tags').value;
+      item.icloudUrl = document.getElementById('input-icloud-url').value;
+      updateQueueItemLabels();
+    }
+
+    function loadQueueItemToForm(idx) {
+      if (idx < 0 || idx >= pendingFiles.length) return;
+      activeQueueIndex = idx;
+      const item = pendingFiles[idx];
+      document.getElementById('input-person').value = item.person || '';
+      document.getElementById('input-dimension').value = item.dimension || '2D';
+      document.getElementById('input-char-name').value = item.charName || '';
+      document.getElementById('input-work-name').value = item.workName || '';
+      document.getElementById('input-tags').value = item.tags || '';
+      document.getElementById('input-icloud-url').value = item.icloudUrl || '';
+      syncTagQuickButtons('upload');
+      syncOriginalWorkBtn('upload');
+      updateQueueItemLabels();
+    }
+
+    function selectUploadQueueItem(idx) {
+      saveCurrentQueueItemMeta();
+      loadQueueItemToForm(idx);
+      renderUploadQueue();
+    }
+
+    function copyCurrentMetaToAllQueue() {
+      saveCurrentQueueItemMeta();
+      const src = pendingFiles[activeQueueIndex];
+      if (!src) return;
+      pendingFiles.forEach(item => {
+        item.person = src.person;
+        item.dimension = src.dimension;
+        item.charName = src.charName;
+        item.workName = src.workName;
+        item.tags = src.tags;
+        item.icloudUrl = src.icloudUrl;
+      });
+      renderUploadQueue();
+      showToast(`全 ${pendingFiles.length} 件に現在の設定を一括適用しました`);
+    }
+
+    function updateQueueItemLabels() {
+      const statusEl = document.getElementById('queue-editing-status');
+      const current = pendingFiles[activeQueueIndex];
+      if (statusEl && current) {
+        statusEl.textContent = `📌 ${activeQueueIndex + 1} / ${pendingFiles.length}枚目を個別設定中 (${current.name})`;
+      }
+      const boxes = document.querySelectorAll('#upload-queue .upload-queue-item');
+      boxes.forEach((box, idx) => {
+        const labelEl = box.querySelector('.queue-item-label');
+        const f = pendingFiles[idx];
+        if (labelEl && f) {
+          const labelText = (f.charName || f.person || '').trim();
+          labelEl.textContent = labelText ? labelText : '未設定';
+        }
+      });
     }
 
     function renderUploadQueue() {
       const queueContainer = document.getElementById('upload-queue');
       queueContainer.innerHTML = '';
+      document.getElementById('modal-title').textContent = `MuseDex 2D に ${pendingFiles.length}件のメディアを登録`;
+
       pendingFiles.forEach((item, idx) => {
         const itemBox = document.createElement('div');
-        itemBox.className = 'upload-queue-item';
+        itemBox.className = 'upload-queue-item' + (idx === activeQueueIndex ? ' active-item' : '');
+        itemBox.onclick = (e) => {
+          e.stopPropagation();
+          selectUploadQueueItem(idx);
+        };
+
         itemBox.innerHTML = item.isVideo ? `<span style="font-size:22px;">🎬</span>` : `<img src="${item.previewUrl}">`;
+
+        const idxBadge = document.createElement('span');
+        idxBadge.className = 'queue-item-index';
+        idxBadge.textContent = `${idx + 1}`;
+        itemBox.appendChild(idxBadge);
+
+        const labelBadge = document.createElement('div');
+        labelBadge.className = 'queue-item-label';
+        const labelText = (item.charName || item.person || '').trim();
+        labelBadge.textContent = labelText ? labelText : '未設定';
+        itemBox.appendChild(labelBadge);
+
         const removeBtn = document.createElement('button');
         removeBtn.className = 'queue-remove-btn';
         removeBtn.innerHTML = '&times;';
         removeBtn.onclick = (e) => {
           e.stopPropagation();
+          saveCurrentQueueItemMeta();
           pendingFiles.splice(idx, 1);
-          if (pendingFiles.length === 0) closeUploadModal();
-          else renderUploadQueue();
+          if (pendingFiles.length === 0) {
+            closeUploadModal();
+          } else {
+            if (activeQueueIndex >= pendingFiles.length) {
+              activeQueueIndex = pendingFiles.length - 1;
+            }
+            loadQueueItemToForm(activeQueueIndex);
+            renderUploadQueue();
+          }
         };
         itemBox.appendChild(removeBtn);
         queueContainer.appendChild(itemBox);
       });
+
+      updateQueueItemLabels();
     }
 
     function processFileAndHash(file) {
@@ -2569,24 +2752,26 @@
 
     async function executeBatchUpload() {
       if (pendingFiles.length === 0) return;
+      saveCurrentQueueItemMeta();
+
       const submitBtn = document.getElementById('submit-upload-btn');
       submitBtn.disabled = true;
       document.getElementById('progress-container').style.display = 'flex';
 
-      const personRaw = document.getElementById('input-person').value.trim();
-      const person = personRaw ? splitMultiValues(personRaw).join(', ') : '未分類';
-      const dimension = document.getElementById('input-dimension').value || '2D';
-      const tags = splitMultiValues(document.getElementById('input-tags').value);
-      const isR18 = tags.includes('R18');
-      const charRaw = document.getElementById('input-char-name').value.trim();
-      const workRaw = document.getElementById('input-work-name').value.trim();
-      const charName = charRaw ? splitMultiValues(charRaw).join(', ') : '';
-      const workName = workRaw ? splitMultiValues(workRaw).join(', ') : '';
-      const icloudUrl = document.getElementById('input-icloud-url').value.trim();
-
       for (let i = 0; i < pendingFiles.length; i++) {
         const item = pendingFiles[i];
-        document.getElementById('progress-text').textContent = `送信中... (${i + 1} / ${pendingFiles.length})`;
+        const personRaw = (item.person || '').trim();
+        const person = personRaw ? splitMultiValues(personRaw).join(', ') : '未分類';
+        const dimension = item.dimension || '2D';
+        const tags = splitMultiValues(item.tags || '');
+        const isR18 = tags.includes('R18');
+        const charRaw = (item.charName || '').trim();
+        const workRaw = (item.workName || '').trim();
+        const charName = charRaw ? splitMultiValues(charRaw).join(', ') : '';
+        const workName = workRaw ? splitMultiValues(workRaw).join(', ') : '';
+        const icloudUrl = (item.icloudUrl || '').trim();
+
+        document.getElementById('progress-text').textContent = `送信中... (${i + 1} / ${pendingFiles.length}) - ${item.name}`;
         document.getElementById('progress-fill').style.width = `${Math.round(((i + 1) / pendingFiles.length) * 100)}%`;
 
         await fetch(GAS_ENDPOINT, {
@@ -2621,11 +2806,11 @@
       document.getElementById('input-tags').value = '';
       document.getElementById('input-icloud-url').value = '';
       document.getElementById('upload-r18-btn').classList.remove('active');
-      document.getElementById('upload-cosplay-btn').classList.remove('active');
       document.getElementById('upload-original-btn').classList.remove('active');
       document.getElementById('progress-container').style.display = 'none';
       document.getElementById('submit-upload-btn').disabled = false;
       pendingFiles = [];
+      activeQueueIndex = 0;
     }
 
     function openLightbox(list, index) {

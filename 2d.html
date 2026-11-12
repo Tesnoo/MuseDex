@@ -674,10 +674,50 @@
     .form-group { display: flex; flex-direction: column; gap: 6px; }
     .form-group label { font-size: 0.82rem; color: var(--text-sub); font-weight: 600; }
     .form-group input, .form-group select { background: #11141a; border: 1px solid var(--border-color); padding: 9px 12px; border-radius: 6px; color: #fff; font-size: 0.9rem; }
-    .options-bar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; background: #13161f; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-color); }
-    .r18-check-label { display: inline-flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 700; color: #f472b6; cursor: pointer; }
-    .cosplay-quick-btn { background: #231d33; color: #d8b4fe; border: 1px solid #6b21a8; padding: 4px 10px; border-radius: 14px; font-size: 0.78rem; font-weight: 600; cursor: pointer; }
-    .cosplay-quick-btn.active { background: var(--cosplay-color); color: #fff; }
+    .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--accent); }
+
+    .label-with-actions { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .quick-tag-btns { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+    .r18-quick-btn { background: #2d1625; color: #f472b6; border: 1px solid #9d174d; padding: 3px 10px; border-radius: 14px; font-size: 0.76rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+    .r18-quick-btn.active { background: var(--r18-color); color: #fff; border-color: var(--r18-color); }
+
+    .cosplay-quick-btn { background: #231d33; color: #d8b4fe; border: 1px solid #6b21a8; padding: 3px 10px; border-radius: 14px; font-size: 0.76rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .cosplay-quick-btn.active { background: var(--cosplay-color); color: #fff; border-color: var(--cosplay-color); }
+
+    .original-quick-btn { background: #172a3a; color: #7dd3fc; border: 1px solid #0369a1; padding: 2px 9px; border-radius: 12px; font-size: 0.74rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .original-quick-btn.active { background: #0284c7; color: #fff; border-color: #0284c7; }
+
+    .suggest-wrap { position: relative; display: flex; flex-direction: column; }
+    .suggest-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      background: #181c26;
+      border: 1px solid #3b4252;
+      border-radius: 8px;
+      max-height: 190px;
+      overflow-y: auto;
+      z-index: 350;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.65);
+    }
+    .suggest-dropdown.active { display: block; }
+    .suggest-item {
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      color: var(--text-main);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+    .suggest-item:hover { background: rgba(139, 92, 246, 0.24); }
+    .suggest-match { color: #c084fc; font-weight: 800; }
+    .suggest-count { font-size: 0.72rem; color: var(--text-sub); background: #232836; padding: 2px 7px; border-radius: 10px; }
+
     .cosplay-fields { display: none; background: rgba(168, 85, 247, 0.08); border: 1px solid rgba(168, 85, 247, 0.35); border-radius: 8px; padding: 12px; gap: 10px; flex-direction: column; }
     .cosplay-fields.active { display: flex; }
     .cover-picker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 8px; max-height: 210px; overflow-y: auto; padding: 8px; background: #11141a; border-radius: 8px; border: 1px solid var(--border-color); }
@@ -919,9 +959,11 @@
 
       <div class="form-row-2col">
         <div class="form-group">
-          <label for="input-person">✒️ 作者名</label>
-          <input type="text" id="input-person" placeholder="例: Volyz、itzah など" list="person-list">
-          <datalist id="person-list"></datalist>
+          <label for="input-person">✒️ 作者名（カンマ区切りで複数可）</label>
+          <div class="suggest-wrap">
+            <input type="text" id="input-person" placeholder="例: Volyz, itzah" autocomplete="off">
+            <div class="suggest-dropdown"></div>
+          </div>
         </div>
         <div class="form-group">
           <label for="input-dimension">登録ページ区分</label>
@@ -934,27 +976,42 @@
 
       <div class="form-row-2col">
         <div class="form-group">
-          <label for="input-char-name">👤 キャラ名</label>
-          <input type="text" id="input-char-name" placeholder="例: サムス・アラン、ニア など" list="char-list">
-          <datalist id="char-list"></datalist>
+          <label for="input-char-name">👤 キャラ名（カンマ区切りで複数可）</label>
+          <div class="suggest-wrap">
+            <input type="text" id="input-char-name" placeholder="例: サムス・アラン, ニア" autocomplete="off">
+            <div class="suggest-dropdown"></div>
+          </div>
         </div>
         <div class="form-group">
-          <label for="input-work-name">📚 作品名</label>
-          <input type="text" id="input-work-name" placeholder="例: メトロイド、ゼノブレイド など" list="work-list">
-          <datalist id="work-list"></datalist>
+          <div class="label-with-actions">
+            <label for="input-work-name">📚 作品名</label>
+            <button type="button" id="upload-original-btn" class="original-quick-btn" onclick="toggleOriginalWork('upload')">
+              ✨ + オリジナル
+            </button>
+          </div>
+          <div class="suggest-wrap">
+            <input type="text" id="input-work-name" placeholder="例: メトロイド, ゼノブレイド" autocomplete="off" oninput="syncOriginalWorkBtn('upload')">
+            <div class="suggest-dropdown"></div>
+          </div>
         </div>
-      </div>
-
-      <div class="options-bar">
-        <label class="r18-check-label">
-          <input type="checkbox" id="input-r18">
-          🔞 R18マークを設定する（一般モード時にぼかし表示）
-        </label>
       </div>
 
       <div class="form-group">
-        <label for="input-tags">🏷️ タグ（カンマ区切り・全ファイルに一括適用）</label>
-        <input type="text" id="input-tags" placeholder="例: 巨乳, ぴっちりスーツ, ふたなり">
+        <div class="label-with-actions">
+          <label for="input-tags">🏷️ タグ（カンマ区切り・全ファイルに一括適用）</label>
+          <div class="quick-tag-btns">
+            <button type="button" id="upload-r18-btn" class="r18-quick-btn" onclick="toggleQuickTag('upload', 'R18')">
+              🔞 + R18
+            </button>
+            <button type="button" id="upload-cosplay-btn" class="cosplay-quick-btn" onclick="toggleQuickTag('upload', 'コスプレ')">
+              🎭 + コスプレ
+            </button>
+          </div>
+        </div>
+        <div class="suggest-wrap">
+          <input type="text" id="input-tags" placeholder="例: 巨乳, ぴっちりスーツ, ふたなり" autocomplete="off" oninput="syncTagQuickButtons('upload')">
+          <div class="suggest-dropdown"></div>
+        </div>
       </div>
 
       <div class="form-group">
@@ -982,33 +1039,60 @@
       <h3 id="batch-edit-title">選択したメディアを一括編集</h3>
       <div class="form-row-2col">
         <div class="form-group">
-          <label for="batch-person">✒️ 作者名を一括変更（空欄で変更しない）</label>
-          <input type="text" id="batch-person" placeholder="変更する場合のみ入力" list="person-list">
+          <label for="batch-person">✒️ 作者名を一括変更（カンマ区切り可）</label>
+          <div class="suggest-wrap">
+            <input type="text" id="batch-person" placeholder="変更する場合のみ入力" autocomplete="off">
+            <div class="suggest-dropdown"></div>
+          </div>
         </div>
         <div class="form-group">
-          <label for="batch-r18-mode">🔞 R18マーク一括設定</label>
+          <label for="batch-r18-mode">🔞 R18タグ一括操作</label>
           <select id="batch-r18-mode">
             <option value="keep">変更しない</option>
-            <option value="true">すべて R18 ON にする</option>
-            <option value="false">すべて R18 OFF（一般）にする</option>
+            <option value="true">すべてに R18 タグを付与</option>
+            <option value="false">すべてから R18 タグを解除</option>
           </select>
         </div>
       </div>
 
       <div class="form-row-2col">
         <div class="form-group">
-          <label for="batch-char-name">👤 キャラ名を一括変更（空欄で変更しない）</label>
-          <input type="text" id="batch-char-name" placeholder="変更する場合のみ入力" list="char-list">
+          <label for="batch-char-name">👤 キャラ名を一括変更（カンマ区切り可）</label>
+          <div class="suggest-wrap">
+            <input type="text" id="batch-char-name" placeholder="変更する場合のみ入力" autocomplete="off">
+            <div class="suggest-dropdown"></div>
+          </div>
         </div>
         <div class="form-group">
-          <label for="batch-work-name">📚 作品名を一括変更（空欄で変更しない）</label>
-          <input type="text" id="batch-work-name" placeholder="変更する場合のみ入力" list="work-list">
+          <div class="label-with-actions">
+            <label for="batch-work-name">📚 作品名を一括変更</label>
+            <button type="button" id="batch-original-btn" class="original-quick-btn" onclick="toggleOriginalWork('batch')">
+              ✨ + オリジナル
+            </button>
+          </div>
+          <div class="suggest-wrap">
+            <input type="text" id="batch-work-name" placeholder="変更する場合のみ入力" autocomplete="off" oninput="syncOriginalWorkBtn('batch')">
+            <div class="suggest-dropdown"></div>
+          </div>
         </div>
       </div>
 
       <div class="form-group">
-        <label for="batch-tags">🏷️ 追加するタグ（カンマ区切り）</label>
-        <input type="text" id="batch-tags" placeholder="例: イラスト, お気に入り">
+        <div class="label-with-actions">
+          <label for="batch-tags">🏷️ 追加するタグ（カンマ区切り）</label>
+          <div class="quick-tag-btns">
+            <button type="button" id="batch-r18-btn" class="r18-quick-btn" onclick="toggleQuickTag('batch', 'R18')">
+              🔞 + R18
+            </button>
+            <button type="button" id="batch-cosplay-btn" class="cosplay-quick-btn" onclick="toggleQuickTag('batch', 'コスプレ')">
+              🎭 + コスプレ
+            </button>
+          </div>
+        </div>
+        <div class="suggest-wrap">
+          <input type="text" id="batch-tags" placeholder="例: R18, イラスト, お気に入り" autocomplete="off" oninput="syncTagQuickButtons('batch')">
+          <div class="suggest-dropdown"></div>
+        </div>
       </div>
 
       <label style="display:flex;align-items:center;gap:8px;font-size:0.82rem;color:var(--text-sub);cursor:pointer;">
@@ -1104,10 +1188,6 @@
     </div>
   </div>
 
-  <!-- アコーディオン人物名変更モーダル -->
-  <div id="rename-person-modal" class="modal" style="z-index: 275;">
-    <div class="modal-content" style="max-width: 420px;">
-      <h3>✏️ 名前の変更</h3>
   <!-- アコーディオン名変更モーダル -->
   <div id="rename-person-modal" class="modal" style="z-index: 275;">
     <div class="modal-content" style="max-width: 420px;">
@@ -1116,7 +1196,10 @@
       <input type="hidden" id="rename-field-type">
       <div class="form-group">
         <label for="rename-new-person">新しい名前（既存の名前を入れると統合されます）</label>
-        <input type="text" id="rename-new-person" list="person-list" placeholder="正しい名前を入力">
+        <div class="suggest-wrap">
+          <input type="text" id="rename-new-person" placeholder="正しい名前を入力" autocomplete="off">
+          <div class="suggest-dropdown"></div>
+        </div>
       </div>
       <div class="modal-actions">
         <button class="btn btn-cancel" onclick="closeRenamePersonModal()">キャンセル</button>
@@ -1132,8 +1215,11 @@
       <input type="hidden" id="edit-file-id">
       <div class="form-row-2col">
         <div class="form-group">
-          <label for="edit-person">✒️ 作者名</label>
-          <input type="text" id="edit-person" list="person-list" placeholder="例: しらび">
+          <label for="edit-person">✒️ 作者名（カンマ区切りで複数可）</label>
+          <div class="suggest-wrap">
+            <input type="text" id="edit-person" placeholder="例: しらび" autocomplete="off">
+            <div class="suggest-dropdown"></div>
+          </div>
         </div>
         <div class="form-group">
           <label for="edit-dimension">2D / 3D 区分</label>
@@ -1145,23 +1231,41 @@
       </div>
       <div class="form-row-2col">
         <div class="form-group">
-          <label for="edit-char-name">👤 キャラ名</label>
-          <input type="text" id="edit-char-name" list="char-list" placeholder="例: アスナ">
+          <label for="edit-char-name">👤 キャラ名（カンマ区切りで複数可）</label>
+          <div class="suggest-wrap">
+            <input type="text" id="edit-char-name" placeholder="例: アスナ, シノン" autocomplete="off">
+            <div class="suggest-dropdown"></div>
+          </div>
         </div>
         <div class="form-group">
-          <label for="edit-work-name">📚 作品名</label>
-          <input type="text" id="edit-work-name" list="work-list" placeholder="例: SAO">
+          <div class="label-with-actions">
+            <label for="edit-work-name">📚 作品名</label>
+            <button type="button" id="edit-original-btn" class="original-quick-btn" onclick="toggleOriginalWork('edit')">
+              ✨ + オリジナル
+            </button>
+          </div>
+          <div class="suggest-wrap">
+            <input type="text" id="edit-work-name" placeholder="例: SAO" autocomplete="off" oninput="syncOriginalWorkBtn('edit')">
+            <div class="suggest-dropdown"></div>
+          </div>
         </div>
       </div>
-      <div class="options-bar">
-        <label class="r18-check-label">
-          <input type="checkbox" id="edit-r18">
-          🔞 R18マークを設定する
-        </label>
-      </div>
       <div class="form-group">
-        <label for="edit-tags">🏷️ タグ（カンマ区切り）</label>
-        <input type="text" id="edit-tags">
+        <div class="label-with-actions">
+          <label for="edit-tags">🏷️ タグ（カンマ区切り）</label>
+          <div class="quick-tag-btns">
+            <button type="button" id="edit-r18-btn" class="r18-quick-btn" onclick="toggleQuickTag('edit', 'R18')">
+              🔞 + R18
+            </button>
+            <button type="button" id="edit-cosplay-btn" class="cosplay-quick-btn" onclick="toggleQuickTag('edit', 'コスプレ')">
+              🎭 + コスプレ
+            </button>
+          </div>
+        </div>
+        <div class="suggest-wrap">
+          <input type="text" id="edit-tags" autocomplete="off" oninput="syncTagQuickButtons('edit')">
+          <div class="suggest-dropdown"></div>
+        </div>
       </div>
       <div class="form-group">
         <label for="edit-icloud-url">☁️ スマホ用 動画リンク（iCloud Drive URL等）</label>
@@ -1249,6 +1353,20 @@
       toast._timer = setTimeout(() => toast.classList.remove('show'), 3500);
     }
 
+    function splitMultiValues(rawStr, emptyFallback = '') {
+      if (!rawStr) return emptyFallback ? [emptyFallback] : [];
+      const list = String(rawStr)
+        .split(/[,、]+/)
+        .map(s => s.trim())
+        .filter(Boolean);
+      if (list.length === 0) return emptyFallback ? [emptyFallback] : [];
+      return [...new Set(list)];
+    }
+
+    function isItemR18(item) {
+      return (Array.isArray(item.tags) && item.tags.includes('R18')) || Boolean(item.isR18);
+    }
+
     async function loadGallery() {
       const status = document.getElementById('status');
       try {
@@ -1262,10 +1380,16 @@
           .map(item => {
             const cachedHash = item.phash || localPhashMap[item.id] || '';
             if (item.phash) localPhashMap[item.id] = item.phash;
+            const rawTags = Array.isArray(item.tags) ? [...item.tags] : [];
+            if (item.isR18 && !rawTags.includes('R18')) {
+              rawTags.unshift('R18');
+            }
+            const r18Flag = rawTags.includes('R18') || Boolean(item.isR18);
             return {
               ...item,
               dimension: item.dimension || '3D',
-              isR18: Boolean(item.isR18),
+              tags: rawTags,
+              isR18: r18Flag,
               charName: item.charName || '',
               workName: item.workName || '',
               icloudUrl: item.icloudUrl || '',
@@ -1274,7 +1398,7 @@
           });
 
         status.style.display = 'none';
-        document.getElementById('filters-section').style.display = 'flex';
+        document.getElementById('filters-section').style.display = 'grid';
         updatePersonDatalist();
         refreshAllViews();
       } catch (err) {
@@ -1283,26 +1407,192 @@
     }
 
     function updatePersonDatalist() {
-      const pageItems = mediaItems.filter(i => (i.dimension || '3D') === currentDimension);
+      // カスタムサジェストがリアルタイムに候補を集計します
+    }
 
-      const fillDatalist = (listId, values) => {
-        const dl = document.getElementById(listId);
-        if (!dl) return;
-        dl.innerHTML = '';
-        values.forEach(v => {
-          const opt = document.createElement('option');
-          opt.value = v;
-          dl.appendChild(opt);
+    function getSuggestionCounts(type) {
+      const counts = {};
+      const pageItems = mediaItems.filter(i => (i.dimension || '3D') === currentDimension);
+      const sourceItems = pageItems.length > 0 ? pageItems : mediaItems;
+
+      sourceItems.forEach(item => {
+        if (type === 'person') {
+          splitMultiValues(item.person).forEach(p => {
+            if (p !== '未分類') counts[p] = (counts[p] || 0) + 1;
+          });
+        } else if (type === 'char') {
+          splitMultiValues(item.charName).forEach(c => {
+            if (c !== 'キャラ未設定') counts[c] = (counts[c] || 0) + 1;
+          });
+        } else if (type === 'work') {
+          splitMultiValues(item.workName).forEach(w => {
+            if (w !== '作品未設定') counts[w] = (counts[w] || 0) + 1;
+          });
+        } else if (type === 'tag') {
+          (item.tags || []).forEach(t => {
+            counts[t] = (counts[t] || 0) + 1;
+          });
+        }
+      });
+      return counts;
+    }
+
+    function setupSuggestInput(inputId, typeGetter) {
+      const input = document.getElementById(inputId);
+      if (!input) return;
+      const wrap = input.closest('.suggest-wrap');
+      if (!wrap) return;
+      const dropdown = wrap.querySelector('.suggest-dropdown');
+      if (!dropdown) return;
+
+      const renderSuggestions = () => {
+        const type = typeof typeGetter === 'function' ? typeGetter() : typeGetter;
+        const counts = getSuggestionCounts(type);
+        const allCandidates = Object.keys(counts).sort((a, b) => {
+          if (counts[b] !== counts[a]) return counts[b] - counts[a];
+          return a.localeCompare(b, 'ja');
         });
+
+        const rawVal = input.value;
+        const parts = rawVal.split(/[,、]/);
+        const currentToken = (parts[parts.length - 1] || '').trim();
+        const existingTokens = parts.slice(0, -1).map(s => s.trim()).filter(Boolean);
+
+        const qLower = currentToken.toLowerCase();
+        const matched = allCandidates.filter(word => {
+          if (existingTokens.includes(word)) return false;
+          if (!qLower) return true;
+          return word.toLowerCase().includes(qLower);
+        }).slice(0, 20);
+
+        if (matched.length === 0) {
+          dropdown.classList.remove('active');
+          return;
+        }
+
+        dropdown.innerHTML = '';
+        matched.forEach(word => {
+          const row = document.createElement('div');
+          row.className = 'suggest-item';
+
+          let labelHtml = escapeHtml(word);
+          if (qLower) {
+            const idx = word.toLowerCase().indexOf(qLower);
+            if (idx !== -1) {
+              const before = escapeHtml(word.slice(0, idx));
+              const mid = escapeHtml(word.slice(idx, idx + currentToken.length));
+              const after = escapeHtml(word.slice(idx + currentToken.length));
+              labelHtml = `${before}<span class="suggest-match">${mid}</span>${after}`;
+            }
+          }
+
+          row.innerHTML = `
+            <span>${labelHtml}</span>
+            <span class="suggest-count">${counts[word]}件</span>
+          `;
+
+          row.onmousedown = (e) => {
+            e.preventDefault();
+            const prefix = parts.slice(0, -1).map(s => s.trim()).filter(Boolean);
+            prefix.push(word);
+            input.value = prefix.join(', ');
+            dropdown.classList.remove('active');
+            input.dispatchEvent(new Event('input'));
+          };
+
+          dropdown.appendChild(row);
+        });
+
+        dropdown.classList.add('active');
       };
 
-      const uniqueAuthors = [...new Set(pageItems.map(p => p.person).filter(p => p && p !== '未分類'))];
-      const uniqueChars = [...new Set(pageItems.map(p => p.charName).filter(p => p && p !== '未設定'))];
-      const uniqueWorks = [...new Set(pageItems.map(p => p.workName).filter(p => p && p !== '未設定'))];
+      input.addEventListener('focus', renderSuggestions);
+      input.addEventListener('input', renderSuggestions);
+      input.addEventListener('blur', () => {
+        setTimeout(() => dropdown.classList.remove('active'), 150);
+      });
+    }
 
-      fillDatalist('person-list', uniqueAuthors);
-      fillDatalist('char-list', uniqueChars);
-      fillDatalist('work-list', uniqueWorks);
+    function initAllSuggestInputs() {
+      setupSuggestInput('input-person', 'person');
+      setupSuggestInput('edit-person', 'person');
+      setupSuggestInput('batch-person', 'person');
+      setupSuggestInput('rename-new-person', () => {
+        const f = document.getElementById('rename-field-type').value;
+        if (f === 'charName') return 'char';
+        if (f === 'workName') return 'work';
+        return 'person';
+      });
+
+      setupSuggestInput('input-char-name', 'char');
+      setupSuggestInput('edit-char-name', 'char');
+      setupSuggestInput('batch-char-name', 'char');
+
+      setupSuggestInput('input-work-name', 'work');
+      setupSuggestInput('edit-work-name', 'work');
+      setupSuggestInput('batch-work-name', 'work');
+
+      setupSuggestInput('input-tags', 'tag');
+      setupSuggestInput('edit-tags', 'tag');
+      setupSuggestInput('batch-tags', 'tag');
+    }
+
+    function getTagInputId(mode) {
+      if (mode === 'upload') return 'input-tags';
+      if (mode === 'edit') return 'edit-tags';
+      return 'batch-tags';
+    }
+
+    function syncTagQuickButtons(mode) {
+      const tagsInput = document.getElementById(getTagInputId(mode));
+      if (!tagsInput) return;
+      const tags = splitMultiValues(tagsInput.value);
+
+      const r18Btn = document.getElementById(`${mode}-r18-btn`);
+      if (r18Btn) r18Btn.classList.toggle('active', tags.includes('R18'));
+
+      const cosBtn = document.getElementById(`${mode}-cosplay-btn`);
+      if (cosBtn) cosBtn.classList.toggle('active', tags.includes('コスプレ'));
+    }
+
+    function toggleQuickTag(mode, tagName) {
+      const tagsInput = document.getElementById(getTagInputId(mode));
+      if (!tagsInput) return;
+      let tags = splitMultiValues(tagsInput.value);
+      if (tags.includes(tagName)) {
+        tags = tags.filter(t => t !== tagName);
+      } else {
+        tags.push(tagName);
+      }
+      tagsInput.value = tags.join(', ');
+      syncTagQuickButtons(mode);
+    }
+
+    function getWorkInputId(mode) {
+      if (mode === 'upload') return 'input-work-name';
+      if (mode === 'edit') return 'edit-work-name';
+      return 'batch-work-name';
+    }
+
+    function syncOriginalWorkBtn(mode) {
+      const workInput = document.getElementById(getWorkInputId(mode));
+      const btn = document.getElementById(`${mode}-original-btn`);
+      if (!workInput || !btn) return;
+      const works = splitMultiValues(workInput.value);
+      btn.classList.toggle('active', works.includes('オリジナル'));
+    }
+
+    function toggleOriginalWork(mode) {
+      const workInput = document.getElementById(getWorkInputId(mode));
+      if (!workInput) return;
+      let works = splitMultiValues(workInput.value);
+      if (works.includes('オリジナル')) {
+        works = works.filter(w => w !== 'オリジナル');
+      } else {
+        works.push('オリジナル');
+      }
+      workInput.value = works.join(', ');
+      syncOriginalWorkBtn(mode);
     }
 
     function toggleFilterAccordion(accId) {
@@ -1355,18 +1645,18 @@
       else renderGallery();
     }
 
-    function getItemFieldVal(item, field) {
-      if (field === 'charName') return (item.charName && item.charName.trim()) ? item.charName.trim() : 'キャラ未設定';
-      if (field === 'workName') return (item.workName && item.workName.trim()) ? item.workName.trim() : '作品未設定';
-      return (item.person && item.person.trim()) ? item.person.trim() : '未分類';
+    function getItemFieldValues(item, field) {
+      if (field === 'charName') return splitMultiValues(item.charName, 'キャラ未設定');
+      if (field === 'workName') return splitMultiValues(item.workName, '作品未設定');
+      return splitMultiValues(item.person, '未分類');
     }
 
     function getFilteredItems() {
       return mediaItems.filter(item => {
         if ((item.dimension || '3D') !== currentDimension) return false;
-        if (selectedPersonFilter && getItemFieldVal(item, 'person') !== selectedPersonFilter) return false;
-        if (selectedCharFilter && getItemFieldVal(item, 'charName') !== selectedCharFilter) return false;
-        if (selectedWorkFilter && getItemFieldVal(item, 'workName') !== selectedWorkFilter) return false;
+        if (selectedPersonFilter && !getItemFieldValues(item, 'person').includes(selectedPersonFilter)) return false;
+        if (selectedCharFilter && !getItemFieldValues(item, 'charName').includes(selectedCharFilter)) return false;
+        if (selectedWorkFilter && !getItemFieldValues(item, 'workName').includes(selectedWorkFilter)) return false;
         if (selectedTagFilter) {
           const hasTag = item.tags && item.tags.includes(selectedTagFilter);
           if (!hasTag) return false;
@@ -1415,12 +1705,9 @@
       const tagCounts = {};
 
       baseByDim.forEach(item => {
-        const a = getItemFieldVal(item, 'person');
-        const c = getItemFieldVal(item, 'charName');
-        const w = getItemFieldVal(item, 'workName');
-        authorCounts[a] = (authorCounts[a] || 0) + 1;
-        charCounts[c] = (charCounts[c] || 0) + 1;
-        workCounts[w] = (workCounts[w] || 0) + 1;
+        getItemFieldValues(item, 'person').forEach(a => { authorCounts[a] = (authorCounts[a] || 0) + 1; });
+        getItemFieldValues(item, 'charName').forEach(c => { charCounts[c] = (charCounts[c] || 0) + 1; });
+        getItemFieldValues(item, 'workName').forEach(w => { workCounts[w] = (workCounts[w] || 0) + 1; });
 
         (item.tags || []).forEach(t => {
           tagCounts[t] = (tagCounts[t] || 0) + 1;
@@ -1480,9 +1767,10 @@
 
         const groups = {};
         filtered.forEach(item => {
-          const key = getItemFieldVal(item, targetField);
-          if (!groups[key]) groups[key] = [];
-          groups[key].push(item);
+          getItemFieldValues(item, targetField).forEach(key => {
+            if (!groups[key]) groups[key] = [];
+            groups[key].push(item);
+          });
         });
 
         const groupKeys = Object.keys(groups).sort((a, b) => {
@@ -1550,7 +1838,8 @@
 
     function createMediaCard(item, currentList, index) {
       const card = document.createElement('div');
-      const shouldBlur = item.isR18 && !isR18Mode;
+      const r18Flag = isItemR18(item);
+      const shouldBlur = r18Flag && !isR18Mode;
       const isSelected = selectedFileIds.has(item.id);
 
       card.className = 'media-card' + (shouldBlur ? ' r18-blurred' : '') + (isSelected ? ' selected' : '');
@@ -1593,7 +1882,7 @@
         checkBadge.textContent = isSelected ? '✓' : '';
         leftBadges.appendChild(checkBadge);
       }
-      if (item.isR18) {
+      if (r18Flag) {
         const r18Badge = document.createElement('span');
         r18Badge.className = 'r18-badge';
         r18Badge.textContent = 'R18';
@@ -1670,7 +1959,7 @@
       return card;
     }
     function getPersonPageItems(groupName, field = 'person') {
-      const base = mediaItems.filter(item => getItemFieldVal(item, field) === groupName && (item.dimension || '3D') === currentDimension);
+      const base = mediaItems.filter(item => getItemFieldValues(item, field).includes(groupName) && (item.dimension || '3D') === currentDimension);
       return activePersonPageTag ? base.filter(i => i.tags && i.tags.includes(activePersonPageTag)) : base;
     }
 
@@ -1692,7 +1981,7 @@
       activePersonPageTag = null;
       document.getElementById('person-detail-page').classList.remove('active');
       document.getElementById('main-container').style.display = 'block';
-      document.getElementById('filters-section').style.display = 'flex';
+      document.getElementById('filters-section').style.display = 'grid';
       document.getElementById('main-view-toggle').style.display = 'flex';
       renderGallery();
     }
@@ -1710,12 +1999,12 @@
       return { icon: '🔗', label: 'SNS / Web' };
     }
     function renderPersonDetailPage(groupName, field = activePersonPageField) {
-      const personItems = mediaItems.filter(item => getItemFieldVal(item, field) === groupName && (item.dimension || '3D') === currentDimension);
+      const personItems = mediaItems.filter(item => getItemFieldValues(item, field).includes(groupName) && (item.dimension || '3D') === currentDimension);
       const prefixMap = { person: '✒️ 作者: ', charName: '👤 キャラ: ', workName: '📚 作品: ' };
       document.getElementById('detail-person-name').textContent = `${prefixMap[field] || ''}${groupName}`;
 
       const profile = personProfiles[groupName] || {};
-      const defaultAvatarItem = personItems.find(i => !i.isR18 || isR18Mode) || personItems[0];
+      const defaultAvatarItem = personItems.find(i => !isItemR18(i) || isR18Mode) || personItems[0];
       document.getElementById('detail-avatar').src = profile.avatarUrl || (defaultAvatarItem ? defaultAvatarItem.thumbnailUrl : './MuseDex_logo.png');
 
       const snsContainer = document.getElementById('detail-sns-links');
@@ -1733,7 +2022,7 @@
 
       const imageCount = personItems.filter(i => i.type === 'image').length;
       const videoCount = personItems.filter(i => i.type === 'video').length;
-      const r18Count = personItems.filter(i => i.isR18).length;
+      const r18Count = personItems.filter(i => isItemR18(i)).length;
 
       document.getElementById('detail-stats').innerHTML = `
         <span class="stat-pill">合計 ${personItems.length} 件</span>
@@ -1782,7 +2071,7 @@
     function openProfileSettingsModal() {
       if (!activePersonPage) return;
       const profile = personProfiles[activePersonPage] || {};
-      const personImages = mediaItems.filter(i => getItemFieldVal(i, activePersonPageField) === activePersonPage && i.type === 'image');
+      const personImages = mediaItems.filter(i => getItemFieldValues(i, activePersonPageField).includes(activePersonPage) && i.type === 'image');
       document.getElementById('profile-modal-title').textContent = `${activePersonPage} のカバー写真（アイコン）・SNS設定`;
       document.getElementById('profile-avatar-url').value = profile.avatarUrl || '';
       const links = Array.isArray(profile.snsLinks) ? profile.snsLinks : [];
@@ -1855,6 +2144,8 @@
       document.getElementById('batch-tags').value = '';
       document.getElementById('batch-replace-tags').checked = false;
       document.getElementById('batch-dimension').value = 'keep';
+      syncTagQuickButtons('batch');
+      syncOriginalWorkBtn('batch');
       document.getElementById('batch-edit-modal').classList.add('active');
     }
 
@@ -1870,12 +2161,15 @@
       btn.disabled = true;
       btn.textContent = '一括更新中...';
 
-      const person = document.getElementById('batch-person').value.trim();
-      const charName = document.getElementById('batch-char-name').value.trim();
-      const workName = document.getElementById('batch-work-name').value.trim();
+      const personRaw = document.getElementById('batch-person').value.trim();
+      const charRaw = document.getElementById('batch-char-name').value.trim();
+      const workRaw = document.getElementById('batch-work-name').value.trim();
+      const person = personRaw ? splitMultiValues(personRaw).join(', ') : '';
+      const charName = charRaw ? splitMultiValues(charRaw).join(', ') : '';
+      const workName = workRaw ? splitMultiValues(workRaw).join(', ') : '';
       const r18Mode = document.getElementById('batch-r18-mode').value;
       const rawTags = document.getElementById('batch-tags').value;
-      const addTags = rawTags.split(/[,、\s]+/).map(t => t.trim()).filter(Boolean);
+      const addTags = splitMultiValues(rawTags);
       const replaceTags = document.getElementById('batch-replace-tags').checked;
       const dimension = document.getElementById('batch-dimension').value;
 
@@ -1884,8 +2178,13 @@
         const nextChar = charName ? charName : (item.charName || '');
         const nextWork = workName ? workName : (item.workName || '');
         const nextDim = (dimension === '2D' || dimension === '3D') ? dimension : (item.dimension || currentDimension);
-        const nextR18 = r18Mode === 'true' ? true : (r18Mode === 'false' ? false : Boolean(item.isR18));
-        const nextTags = replaceTags ? [...addTags] : (addTags.length > 0 ? Array.from(new Set((item.tags || []).concat(addTags))) : (item.tags || []));
+        let nextTags = replaceTags ? [...addTags] : (addTags.length > 0 ? Array.from(new Set((item.tags || []).concat(addTags))) : [...(item.tags || [])]);
+        if (r18Mode === 'true' && !nextTags.includes('R18')) {
+          nextTags.unshift('R18');
+        } else if (r18Mode === 'false') {
+          nextTags = nextTags.filter(t => t !== 'R18');
+        }
+        const nextR18 = nextTags.includes('R18');
         return { nextPerson, nextChar, nextWork, nextDim, nextR18, nextTags };
       };
 
@@ -1956,13 +2255,11 @@
 
     function openRenamePersonModal(groupName, field = 'person') {
       const labelMap = { person: '✒️ 作者名の変更', charName: '👤 キャラ名の変更', workName: '📚 作品名の変更' };
-      const listMap = { person: 'person-list', charName: 'char-list', workName: 'work-list' };
       document.getElementById('rename-modal-title').textContent = labelMap[field] || '✏️ 名前の変更';
       document.getElementById('rename-old-person').value = groupName;
       document.getElementById('rename-field-type').value = field;
       const input = document.getElementById('rename-new-person');
       input.value = (groupName === '未分類' || groupName === 'キャラ未設定' || groupName === '作品未設定') ? '' : groupName;
-      input.setAttribute('list', listMap[field] || 'person-list');
       document.getElementById('rename-person-modal').classList.add('active');
     }
 
@@ -1976,15 +2273,19 @@
       const newName = document.getElementById('rename-new-person').value.trim();
       if (!oldName || !newName || oldName === newName) return closeRenamePersonModal();
 
-      const targets = mediaItems.filter(m => getItemFieldVal(m, field) === oldName && (m.dimension || '3D') === currentDimension);
+      const targets = mediaItems.filter(m => getItemFieldValues(m, field).includes(oldName) && (m.dimension || '3D') === currentDimension);
       const btn = document.getElementById('submit-rename-btn');
       btn.disabled = true;
 
       try {
         for (const item of targets) {
-          const nextPerson = field === 'person' ? newName : (item.person || '未分類');
-          const nextChar = field === 'charName' ? newName : (item.charName || '');
-          const nextWork = field === 'workName' ? newName : (item.workName || '');
+          const replaceToken = (raw, fallback) => {
+            const list = splitMultiValues(raw, fallback);
+            return [...new Set(list.map(v => v === oldName ? newName : v))].join(', ');
+          };
+          const nextPerson = field === 'person' ? replaceToken(item.person, '未分類') : (item.person || '未分類');
+          const nextChar = field === 'charName' ? replaceToken(item.charName, 'キャラ未設定') : (item.charName || '');
+          const nextWork = field === 'workName' ? replaceToken(item.workName, '作品未設定') : (item.workName || '');
 
           await fetch(GAS_ENDPOINT, {
             method: 'POST',
@@ -1995,7 +2296,7 @@
               charName: nextChar,
               workName: nextWork,
               dimension: item.dimension || currentDimension,
-              isR18: Boolean(item.isR18),
+              isR18: isItemR18(item),
               tags: item.tags || []
             }),
             headers: { 'Content-Type': 'text/plain;charset=utf-8' }
@@ -2015,8 +2316,17 @@
       }
     }
 
+    function requestDeleteSingle(fileId) {
+      if (!fileId) return;
+      pendingDeleteIds = [fileId];
+      const target = mediaItems.find(m => m.id === fileId);
+      document.getElementById('delete-confirm-title').textContent = '🗑️ メディアの削除確認';
+      document.getElementById('delete-confirm-text').textContent = `「${target ? target.name : 'このメディア'}」を削除しますか？`;
+      document.getElementById('delete-confirm-modal').classList.add('active');
+    }
+
     function requestDeletePersonSection(groupName, field = 'person') {
-      const targets = mediaItems.filter(m => getItemFieldVal(m, field) === groupName && (m.dimension || '3D') === currentDimension);
+      const targets = mediaItems.filter(m => getItemFieldValues(m, field).includes(groupName) && (m.dimension || '3D') === currentDimension);
       if (targets.length === 0) return;
       pendingDeleteIds = targets.map(t => t.id);
       document.getElementById('delete-confirm-title').textContent = `🗑️ 「${groupName}」をアコーディオンごと削除`;
@@ -2034,15 +2344,6 @@
       pendingDeleteIds = Array.from(selectedFileIds);
       document.getElementById('delete-confirm-title').textContent = '🗑️ 選択項目の一括削除';
       document.getElementById('delete-confirm-text').textContent = `選択中の ${pendingDeleteIds.length} 件を削除しますか？`;
-      document.getElementById('delete-confirm-modal').classList.add('active');
-    }
-
-    function requestDeletePersonSection(personName) {
-      const targets = mediaItems.filter(m => (m.person || '未分類') === personName && (m.dimension || '3D') === currentDimension);
-      if (targets.length === 0) return;
-      pendingDeleteIds = targets.map(t => t.id);
-      document.getElementById('delete-confirm-title').textContent = `🗑️ 「${personName}」をアコーディオンごと削除`;
-      document.getElementById('delete-confirm-text').textContent = `「${personName}」に含まれる全 ${targets.length} 件のメディアをすべて削除し、アコーディオンごと消去しますか？`;
       document.getElementById('delete-confirm-modal').classList.add('active');
     }
 
@@ -2272,12 +2573,15 @@
       submitBtn.disabled = true;
       document.getElementById('progress-container').style.display = 'flex';
 
-      const person = document.getElementById('input-person').value.trim() || '未分類';
+      const personRaw = document.getElementById('input-person').value.trim();
+      const person = personRaw ? splitMultiValues(personRaw).join(', ') : '未分類';
       const dimension = document.getElementById('input-dimension').value || '2D';
-      const isR18 = document.getElementById('input-r18').checked;
-      const tags = document.getElementById('input-tags').value.split(/[,、\s]+/).map(t => t.trim()).filter(Boolean);
-      const charName = document.getElementById('input-char-name').value.trim();
-      const workName = document.getElementById('input-work-name').value.trim();
+      const tags = splitMultiValues(document.getElementById('input-tags').value);
+      const isR18 = tags.includes('R18');
+      const charRaw = document.getElementById('input-char-name').value.trim();
+      const workRaw = document.getElementById('input-work-name').value.trim();
+      const charName = charRaw ? splitMultiValues(charRaw).join(', ') : '';
+      const workName = workRaw ? splitMultiValues(workRaw).join(', ') : '';
       const icloudUrl = document.getElementById('input-icloud-url').value.trim();
 
       for (let i = 0; i < pendingFiles.length; i++) {
@@ -2315,8 +2619,10 @@
       document.getElementById('input-char-name').value = '';
       document.getElementById('input-work-name').value = '';
       document.getElementById('input-tags').value = '';
-      document.getElementById('input-r18').checked = false;
       document.getElementById('input-icloud-url').value = '';
+      document.getElementById('upload-r18-btn').classList.remove('active');
+      document.getElementById('upload-cosplay-btn').classList.remove('active');
+      document.getElementById('upload-original-btn').classList.remove('active');
       document.getElementById('progress-container').style.display = 'none';
       document.getElementById('submit-upload-btn').disabled = false;
       pendingFiles = [];
@@ -2343,19 +2649,20 @@
       } else {
         const img = document.createElement('img');
         img.src = item.previewUrl;
-        if (item.isR18 && !isR18Mode) img.className = 'r18-blurred-lg';
+        if (isItemR18(item) && !isR18Mode) img.className = 'r18-blurred-lg';
         container.appendChild(img);
       }
       document.getElementById('lightbox-counter').textContent = `${currentSliderIndex + 1} / ${currentSliderList.length}`;
 
       const personEl = document.getElementById('lightbox-person');
-      personEl.textContent = `✒️ ${item.person || '未分類'}`;
+      const authors = splitMultiValues(item.person, '未分類');
+      personEl.textContent = `✒️ ${authors.join(', ')}`;
       personEl.onclick = () => {
         closeLightbox();
-        openPersonPage(item.person || '未分類', 'person');
+        openPersonPage(authors[0] || '未分類', 'person');
       };
 
-      document.getElementById('lightbox-r18-badge').style.display = item.isR18 ? 'inline-block' : 'none';
+      document.getElementById('lightbox-r18-badge').style.display = isItemR18(item) ? 'inline-block' : 'none';
 
       const cosEl = document.getElementById('lightbox-cosplay-badge');
       if (item.charName || item.workName) {
@@ -2377,34 +2684,6 @@
       }
     }
 
-    function openLightbox(list, index) {
-      currentSliderList = list;
-      currentSliderIndex = index;
-      renderCurrentSlide();
-      document.getElementById('lightbox').classList.add('active');
-    }
-
-    function renderCurrentSlide() {
-      const item = currentSliderList[currentSliderIndex];
-      if (!item) return;
-      const container = document.getElementById('lightbox-content');
-      container.innerHTML = '';
-
-      if (item.type === 'video') {
-        const iframe = document.createElement('iframe');
-        iframe.src = item.previewUrl;
-        iframe.allow = 'autoplay; fullscreen';
-        container.appendChild(iframe);
-      } else {
-        const img = document.createElement('img');
-        img.src = item.previewUrl;
-        if (item.isR18 && !isR18Mode) img.className = 'r18-blurred-lg';
-        container.appendChild(img);
-      }
-      document.getElementById('lightbox-counter').textContent = `${currentSliderIndex + 1} / ${currentSliderList.length}`;
-      document.getElementById('lightbox-person').textContent = item.person || '未分類';
-    }
-
     function prevSlide(e) { if (e) e.stopPropagation(); currentSliderIndex = (currentSliderIndex - 1 + currentSliderList.length) % currentSliderList.length; renderCurrentSlide(); }
     function nextSlide(e) { if (e) e.stopPropagation(); currentSliderIndex = (currentSliderIndex + 1) % currentSliderList.length; renderCurrentSlide(); }
     function closeLightbox() { document.getElementById('lightbox').classList.remove('active'); document.getElementById('lightbox-content').innerHTML = ''; }
@@ -2412,14 +2691,19 @@
     function openEditModal() {
       const item = currentSliderList[currentSliderIndex];
       if (!item) return;
+      const currentTags = Array.isArray(item.tags) ? [...item.tags] : [];
+      if (item.isR18 && !currentTags.includes('R18')) currentTags.unshift('R18');
+
       document.getElementById('edit-file-id').value = item.id;
       document.getElementById('edit-person').value = item.person || '';
       document.getElementById('edit-dimension').value = item.dimension || '2D';
-      document.getElementById('edit-r18').checked = Boolean(item.isR18);
-      document.getElementById('edit-tags').value = (item.tags || []).join(', ');
+      document.getElementById('edit-tags').value = currentTags.join(', ');
       document.getElementById('edit-char-name').value = item.charName || '';
       document.getElementById('edit-work-name').value = item.workName || '';
       document.getElementById('edit-icloud-url').value = item.icloudUrl || '';
+
+      syncTagQuickButtons('edit');
+      syncOriginalWorkBtn('edit');
       document.getElementById('edit-modal').classList.add('active');
     }
 
@@ -2427,12 +2711,15 @@
 
     async function executeMetaUpdate() {
       const fileId = document.getElementById('edit-file-id').value;
-      const person = document.getElementById('edit-person').value.trim() || '未分類';
+      const personRaw = document.getElementById('edit-person').value.trim();
+      const person = personRaw ? splitMultiValues(personRaw).join(', ') : '未分類';
       const dimension = document.getElementById('edit-dimension').value || '2D';
-      const isR18 = document.getElementById('edit-r18').checked;
-      const tags = document.getElementById('edit-tags').value.split(/[,、\s]+/).map(t => t.trim()).filter(Boolean);
-      const charName = document.getElementById('edit-char-name').value.trim();
-      const workName = document.getElementById('edit-work-name').value.trim();
+      const tags = splitMultiValues(document.getElementById('edit-tags').value);
+      const isR18 = tags.includes('R18');
+      const charRaw = document.getElementById('edit-char-name').value.trim();
+      const workRaw = document.getElementById('edit-work-name').value.trim();
+      const charName = charRaw ? splitMultiValues(charRaw).join(', ') : '';
+      const workName = workRaw ? splitMultiValues(workRaw).join(', ') : '';
       const icloudUrl = document.getElementById('edit-icloud-url').value.trim();
 
       await fetch(GAS_ENDPOINT, {
@@ -2444,6 +2731,7 @@
       const target = mediaItems.find(m => m.id === fileId);
       if (target) Object.assign(target, { person, dimension, isR18, tags, charName, workName, icloudUrl });
       closeEditModal();
+      if (document.getElementById('lightbox').classList.contains('active')) renderCurrentSlide();
       refreshAllViews();
       showToast('更新しました');
     }
@@ -2455,6 +2743,7 @@
       return String(str).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
     }
 
+    initAllSuggestInputs();
     loadGallery();
   </script>
 </body>

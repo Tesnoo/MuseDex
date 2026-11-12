@@ -1039,42 +1039,46 @@
       border-color: var(--accent);
     }
 
-    .options-bar {
+    .label-with-actions {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 10px;
-      background: #13161f;
-      padding: 10px 12px;
-      border-radius: 8px;
-      border: 1px solid var(--border-color);
-    }
-
-    .r18-check-label {
-      display: inline-flex;
       align-items: center;
       gap: 8px;
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: #f472b6;
-      cursor: pointer;
-      user-select: none;
+      flex-wrap: wrap;
     }
 
-    .r18-check-label input {
-      width: 16px;
-      height: 16px;
-      accent-color: var(--r18-color);
+    .quick-tag-btns {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .r18-quick-btn {
+      background: #2d1625;
+      color: #f472b6;
+      border: 1px solid #9d174d;
+      padding: 3px 10px;
+      border-radius: 14px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .r18-quick-btn.active {
+      background: var(--r18-color);
+      color: #fff;
+      border-color: var(--r18-color);
     }
 
     .cosplay-quick-btn {
       background: #231d33;
       color: #d8b4fe;
       border: 1px solid #6b21a8;
-      padding: 4px 10px;
+      padding: 3px 10px;
       border-radius: 14px;
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.2s;
@@ -1084,6 +1088,83 @@
       background: var(--cosplay-color);
       color: #fff;
       border-color: var(--cosplay-color);
+    }
+
+    .original-quick-btn {
+      background: #172a3a;
+      color: #7dd3fc;
+      border: 1px solid #0369a1;
+      padding: 2px 9px;
+      border-radius: 12px;
+      font-size: 0.74rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .original-quick-btn.active {
+      background: #0284c7;
+      color: #fff;
+      border-color: #0284c7;
+    }
+
+    /* カスタムサジェストドロップダウン */
+    .suggest-wrap {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .suggest-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      background: #181c26;
+      border: 1px solid #3b4252;
+      border-radius: 8px;
+      max-height: 190px;
+      overflow-y: auto;
+      z-index: 350;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.65);
+    }
+
+    .suggest-dropdown.active {
+      display: block;
+    }
+
+    .suggest-item {
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      color: var(--text-main);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      transition: background 0.15s;
+    }
+
+    .suggest-item:last-child {
+      border-bottom: none;
+    }
+
+    .suggest-item:hover, .suggest-item.highlighted {
+      background: rgba(59, 130, 246, 0.22);
+    }
+
+    .suggest-match {
+      color: #60a5fa;
+      font-weight: 800;
+    }
+
+    .suggest-count {
+      font-size: 0.72rem;
+      color: var(--text-sub);
+      background: #232836;
+      padding: 2px 7px;
+      border-radius: 10px;
     }
 
     .cosplay-fields {
@@ -1592,9 +1673,11 @@
 
       <div class="form-row-2col">
         <div class="form-group">
-          <label for="input-person">人物名（同じ名前でまとまります）</label>
-          <input type="text" id="input-person" placeholder="例: 伊織もえ、瀬戸なちか など" list="person-list">
-          <datalist id="person-list"></datalist>
+          <label for="input-person">人物名（カンマ区切りで複数登録可）</label>
+          <div class="suggest-wrap">
+            <input type="text" id="input-person" placeholder="例: 伊織もえ, 瀬戸なちか" autocomplete="off">
+            <div class="suggest-dropdown"></div>
+          </div>
         </div>
         <div class="form-group">
           <label for="input-dimension">登録ページ区分</label>
@@ -1605,31 +1688,45 @@
         </div>
       </div>
 
-      <div class="options-bar">
-        <label class="r18-check-label">
-          <input type="checkbox" id="input-r18">
-          🔞 R18マークを設定する（一般モード時にぼかし表示）
-        </label>
-        <button type="button" id="upload-cosplay-btn" class="cosplay-quick-btn" onclick="toggleCosplayTag('upload')">
-          🎭 + コスプレタグ
-        </button>
-      </div>
-
       <div class="form-group">
-        <label for="input-tags">タグ（カンマ区切り・全ファイルに一括適用）</label>
-        <input type="text" id="input-tags" placeholder="例: 水着, コスプレ, ポートレート" oninput="syncCosplayFields('upload')">
+        <div class="label-with-actions">
+          <label for="input-tags">タグ（カンマ区切り・全ファイルに一括適用）</label>
+          <div class="quick-tag-btns">
+            <button type="button" id="upload-r18-btn" class="r18-quick-btn" onclick="toggleQuickTag('upload', 'R18')">
+              🔞 + R18
+            </button>
+            <button type="button" id="upload-cosplay-btn" class="cosplay-quick-btn" onclick="toggleQuickTag('upload', 'コスプレ')">
+              🎭 + コスプレ
+            </button>
+          </div>
+        </div>
+        <div class="suggest-wrap">
+          <input type="text" id="input-tags" placeholder="例: 私服, 巨乳, 縦セーター" autocomplete="off" oninput="syncTagQuickButtons('upload')">
+          <div class="suggest-dropdown"></div>
+        </div>
       </div>
 
       <div id="upload-cosplay-fields" class="cosplay-fields">
-        <div class="cosplay-fields-title">🎭 コスプレ詳細情報（任意）</div>
+        <div class="cosplay-fields-title">🎭 コスプレ詳細情報（任意・カンマ区切りで複数可）</div>
         <div class="form-row-2col">
           <div class="form-group">
-            <label for="input-char-name">キャラ名</label>
-            <input type="text" id="input-char-name" placeholder="例: マシュ・キリエライト">
+            <label for="input-char-name">キャラ名（カンマ区切り可）</label>
+            <div class="suggest-wrap">
+              <input type="text" id="input-char-name" placeholder="例: マシュ, アルトリア" autocomplete="off">
+              <div class="suggest-dropdown"></div>
+            </div>
           </div>
           <div class="form-group">
-            <label for="input-work-name">作品名</label>
-            <input type="text" id="input-work-name" placeholder="例: Fate/Grand Order">
+            <div class="label-with-actions">
+              <label for="input-work-name">作品名</label>
+              <button type="button" id="upload-original-btn" class="original-quick-btn" onclick="toggleOriginalWork('upload')">
+                ✨ + オリジナル
+              </button>
+            </div>
+            <div class="suggest-wrap">
+              <input type="text" id="input-work-name" placeholder="例: Fate/Grand Order" autocomplete="off" oninput="syncOriginalWorkBtn('upload')">
+              <div class="suggest-dropdown"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -1660,22 +1757,38 @@
 
       <div class="form-row-2col">
         <div class="form-group">
-          <label for="batch-person">人物名を一括変更（空欄で変更しない）</label>
-          <input type="text" id="batch-person" placeholder="変更する場合のみ入力" list="person-list">
+          <label for="batch-person">人物名を一括変更（カンマ区切り可・空欄で維持）</label>
+          <div class="suggest-wrap">
+            <input type="text" id="batch-person" placeholder="変更する場合のみ入力" autocomplete="off">
+            <div class="suggest-dropdown"></div>
+          </div>
         </div>
         <div class="form-group">
-          <label for="batch-r18-mode">🔞 R18マーク一括設定</label>
+          <label for="batch-r18-mode">🔞 R18タグ一括操作</label>
           <select id="batch-r18-mode">
             <option value="keep">変更しない</option>
-            <option value="true">すべて R18 ON にする</option>
-            <option value="false">すべて R18 OFF（一般）にする</option>
+            <option value="true">すべてに R18 タグを付与</option>
+            <option value="false">すべてから R18 タグを解除</option>
           </select>
         </div>
       </div>
 
       <div class="form-group">
-        <label for="batch-tags">追加するタグ（カンマ区切り）</label>
-        <input type="text" id="batch-tags" placeholder="例: 水着, コスプレ, お気に入り">
+        <div class="label-with-actions">
+          <label for="batch-tags">追加するタグ（カンマ区切り）</label>
+          <div class="quick-tag-btns">
+            <button type="button" id="batch-r18-btn" class="r18-quick-btn" onclick="toggleQuickTag('batch', 'R18')">
+              🔞 + R18
+            </button>
+            <button type="button" id="batch-cosplay-btn" class="cosplay-quick-btn" onclick="toggleQuickTag('batch', 'コスプレ')">
+              🎭 + コスプレ
+            </button>
+          </div>
+        </div>
+        <div class="suggest-wrap">
+          <input type="text" id="batch-tags" placeholder="例: R18, 水着, コスプレ" autocomplete="off" oninput="syncTagQuickButtons('batch')">
+          <div class="suggest-dropdown"></div>
+        </div>
       </div>
 
       <label style="display:flex;align-items:center;gap:8px;font-size:0.82rem;color:var(--text-sub);cursor:pointer;">
@@ -1788,7 +1901,10 @@
       <input type="hidden" id="rename-old-person">
       <div class="form-group">
         <label for="rename-new-person">新しい人物名（既存の人物名を入れると統合されます）</label>
-        <input type="text" id="rename-new-person" list="person-list" placeholder="正しい人物名を入力">
+        <div class="suggest-wrap">
+          <input type="text" id="rename-new-person" placeholder="正しい人物名を入力" autocomplete="off">
+          <div class="suggest-dropdown"></div>
+        </div>
       </div>
       <div class="modal-actions">
         <button class="btn btn-cancel" onclick="closeRenamePersonModal()">キャンセル</button>
@@ -1805,8 +1921,11 @@
 
       <div class="form-row-2col">
         <div class="form-group">
-          <label for="edit-person">人物名</label>
-          <input type="text" id="edit-person" list="person-list">
+          <label for="edit-person">人物名（カンマ区切りで複数可）</label>
+          <div class="suggest-wrap">
+            <input type="text" id="edit-person" autocomplete="off">
+            <div class="suggest-dropdown"></div>
+          </div>
         </div>
         <div class="form-group">
           <label for="edit-dimension">2D / 3D 区分</label>
@@ -1817,31 +1936,45 @@
         </div>
       </div>
 
-      <div class="options-bar">
-        <label class="r18-check-label">
-          <input type="checkbox" id="edit-r18">
-          🔞 R18マークを設定する
-        </label>
-        <button type="button" id="edit-cosplay-btn" class="cosplay-quick-btn" onclick="toggleCosplayTag('edit')">
-          🎭 + コスプレタグ
-        </button>
-      </div>
-
       <div class="form-group">
-        <label for="edit-tags">タグ（カンマ区切りで追加・変更）</label>
-        <input type="text" id="edit-tags" placeholder="例: 旅行, 水着, コスプレ" oninput="syncCosplayFields('edit')">
+        <div class="label-with-actions">
+          <label for="edit-tags">タグ（カンマ区切りで追加・変更）</label>
+          <div class="quick-tag-btns">
+            <button type="button" id="edit-r18-btn" class="r18-quick-btn" onclick="toggleQuickTag('edit', 'R18')">
+              🔞 + R18
+            </button>
+            <button type="button" id="edit-cosplay-btn" class="cosplay-quick-btn" onclick="toggleQuickTag('edit', 'コスプレ')">
+              🎭 + コスプレ
+            </button>
+          </div>
+        </div>
+        <div class="suggest-wrap">
+          <input type="text" id="edit-tags" placeholder="例: R18, 旅行, 水着, コスプレ" autocomplete="off" oninput="syncTagQuickButtons('edit')">
+          <div class="suggest-dropdown"></div>
+        </div>
       </div>
 
       <div id="edit-cosplay-fields" class="cosplay-fields">
-        <div class="cosplay-fields-title">🎭 コスプレ詳細情報（任意）</div>
+        <div class="cosplay-fields-title">🎭 コスプレ詳細情報（任意・カンマ区切りで複数可）</div>
         <div class="form-row-2col">
           <div class="form-group">
-            <label for="edit-char-name">キャラ名</label>
-            <input type="text" id="edit-char-name" placeholder="例: マシュ・キリエライト">
+            <label for="edit-char-name">キャラ名（カンマ区切り可）</label>
+            <div class="suggest-wrap">
+              <input type="text" id="edit-char-name" placeholder="例: マシュ, アルトリア" autocomplete="off">
+              <div class="suggest-dropdown"></div>
+            </div>
           </div>
           <div class="form-group">
-            <label for="edit-work-name">作品名</label>
-            <input type="text" id="edit-work-name" placeholder="例: Fate/Grand Order">
+            <div class="label-with-actions">
+              <label for="edit-work-name">作品名</label>
+              <button type="button" id="edit-original-btn" class="original-quick-btn" onclick="toggleOriginalWork('edit')">
+                ✨ + オリジナル
+              </button>
+            </div>
+            <div class="suggest-wrap">
+              <input type="text" id="edit-work-name" placeholder="例: Fate/Grand Order" autocomplete="off" oninput="syncOriginalWorkBtn('edit')">
+              <div class="suggest-dropdown"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -1938,6 +2071,21 @@
       toast._timer = setTimeout(() => toast.classList.remove('show'), 3500);
     }
 
+    // カンマ区切り文字列を配列に分割するヘルパー
+    function splitMultiValues(rawStr, emptyFallback = '') {
+      if (!rawStr) return emptyFallback ? [emptyFallback] : [];
+      const list = String(rawStr)
+        .split(/[,、]+/)
+        .map(s => s.trim())
+        .filter(Boolean);
+      if (list.length === 0) return emptyFallback ? [emptyFallback] : [];
+      return [...new Set(list)];
+    }
+
+    function isItemR18(item) {
+      return (Array.isArray(item.tags) && item.tags.includes('R18')) || Boolean(item.isR18);
+    }
+
     // ==========================================
     // 1. 読み込み & 初期化
     // ==========================================
@@ -1956,10 +2104,16 @@
           .map(item => {
             const cachedHash = item.phash || localPhashMap[item.id] || '';
             if (item.phash) localPhashMap[item.id] = item.phash;
+            const rawTags = Array.isArray(item.tags) ? [...item.tags] : [];
+            if (item.isR18 && !rawTags.includes('R18')) {
+              rawTags.unshift('R18');
+            }
+            const r18Flag = rawTags.includes('R18') || Boolean(item.isR18);
             return {
               ...item,
               dimension: item.dimension || '3D',
-              isR18: Boolean(item.isR18),
+              tags: rawTags,
+              isR18: r18Flag,
               charName: item.charName || '',
               workName: item.workName || '',
               icloudUrl: item.icloudUrl || '',
@@ -1982,15 +2136,129 @@
     }
 
     function updatePersonDatalist() {
-      const datalist = document.getElementById('person-list');
-      datalist.innerHTML = '';
+      // カスタムサジェスト用の語句プールはメディアデータからリアルタイム集計します
+    }
+
+    // ==========================================
+    // カスタムサジェスト（オートコンプリート）機能
+    // ==========================================
+    function getSuggestionCounts(type) {
+      const counts = {};
       const pageItems = mediaItems.filter(i => (i.dimension || '3D') === currentDimension);
-      const uniquePersons = [...new Set(pageItems.map(p => p.person).filter(p => p && p !== '未分類'))];
-      uniquePersons.forEach(person => {
-        const opt = document.createElement('option');
-        opt.value = person;
-        datalist.appendChild(opt);
+      const sourceItems = pageItems.length > 0 ? pageItems : mediaItems;
+
+      sourceItems.forEach(item => {
+        if (type === 'person') {
+          splitMultiValues(item.person).forEach(p => {
+            if (p !== '未分類') counts[p] = (counts[p] || 0) + 1;
+          });
+        } else if (type === 'char') {
+          splitMultiValues(item.charName).forEach(c => {
+            if (c !== 'キャラ未設定') counts[c] = (counts[c] || 0) + 1;
+          });
+        } else if (type === 'work') {
+          splitMultiValues(item.workName).forEach(w => {
+            if (w !== '作品未設定') counts[w] = (counts[w] || 0) + 1;
+          });
+        } else if (type === 'tag') {
+          (item.tags || []).forEach(t => {
+            counts[t] = (counts[t] || 0) + 1;
+          });
+        }
       });
+      return counts;
+    }
+
+    function setupSuggestInput(inputId, type) {
+      const input = document.getElementById(inputId);
+      if (!input) return;
+      const wrap = input.closest('.suggest-wrap');
+      if (!wrap) return;
+      const dropdown = wrap.querySelector('.suggest-dropdown');
+      if (!dropdown) return;
+
+      const renderSuggestions = () => {
+        const counts = getSuggestionCounts(type);
+        const allCandidates = Object.keys(counts).sort((a, b) => {
+          if (counts[b] !== counts[a]) return counts[b] - counts[a];
+          return a.localeCompare(b, 'ja');
+        });
+
+        const rawVal = input.value;
+        const parts = rawVal.split(/[,、]/);
+        const currentToken = (parts[parts.length - 1] || '').trim();
+        const existingTokens = parts.slice(0, -1).map(s => s.trim()).filter(Boolean);
+
+        const qLower = currentToken.toLowerCase();
+        const matched = allCandidates.filter(word => {
+          if (existingTokens.includes(word)) return false;
+          if (!qLower) return true;
+          return word.toLowerCase().includes(qLower);
+        }).slice(0, 20);
+
+        if (matched.length === 0) {
+          dropdown.classList.remove('active');
+          return;
+        }
+
+        dropdown.innerHTML = '';
+        matched.forEach(word => {
+          const row = document.createElement('div');
+          row.className = 'suggest-item';
+
+          let labelHtml = escapeHtml(word);
+          if (qLower) {
+            const idx = word.toLowerCase().indexOf(qLower);
+            if (idx !== -1) {
+              const before = escapeHtml(word.slice(0, idx));
+              const mid = escapeHtml(word.slice(idx, idx + currentToken.length));
+              const after = escapeHtml(word.slice(idx + currentToken.length));
+              labelHtml = `${before}<span class="suggest-match">${mid}</span>${after}`;
+            }
+          }
+
+          row.innerHTML = `
+            <span>${labelHtml}</span>
+            <span class="suggest-count">${counts[word]}件</span>
+          `;
+
+          row.onmousedown = (e) => {
+            e.preventDefault(); // blurより先に選択処理を走らせる
+            const prefix = parts.slice(0, -1).map(s => s.trim()).filter(Boolean);
+            prefix.push(word);
+            input.value = prefix.join(', ');
+            dropdown.classList.remove('active');
+            input.dispatchEvent(new Event('input'));
+          };
+
+          dropdown.appendChild(row);
+        });
+
+        dropdown.classList.add('active');
+      };
+
+      input.addEventListener('focus', renderSuggestions);
+      input.addEventListener('input', renderSuggestions);
+      input.addEventListener('blur', () => {
+        setTimeout(() => dropdown.classList.remove('active'), 150);
+      });
+    }
+
+    function initAllSuggestInputs() {
+      setupSuggestInput('input-person', 'person');
+      setupSuggestInput('edit-person', 'person');
+      setupSuggestInput('batch-person', 'person');
+      setupSuggestInput('rename-new-person', 'person');
+
+      setupSuggestInput('input-char-name', 'char');
+      setupSuggestInput('edit-char-name', 'char');
+
+      setupSuggestInput('input-work-name', 'work');
+      setupSuggestInput('edit-work-name', 'work');
+
+      setupSuggestInput('input-tags', 'tag');
+      setupSuggestInput('edit-tags', 'tag');
+      setupSuggestInput('batch-tags', 'tag');
     }
 
     // ==========================================
@@ -2053,11 +2321,16 @@
     function getFilteredItems(ignorePersonFilter = false, ignoreTagFilter = false) {
       return mediaItems.filter(item => {
         if ((item.dimension || '3D') !== currentDimension) return false;
-        if (!ignorePersonFilter && selectedPersonFilter && item.person !== selectedPersonFilter) return false;
+        if (!ignorePersonFilter && selectedPersonFilter) {
+          const persons = splitMultiValues(item.person, '未分類');
+          if (!persons.includes(selectedPersonFilter)) return false;
+        }
         if (!ignoreTagFilter && selectedTagFilter) {
+          const chars = splitMultiValues(item.charName);
+          const works = splitMultiValues(item.workName);
           const hasTag = (item.tags && item.tags.includes(selectedTagFilter)) ||
-                         item.charName === selectedTagFilter ||
-                         item.workName === selectedTagFilter;
+                         chars.includes(selectedTagFilter) ||
+                         works.includes(selectedTagFilter);
           if (!hasTag) return false;
         }
         return true;
@@ -2072,8 +2345,9 @@
 
       const personCounts = {};
       baseByDim.forEach(item => {
-        const p = item.person || '未分類';
-        personCounts[p] = (personCounts[p] || 0) + 1;
+        splitMultiValues(item.person, '未分類').forEach(p => {
+          personCounts[p] = (personCounts[p] || 0) + 1;
+        });
       });
 
       const personChipsBox = document.getElementById('person-filter-chips');
@@ -2105,7 +2379,7 @@
 
       const tagCounts = {};
       baseByDim.forEach(item => {
-        if (selectedPersonFilter && item.person !== selectedPersonFilter) return;
+        if (selectedPersonFilter && !splitMultiValues(item.person, '未分類').includes(selectedPersonFilter)) return;
         (item.tags || []).forEach(t => {
           tagCounts[t] = (tagCounts[t] || 0) + 1;
         });
@@ -2164,9 +2438,10 @@
         toggleBtn.style.display = 'inline-flex';
         const groups = {};
         filtered.forEach(item => {
-          const person = item.person || '未分類';
-          if (!groups[person]) groups[person] = [];
-          groups[person].push(item);
+          splitMultiValues(item.person, '未分類').forEach(person => {
+            if (!groups[person]) groups[person] = [];
+            groups[person].push(item);
+          });
         });
 
         const personKeys = Object.keys(groups).sort((a, b) => {
@@ -2236,7 +2511,8 @@
 
     function createMediaCard(item, currentList, index) {
       const card = document.createElement('div');
-      const shouldBlur = item.isR18 && !isR18Mode;
+      const r18Flag = isItemR18(item);
+      const shouldBlur = r18Flag && !isR18Mode;
       const isSelected = selectedFileIds.has(item.id);
 
       card.className = 'media-card'
@@ -2284,7 +2560,7 @@
         leftBadges.appendChild(checkBadge);
       }
 
-      if (item.isR18) {
+      if (r18Flag) {
         const r18Badge = document.createElement('span');
         r18Badge.className = 'r18-badge';
         r18Badge.textContent = 'R18';
@@ -2369,7 +2645,7 @@
     // ==========================================
     function getPersonPageItems(personName) {
       const base = mediaItems.filter(item => {
-        if ((item.person || '未分類') !== personName) return false;
+        if (!splitMultiValues(item.person, '未分類').includes(personName)) return false;
         if ((item.dimension || '3D') !== currentDimension) return false;
         return true;
       });
@@ -2419,7 +2695,7 @@
 
     function renderPersonDetailPage(personName) {
       const personItems = mediaItems.filter(item => {
-        if ((item.person || '未分類') !== personName) return false;
+        if (!splitMultiValues(item.person, '未分類').includes(personName)) return false;
         if ((item.dimension || '3D') !== currentDimension) return false;
         return true;
       });
@@ -2427,7 +2703,7 @@
       document.getElementById('detail-person-name').textContent = personName;
 
       const profile = personProfiles[personName] || {};
-      const defaultAvatarItem = personItems.find(i => !i.isR18 || isR18Mode) || personItems[0];
+      const defaultAvatarItem = personItems.find(i => !isItemR18(i) || isR18Mode) || personItems[0];
       const avatarSrc = profile.avatarUrl || (defaultAvatarItem ? defaultAvatarItem.thumbnailUrl : './MuseDex_logo.png');
       document.getElementById('detail-avatar').src = avatarSrc;
 
@@ -2448,7 +2724,7 @@
 
       const imageCount = personItems.filter(i => i.type === 'image').length;
       const videoCount = personItems.filter(i => i.type === 'video').length;
-      const r18Count = personItems.filter(i => i.isR18).length;
+      const r18Count = personItems.filter(i => isItemR18(i)).length;
 
       document.getElementById('detail-stats').innerHTML = `
         <span class="stat-pill">合計 ${personItems.length} 件</span>
@@ -2501,7 +2777,7 @@
     function openProfileSettingsModal() {
       if (!activePersonPage) return;
       const profile = personProfiles[activePersonPage] || {};
-      const personImages = mediaItems.filter(i => i.person === activePersonPage && i.type === 'image');
+      const personImages = mediaItems.filter(i => splitMultiValues(i.person, '未分類').includes(activePersonPage) && i.type === 'image');
 
       document.getElementById('profile-modal-title').textContent = `${activePersonPage} のカバー写真（アイコン）・SNS設定`;
       document.getElementById('profile-avatar-url').value = profile.avatarUrl || '';
@@ -2584,32 +2860,67 @@
     }
 
     // ==========================================
-    // 6. コスプレ連動フォーム & 一括編集機能
+    // 6. タグ連動ボタン（R18・コスプレ・オリジナル） & 一括編集機能
     // ==========================================
-    function syncCosplayFields(mode) {
-      const tagsInput = document.getElementById(mode === 'upload' ? 'input-tags' : 'edit-tags');
-      const cosplayFields = document.getElementById(mode === 'upload' ? 'upload-cosplay-fields' : 'edit-cosplay-fields');
-      const quickBtn = document.getElementById(mode === 'upload' ? 'upload-cosplay-btn' : 'edit-cosplay-btn');
-
-      const tags = tagsInput.value.split(/[,、\s]+/).map(t => t.trim()).filter(Boolean);
-      const hasCosplay = tags.includes('コスプレ');
-
-      cosplayFields.classList.toggle('active', hasCosplay);
-      quickBtn.classList.toggle('active', hasCosplay);
+    function getTagInputId(mode) {
+      if (mode === 'upload') return 'input-tags';
+      if (mode === 'edit') return 'edit-tags';
+      return 'batch-tags';
     }
 
-    function toggleCosplayTag(mode) {
-      const tagsInput = document.getElementById(mode === 'upload' ? 'input-tags' : 'edit-tags');
-      let tags = tagsInput.value.split(/[,、\s]+/).map(t => t.trim()).filter(Boolean);
+    function syncTagQuickButtons(mode) {
+      const tagsInput = document.getElementById(getTagInputId(mode));
+      if (!tagsInput) return;
+      const tags = splitMultiValues(tagsInput.value);
 
-      if (tags.includes('コスプレ')) {
-        tags = tags.filter(t => t !== 'コスプレ');
+      const r18Btn = document.getElementById(`${mode}-r18-btn`);
+      if (r18Btn) r18Btn.classList.toggle('active', tags.includes('R18'));
+
+      const cosBtn = document.getElementById(`${mode}-cosplay-btn`);
+      if (cosBtn) cosBtn.classList.toggle('active', tags.includes('コスプレ'));
+
+      const cosplayFields = document.getElementById(`${mode}-cosplay-fields`);
+      if (cosplayFields) cosplayFields.classList.toggle('active', tags.includes('コスプレ'));
+    }
+
+    function syncCosplayFields(mode) {
+      syncTagQuickButtons(mode);
+    }
+
+    function toggleQuickTag(mode, tagName) {
+      const tagsInput = document.getElementById(getTagInputId(mode));
+      if (!tagsInput) return;
+      let tags = splitMultiValues(tagsInput.value);
+
+      if (tags.includes(tagName)) {
+        tags = tags.filter(t => t !== tagName);
       } else {
-        tags.push('コスプレ');
+        tags.push(tagName);
       }
 
       tagsInput.value = tags.join(', ');
-      syncCosplayFields(mode);
+      syncTagQuickButtons(mode);
+    }
+
+    function syncOriginalWorkBtn(mode) {
+      const workInput = document.getElementById(mode === 'upload' ? 'input-work-name' : 'edit-work-name');
+      const btn = document.getElementById(`${mode}-original-btn`);
+      if (!workInput || !btn) return;
+      const works = splitMultiValues(workInput.value);
+      btn.classList.toggle('active', works.includes('オリジナル'));
+    }
+
+    function toggleOriginalWork(mode) {
+      const workInput = document.getElementById(mode === 'upload' ? 'input-work-name' : 'edit-work-name');
+      if (!workInput) return;
+      let works = splitMultiValues(workInput.value);
+      if (works.includes('オリジナル')) {
+        works = works.filter(w => w !== 'オリジナル');
+      } else {
+        works.push('オリジナル');
+      }
+      workInput.value = works.join(', ');
+      syncOriginalWorkBtn(mode);
     }
 
     function openBatchEditModal() {
@@ -2623,6 +2934,7 @@
       document.getElementById('batch-tags').value = '';
       document.getElementById('batch-replace-tags').checked = false;
       document.getElementById('batch-dimension').value = 'keep';
+      syncTagQuickButtons('batch');
       document.getElementById('batch-edit-modal').classList.add('active');
     }
 
@@ -2638,20 +2950,27 @@
       btn.disabled = true;
       btn.textContent = '一括更新中...';
 
-      const person = document.getElementById('batch-person').value.trim();
+      const personRaw = document.getElementById('batch-person').value.trim();
+      const person = personRaw ? splitMultiValues(personRaw).join(', ') : '';
       const r18Mode = document.getElementById('batch-r18-mode').value;
       const rawTags = document.getElementById('batch-tags').value;
-      const addTags = rawTags.split(/[,、\s]+/).map(t => t.trim()).filter(Boolean);
+      const addTags = splitMultiValues(rawTags);
       const replaceTags = document.getElementById('batch-replace-tags').checked;
       const dimension = document.getElementById('batch-dimension').value;
 
       const buildUpdatedMeta = (item) => {
         const nextPerson = person ? person : (item.person || '未分類');
         const nextDim = (dimension === '2D' || dimension === '3D') ? dimension : (item.dimension || currentDimension);
-        const nextR18 = r18Mode === 'true' ? true : (r18Mode === 'false' ? false : Boolean(item.isR18));
-        const nextTags = replaceTags
+        let nextTags = replaceTags
           ? [...addTags]
-          : (addTags.length > 0 ? Array.from(new Set((item.tags || []).concat(addTags))) : (item.tags || []));
+          : (addTags.length > 0 ? Array.from(new Set((item.tags || []).concat(addTags))) : [...(item.tags || [])]);
+
+        if (r18Mode === 'true' && !nextTags.includes('R18')) {
+          nextTags.unshift('R18');
+        } else if (r18Mode === 'false') {
+          nextTags = nextTags.filter(t => t !== 'R18');
+        }
+        const nextR18 = nextTags.includes('R18');
         return { nextPerson, nextDim, nextR18, nextTags };
       };
 
@@ -2736,7 +3055,7 @@
         return;
       }
 
-      const targets = mediaItems.filter(m => (m.person || '未分類') === oldName && (m.dimension || '3D') === currentDimension);
+      const targets = mediaItems.filter(m => splitMultiValues(m.person, '未分類').includes(oldName) && (m.dimension || '3D') === currentDimension);
       if (targets.length === 0) {
         closeRenamePersonModal();
         return;
@@ -2746,41 +3065,27 @@
       btn.disabled = true;
       btn.textContent = '変更中...';
 
-      const fileIds = targets.map(t => t.id);
-
       try {
-        const response = await fetch(GAS_ENDPOINT, {
-          method: 'POST',
-          body: JSON.stringify({
-            action: 'batchUpdateMeta',
-            fileIds,
-            person: newName,
-            r18Mode: 'keep',
-            addTags: [],
-            replaceTags: false
-          }),
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' }
-        });
-        const res = await response.json();
+        for (const item of targets) {
+          const currentPersons = splitMultiValues(item.person, '未分類');
+          const updatedPersons = [...new Set(currentPersons.map(p => p === oldName ? newName : p))];
+          const nextPersonStr = updatedPersons.join(', ');
 
-        if (res.status !== 'success') {
-          for (const item of targets) {
-            await fetch(GAS_ENDPOINT, {
-              method: 'POST',
-              body: JSON.stringify({
-                action: 'updateMeta',
-                fileId: item.id,
-                person: newName,
-                dimension: item.dimension || currentDimension,
-                isR18: Boolean(item.isR18),
-                tags: item.tags || []
-              }),
-              headers: { 'Content-Type': 'text/plain;charset=utf-8' }
-            });
-          }
+          await fetch(GAS_ENDPOINT, {
+            method: 'POST',
+            body: JSON.stringify({
+              action: 'updateMeta',
+              fileId: item.id,
+              person: nextPersonStr,
+              dimension: item.dimension || currentDimension,
+              isR18: isItemR18(item),
+              tags: item.tags || []
+            }),
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+          });
+          item.person = nextPersonStr;
         }
 
-        targets.forEach(item => { item.person = newName; });
         if (selectedPersonFilter === oldName) selectedPersonFilter = newName;
         closeRenamePersonModal();
         updatePersonDatalist();
@@ -2826,7 +3131,7 @@
     }
 
     function requestDeletePersonSection(personName) {
-      const targets = mediaItems.filter(m => (m.person || '未分類') === personName && (m.dimension || '3D') === currentDimension);
+      const targets = mediaItems.filter(m => splitMultiValues(m.person, '未分類').includes(personName) && (m.dimension || '3D') === currentDimension);
       if (targets.length === 0) return;
 
       pendingDeleteIds = targets.map(t => t.id);
@@ -2880,7 +3185,7 @@
         } else {
           updateBatchActionBar();
         }
-        if (selectedPersonFilter && !mediaItems.some(m => m.person === selectedPersonFilter && (m.dimension || '3D') === currentDimension)) {
+        if (selectedPersonFilter && !mediaItems.some(m => splitMultiValues(m.person, '未分類').includes(selectedPersonFilter) && (m.dimension || '3D') === currentDimension)) {
           selectedPersonFilter = null;
         }
         updatePersonDatalist();
@@ -3311,16 +3616,16 @@
       const progressText = document.getElementById('progress-text');
 
       submitBtn.disabled = true;
-      cancelBtn.disabled = true;
-      progressContainer.style.display = 'flex';
-
-      const person = document.getElementById('input-person').value.trim() || '未分類';
+      const personRaw = document.getElementById('input-person').value.trim();
+      const person = personRaw ? splitMultiValues(personRaw).join(', ') : '未分類';
       const dimension = document.getElementById('input-dimension').value || currentDimension;
-      const isR18 = document.getElementById('input-r18').checked;
       const rawTags = document.getElementById('input-tags').value;
-      const tags = rawTags.split(/[,、\s]+/).map(t => t.trim()).filter(Boolean);
-      const charName = tags.includes('コスプレ') ? document.getElementById('input-char-name').value.trim() : '';
-      const workName = tags.includes('コスプレ') ? document.getElementById('input-work-name').value.trim() : '';
+      const tags = splitMultiValues(rawTags);
+      const isR18 = tags.includes('R18');
+      const charRaw = tags.includes('コスプレ') ? document.getElementById('input-char-name').value.trim() : '';
+      const workRaw = tags.includes('コスプレ') ? document.getElementById('input-work-name').value.trim() : '';
+      const charName = charRaw ? splitMultiValues(charRaw).join(', ') : '';
+      const workName = workRaw ? splitMultiValues(workRaw).join(', ') : '';
       const icloudUrl = document.getElementById('input-icloud-url').value.trim();
 
       const total = pendingFiles.length;
@@ -3378,12 +3683,13 @@
       document.getElementById('upload-modal').classList.remove('active');
       document.getElementById('input-person').value = '';
       document.getElementById('input-tags').value = '';
-      document.getElementById('input-r18').checked = false;
       document.getElementById('input-char-name').value = '';
       document.getElementById('input-work-name').value = '';
       document.getElementById('input-icloud-url').value = '';
       document.getElementById('upload-cosplay-fields').classList.remove('active');
       document.getElementById('upload-cosplay-btn').classList.remove('active');
+      document.getElementById('upload-r18-btn').classList.remove('active');
+      document.getElementById('upload-original-btn').classList.remove('active');
       document.getElementById('file-input').value = '';
       document.getElementById('progress-container').style.display = 'none';
       document.getElementById('submit-upload-btn').disabled = false;
@@ -3427,7 +3733,7 @@
         const img = document.createElement('img');
         img.src = item.previewUrl;
         img.alt = item.name;
-        if (item.isR18 && !isR18Mode) {
+        if (isItemR18(item) && !isR18Mode) {
           img.className = 'r18-blurred-lg';
         }
         container.appendChild(img);
@@ -3436,13 +3742,14 @@
       document.getElementById('lightbox-counter').textContent = `${currentSliderIndex + 1} / ${currentSliderList.length}`;
 
       const personEl = document.getElementById('lightbox-person');
-      personEl.textContent = item.person || '未分類';
+      const persons = splitMultiValues(item.person, '未分類');
+      personEl.textContent = persons.join(', ');
       personEl.onclick = () => {
         closeLightbox();
-        openPersonPage(item.person || '未分類');
+        openPersonPage(persons[0] || '未分類');
       };
 
-      document.getElementById('lightbox-r18-badge').style.display = item.isR18 ? 'inline-block' : 'none';
+      document.getElementById('lightbox-r18-badge').style.display = isItemR18(item) ? 'inline-block' : 'none';
 
       const cosEl = document.getElementById('lightbox-cosplay-badge');
       if (item.charName || item.workName) {
@@ -3487,16 +3794,19 @@
       const item = currentSliderList[currentSliderIndex];
       if (!item) return;
 
+      const currentTags = Array.isArray(item.tags) ? [...item.tags] : [];
+      if (item.isR18 && !currentTags.includes('R18')) currentTags.unshift('R18');
+
       document.getElementById('edit-file-id').value = item.id;
       document.getElementById('edit-person').value = item.person || '';
       document.getElementById('edit-dimension').value = item.dimension || currentDimension;
-      document.getElementById('edit-r18').checked = Boolean(item.isR18);
-      document.getElementById('edit-tags').value = (item.tags || []).join(', ');
+      document.getElementById('edit-tags').value = currentTags.join(', ');
       document.getElementById('edit-char-name').value = item.charName || '';
       document.getElementById('edit-work-name').value = item.workName || '';
       document.getElementById('edit-icloud-url').value = item.icloudUrl || '';
 
-      syncCosplayFields('edit');
+      syncTagQuickButtons('edit');
+      syncOriginalWorkBtn('edit');
       document.getElementById('edit-modal').classList.add('active');
     }
 
@@ -3506,13 +3816,16 @@
 
     async function executeMetaUpdate() {
       const fileId = document.getElementById('edit-file-id').value;
-      const person = document.getElementById('edit-person').value.trim() || '未分類';
+      const personRaw = document.getElementById('edit-person').value.trim();
+      const person = personRaw ? splitMultiValues(personRaw).join(', ') : '未分類';
       const dimension = document.getElementById('edit-dimension').value || currentDimension;
-      const isR18 = document.getElementById('edit-r18').checked;
       const rawTags = document.getElementById('edit-tags').value;
-      const tags = rawTags.split(/[,、\s]+/).map(t => t.trim()).filter(Boolean);
-      const charName = tags.includes('コスプレ') ? document.getElementById('edit-char-name').value.trim() : '';
-      const workName = tags.includes('コスプレ') ? document.getElementById('edit-work-name').value.trim() : '';
+      const tags = splitMultiValues(rawTags);
+      const isR18 = tags.includes('R18');
+      const charRaw = tags.includes('コスプレ') ? document.getElementById('edit-char-name').value.trim() : '';
+      const workRaw = tags.includes('コスプレ') ? document.getElementById('edit-work-name').value.trim() : '';
+      const charName = charRaw ? splitMultiValues(charRaw).join(', ') : '';
+      const workName = workRaw ? splitMultiValues(workRaw).join(', ') : '';
       const icloudUrl = document.getElementById('edit-icloud-url').value.trim();
 
       const submitBtn = document.getElementById('submit-edit-btn');
@@ -3616,6 +3929,7 @@
       return String(str).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
     }
 
+    initAllSuggestInputs();
     loadGallery();
   </script>
 </body>

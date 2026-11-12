@@ -972,22 +972,107 @@
 
     .upload-queue-item {
       position: relative;
-      width: 76px;
-      height: 76px;
-      border-radius: 6px;
+      width: 84px;
+      height: 84px;
+      border-radius: 8px;
       overflow: hidden;
       flex-shrink: 0;
       background: #232832;
-      border: 1px solid var(--border-color);
+      border: 2px solid var(--border-color);
       display: flex;
       justify-content: center;
       align-items: center;
+      cursor: pointer;
+      transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+    }
+
+    .upload-queue-item:hover {
+      border-color: #64748b;
+    }
+
+    .upload-queue-item.active-item {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent);
+      transform: translateY(-2px);
     }
 
     .upload-queue-item img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+    }
+
+    .queue-item-index {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      background: rgba(15, 17, 21, 0.82);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 1px 5px;
+      border-radius: 4px;
+      pointer-events: none;
+    }
+
+    .upload-queue-item.active-item .queue-item-index {
+      background: var(--accent);
+    }
+
+    .queue-item-label {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(15, 17, 21, 0.86);
+      color: #e5e7eb;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 4px;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      pointer-events: none;
+    }
+
+    .queue-editing-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #141822;
+      border: 1px solid #2e3646;
+      padding: 8px 12px;
+      border-radius: 8px;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .queue-editing-status {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #93c5fd;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .queue-copy-all-btn {
+      background: #252b3b;
+      color: var(--text-main);
+      border: 1px solid #3b4252;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.74rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .queue-copy-all-btn:hover {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
     }
 
     .queue-remove-btn {
@@ -1667,21 +1752,28 @@
       </div>
 
       <div id="modal-dropzone" class="modal-dropzone" onclick="document.getElementById('file-input').click()">
-        <div class="modal-dropzone-text">📁 クリックまたはドラッグ＆ドロップでさらに画像・動画を追加</div>
+        <div class="modal-dropzone-text">📁 クリックまたはドラッグ＆ドロップでさらに画像・動画を追加（サムネイルをクリックして個別に設定できます）</div>
         <div id="upload-queue" class="upload-queue-container" onclick="event.stopPropagation()"></div>
+      </div>
+
+      <div id="queue-editing-bar" class="queue-editing-bar">
+        <span id="queue-editing-status" class="queue-editing-status">📌 1 / 1枚目を個別設定中</span>
+        <button type="button" class="queue-copy-all-btn" onclick="copyCurrentMetaToAllQueue()" title="今表示している入力内容を、追加済みの他の画像すべてにコピーします">
+          📋 この設定を全ファイルに一括適用
+        </button>
       </div>
 
       <div class="form-row-2col">
         <div class="form-group">
           <label for="input-person">人物名（カンマ区切りで複数登録可）</label>
           <div class="suggest-wrap">
-            <input type="text" id="input-person" placeholder="例: 伊織もえ, 瀬戸なちか" autocomplete="off">
+            <input type="text" id="input-person" placeholder="例: 伊織もえ, 瀬戸なちか" autocomplete="off" oninput="saveCurrentQueueItemMeta()">
             <div class="suggest-dropdown"></div>
           </div>
         </div>
         <div class="form-group">
           <label for="input-dimension">登録ページ区分</label>
-          <select id="input-dimension">
+          <select id="input-dimension" onchange="saveCurrentQueueItemMeta()">
             <option value="3D" selected>👯 MuseDex 3D</option>
             <option value="2D">🎨 MuseDex 2D</option>
           </select>
@@ -1690,7 +1782,7 @@
 
       <div class="form-group">
         <div class="label-with-actions">
-          <label for="input-tags">タグ（カンマ区切り・全ファイルに一括適用）</label>
+          <label for="input-tags">タグ（カンマ区切り）</label>
           <div class="quick-tag-btns">
             <button type="button" id="upload-r18-btn" class="r18-quick-btn" onclick="toggleQuickTag('upload', 'R18')">
               🔞 + R18
@@ -1701,7 +1793,7 @@
           </div>
         </div>
         <div class="suggest-wrap">
-          <input type="text" id="input-tags" placeholder="例: 私服, 巨乳, 縦セーター" autocomplete="off" oninput="syncTagQuickButtons('upload')">
+          <input type="text" id="input-tags" placeholder="例: 私服, 巨乳, 縦セーター" autocomplete="off" oninput="syncTagQuickButtons('upload'); saveCurrentQueueItemMeta();">
           <div class="suggest-dropdown"></div>
         </div>
       </div>
@@ -1712,7 +1804,7 @@
           <div class="form-group">
             <label for="input-char-name">キャラ名（カンマ区切り可）</label>
             <div class="suggest-wrap">
-              <input type="text" id="input-char-name" placeholder="例: マシュ, アルトリア" autocomplete="off">
+              <input type="text" id="input-char-name" placeholder="例: マシュ, アルトリア" autocomplete="off" oninput="saveCurrentQueueItemMeta()">
               <div class="suggest-dropdown"></div>
             </div>
           </div>
@@ -1724,7 +1816,7 @@
               </button>
             </div>
             <div class="suggest-wrap">
-              <input type="text" id="input-work-name" placeholder="例: Fate/Grand Order" autocomplete="off" oninput="syncOriginalWorkBtn('upload')">
+              <input type="text" id="input-work-name" placeholder="例: Fate/Grand Order" autocomplete="off" oninput="syncOriginalWorkBtn('upload'); saveCurrentQueueItemMeta();">
               <div class="suggest-dropdown"></div>
             </div>
           </div>
@@ -1733,7 +1825,7 @@
 
       <div class="form-group">
         <label for="input-icloud-url">☁️ スマホ用 動画リンク（任意・iCloud Drive共有URLなど）</label>
-        <input type="url" id="input-icloud-url" placeholder="https://www.icloud.com/iclouddrive/... （スマホ閲覧時はここを開きます）">
+        <input type="url" id="input-icloud-url" placeholder="https://www.icloud.com/iclouddrive/... （スマホ閲覧時はここを開きます）" oninput="saveCurrentQueueItemMeta()">
       </div>
 
       <div id="progress-container" class="progress-bar-container">
@@ -2042,6 +2134,7 @@
     let activePersonPageTag = null;
 
     let pendingFiles = [];
+    let activeQueueIndex = 0;
     let isAllExpanded = true;
 
     let currentSliderList = [];
@@ -2144,8 +2237,8 @@
     // ==========================================
     function getSuggestionCounts(type) {
       const counts = {};
-      const pageItems = mediaItems.filter(i => (i.dimension || '3D') === currentDimension);
-      const sourceItems = pageItems.length > 0 ? pageItems : mediaItems;
+      // 3Dと2Dでサジェスト候補を完全に分離
+      const sourceItems = mediaItems.filter(i => (i.dimension || '3D') === currentDimension);
 
       sourceItems.forEach(item => {
         if (type === 'person') {
@@ -2900,6 +2993,7 @@
 
       tagsInput.value = tags.join(', ');
       syncTagQuickButtons(mode);
+      if (mode === 'upload') saveCurrentQueueItemMeta();
     }
 
     function syncOriginalWorkBtn(mode) {
@@ -2921,6 +3015,7 @@
       }
       workInput.value = works.join(', ');
       syncOriginalWorkBtn(mode);
+      if (mode === 'upload') saveCurrentQueueItemMeta();
     }
 
     function openBatchEditModal() {
@@ -3495,6 +3590,9 @@
 
       if (safeFiles.length === 0) return;
 
+      const wasEmpty = pendingFiles.length === 0;
+      const defaultPerson = activePersonPage || '';
+
       for (const file of safeFiles) {
         const isVideo = file.type.startsWith('video/');
         const processed = await processFileAndHash(file);
@@ -3519,28 +3617,104 @@
           mimeType: file.type || (isVideo ? 'video/mp4' : 'image/jpeg'),
           base64: processed.base64,
           previewUrl: processed.previewUrl,
-          phash: processed.phash || ''
+          phash: processed.phash || '',
+          person: defaultPerson,
+          dimension: currentDimension,
+          tags: '',
+          charName: '',
+          workName: '',
+          icloudUrl: ''
         });
       }
 
       if (pendingFiles.length > 0) {
-        renderUploadQueue();
-        document.getElementById('input-dimension').value = currentDimension;
-        if (activePersonPage && !document.getElementById('input-person').value) {
-          document.getElementById('input-person').value = activePersonPage;
+        if (wasEmpty) {
+          activeQueueIndex = 0;
+          loadQueueItemToForm(0);
         }
+        renderUploadQueue();
         document.getElementById('upload-modal').classList.add('active');
       }
+    }
+
+    function saveCurrentQueueItemMeta() {
+      const item = pendingFiles[activeQueueIndex];
+      if (!item) return;
+      item.person = document.getElementById('input-person').value;
+      item.dimension = document.getElementById('input-dimension').value || currentDimension;
+      item.tags = document.getElementById('input-tags').value;
+      item.charName = document.getElementById('input-char-name').value;
+      item.workName = document.getElementById('input-work-name').value;
+      item.icloudUrl = document.getElementById('input-icloud-url').value;
+      updateQueueItemLabels();
+    }
+
+    function loadQueueItemToForm(idx) {
+      if (idx < 0 || idx >= pendingFiles.length) return;
+      activeQueueIndex = idx;
+      const item = pendingFiles[idx];
+      document.getElementById('input-person').value = item.person || '';
+      document.getElementById('input-dimension').value = item.dimension || currentDimension;
+      document.getElementById('input-tags').value = item.tags || '';
+      document.getElementById('input-char-name').value = item.charName || '';
+      document.getElementById('input-work-name').value = item.workName || '';
+      document.getElementById('input-icloud-url').value = item.icloudUrl || '';
+      syncTagQuickButtons('upload');
+      syncOriginalWorkBtn('upload');
+      updateQueueItemLabels();
+    }
+
+    function selectUploadQueueItem(idx) {
+      saveCurrentQueueItemMeta();
+      loadQueueItemToForm(idx);
+      renderUploadQueue();
+    }
+
+    function copyCurrentMetaToAllQueue() {
+      saveCurrentQueueItemMeta();
+      const src = pendingFiles[activeQueueIndex];
+      if (!src) return;
+      pendingFiles.forEach(item => {
+        item.person = src.person;
+        item.dimension = src.dimension;
+        item.tags = src.tags;
+        item.charName = src.charName;
+        item.workName = src.workName;
+        item.icloudUrl = src.icloudUrl;
+      });
+      renderUploadQueue();
+      showToast(`全 ${pendingFiles.length} 件に現在の設定を一括適用しました`);
+    }
+
+    function updateQueueItemLabels() {
+      const statusEl = document.getElementById('queue-editing-status');
+      const current = pendingFiles[activeQueueIndex];
+      if (statusEl && current) {
+        statusEl.textContent = `📌 ${activeQueueIndex + 1} / ${pendingFiles.length}枚目を個別設定中 (${current.name})`;
+      }
+      const boxes = document.querySelectorAll('#upload-queue .upload-queue-item');
+      boxes.forEach((box, idx) => {
+        const labelEl = box.querySelector('.queue-item-label');
+        const f = pendingFiles[idx];
+        if (labelEl && f) {
+          const pName = (f.person || '').trim();
+          labelEl.textContent = pName ? pName : '未設定';
+        }
+      });
     }
 
     function renderUploadQueue() {
       const queueContainer = document.getElementById('upload-queue');
       queueContainer.innerHTML = '';
-      document.getElementById('modal-title').textContent = `${pendingFiles.length}件のメディアを一括登録`;
+      document.getElementById('modal-title').textContent = `${pendingFiles.length}件のメディアを登録`;
 
       pendingFiles.forEach((item, idx) => {
         const itemBox = document.createElement('div');
-        itemBox.className = 'upload-queue-item';
+        itemBox.className = 'upload-queue-item' + (idx === activeQueueIndex ? ' active-item' : '');
+        itemBox.onclick = (e) => {
+          e.stopPropagation();
+          selectUploadQueueItem(idx);
+        };
 
         if (item.isVideo) {
           itemBox.innerHTML = `<span style="font-size:22px;">🎬</span>`;
@@ -3550,19 +3724,40 @@
           itemBox.appendChild(img);
         }
 
+        const idxBadge = document.createElement('span');
+        idxBadge.className = 'queue-item-index';
+        idxBadge.textContent = `${idx + 1}`;
+        itemBox.appendChild(idxBadge);
+
+        const labelBadge = document.createElement('div');
+        labelBadge.className = 'queue-item-label';
+        const pName = (item.person || '').trim();
+        labelBadge.textContent = pName ? pName : '未設定';
+        itemBox.appendChild(labelBadge);
+
         const removeBtn = document.createElement('button');
         removeBtn.className = 'queue-remove-btn';
         removeBtn.innerHTML = '&times;';
         removeBtn.onclick = (e) => {
           e.stopPropagation();
+          saveCurrentQueueItemMeta();
           pendingFiles.splice(idx, 1);
-          if (pendingFiles.length === 0) closeUploadModal();
-          else renderUploadQueue();
+          if (pendingFiles.length === 0) {
+            closeUploadModal();
+          } else {
+            if (activeQueueIndex >= pendingFiles.length) {
+              activeQueueIndex = pendingFiles.length - 1;
+            }
+            loadQueueItemToForm(activeQueueIndex);
+            renderUploadQueue();
+          }
         };
         itemBox.appendChild(removeBtn);
 
         queueContainer.appendChild(itemBox);
       });
+
+      updateQueueItemLabels();
     }
 
     function processFileAndHash(file) {
@@ -3608,6 +3803,7 @@
 
     async function executeBatchUpload() {
       if (pendingFiles.length === 0) return;
+      saveCurrentQueueItemMeta();
 
       const submitBtn = document.getElementById('submit-upload-btn');
       const cancelBtn = document.getElementById('cancel-upload-btn');
@@ -3616,23 +3812,25 @@
       const progressText = document.getElementById('progress-text');
 
       submitBtn.disabled = true;
-      const personRaw = document.getElementById('input-person').value.trim();
-      const person = personRaw ? splitMultiValues(personRaw).join(', ') : '未分類';
-      const dimension = document.getElementById('input-dimension').value || currentDimension;
-      const rawTags = document.getElementById('input-tags').value;
-      const tags = splitMultiValues(rawTags);
-      const isR18 = tags.includes('R18');
-      const charRaw = tags.includes('コスプレ') ? document.getElementById('input-char-name').value.trim() : '';
-      const workRaw = tags.includes('コスプレ') ? document.getElementById('input-work-name').value.trim() : '';
-      const charName = charRaw ? splitMultiValues(charRaw).join(', ') : '';
-      const workName = workRaw ? splitMultiValues(workRaw).join(', ') : '';
-      const icloudUrl = document.getElementById('input-icloud-url').value.trim();
+      cancelBtn.disabled = true;
+      progressContainer.style.display = 'flex';
 
       const total = pendingFiles.length;
       let successCount = 0;
 
       for (let i = 0; i < total; i++) {
         const item = pendingFiles[i];
+        const personRaw = (item.person || '').trim();
+        const person = personRaw ? splitMultiValues(personRaw).join(', ') : '未分類';
+        const dimension = item.dimension || currentDimension;
+        const tags = splitMultiValues(item.tags || '');
+        const isR18 = tags.includes('R18');
+        const charRaw = tags.includes('コスプレ') ? (item.charName || '').trim() : '';
+        const workRaw = tags.includes('コスプレ') ? (item.workName || '').trim() : '';
+        const charName = charRaw ? splitMultiValues(charRaw).join(', ') : '';
+        const workName = workRaw ? splitMultiValues(workRaw).join(', ') : '';
+        const icloudUrl = (item.icloudUrl || '').trim();
+
         progressText.textContent = `送信中... (${i + 1} / ${total}) - ${item.name}`;
         progressFill.style.width = `${Math.round((i / total) * 100)}%`;
 
@@ -3695,6 +3893,7 @@
       document.getElementById('submit-upload-btn').disabled = false;
       document.getElementById('cancel-upload-btn').disabled = false;
       pendingFiles = [];
+      activeQueueIndex = 0;
     }
 
     // ==========================================
